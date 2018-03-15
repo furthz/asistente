@@ -1,12 +1,17 @@
 package pe.soapros.asistente.domain;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Clase para trabajar las entidades extraídas del OCR
+ * @author Raúl Talledo
+ * @version 1.0
+ *
+ */
 public class Documento {
 	List<Palabra> palabras;
 	

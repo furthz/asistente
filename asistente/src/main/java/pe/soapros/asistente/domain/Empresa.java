@@ -11,6 +11,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
+/**
+ * Clase para gestionar los datos asociados a la Entidad Empresa
+ * @author Raúl Talledo
+ * @version 1.0
+ */
 @Entity
 @Table(name="empresas") 
 public class Empresa implements Serializable{

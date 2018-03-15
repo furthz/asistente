@@ -3,6 +3,12 @@ package pe.soapros.asistente.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase para gestionar cada una de las palabras extraídas del OCR
+ * @author Raúl Talledo
+ * @version 1.0
+ *
+ */
 public class Palabra implements Comparable{
 
 	String valor;	
