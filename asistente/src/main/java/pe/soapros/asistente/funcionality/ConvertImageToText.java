@@ -2,7 +2,6 @@ package pe.soapros.asistente.funcionality;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class ConvertImageToText {
 		
 		String pathfile = "c:/Temp/";
 
-		String filePath = pathfile + "resultado.png";
+		String filePath = pathfile + "contr70272219.png";
 
 		List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
 
@@ -111,7 +110,7 @@ public class ConvertImageToText {
 				//contenido = annotation.getText();
 			}
 		}
-		dcto.ordernarDocumento();
+		//dcto.ordernarDocumento();
 		dcto.formarResultante();
 		System.out.print("prueba");
 	}
