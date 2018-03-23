@@ -1,8 +1,9 @@
 package pe.soapros.asistente.web;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +36,11 @@ public class MultipleFileUploadController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	private String pathfile = "C:/Temp/";
+
 	@Autowired
 	private FileUploadManager fileUploadManager;
-	
+
 	@Autowired
 	private EmpresaManager empresaManager;
 
@@ -52,42 +55,46 @@ public class MultipleFileUploadController {
 
 	@RequestMapping(value = "/uploadMultipleFilesMA", method = RequestMethod.POST)
 	public String handleFileUploadMA(
-			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model) {
+			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model)
+			throws IOException {
 
 		List<MultipartFile> files = multipleFileUploadForm.getFiles();
-		
+
 		long id = multipleFileUploadForm.getEmpresa();
-		
+
 		System.out.println("Id Empresa: " + id);
-		
+
 		Empresa emp = this.empresaManager.buscarById(id);
-		
+
 		logger.info(" Files count " + files.size());
 
+		Path basePath = Paths.get(this.pathfile);
+		Path path = Files.createTempDirectory(basePath, "upload");
+
 		try {
-			String filePath = "c:/Temp/";
+
 			UploadFile archivo;
 			for (int i = 0; i < files.size(); i++) {
+				//llamar al script de python para convertir la imagen
+				
+				
 				archivo = new UploadFile();
 				archivo.setFileName(files.get(i).getOriginalFilename());
 				archivo.setDatos(files.get(i).getBytes());
 				archivo.setEmpresa(emp);
-				PrintStream out = new PrintStream(filePath + "respuesta.doc");
-				
+
 				ConvertImageToText convertImage = new ConvertImageToText();
-				
-				byte[] contenidoImagen = files.get(i).getBytes();
-				
-				//convertir en texto la imagen.
-				byte[] contenidoTexto = convertImage.detectDocumentText(files.get(i), out);
-				
-				//llamar a NLU para obtener el valor de las entidades
-				
-				
-				//llamar para guardar en el ECM los conteidos
-				
-				//guardar en la base de datos 
-				//files.get(i).transferTo(new File(filePath + files.get(i).getOriginalFilename()));
+
+				// convertir en texto la imagen.
+				convertImage.detectDocumentText(files.get(i), path.toString());
+
+				// llamar a NLU para obtener el valor de las entidades
+
+				// llamar para guardar en el ECM los conteidos
+
+				// guardar en la base de datos
+				// files.get(i).transferTo(new File(filePath +
+				// files.get(i).getOriginalFilename()));
 				this.fileUploadManager.saveArchivo(archivo);
 			}
 		} catch (Exception e) {
@@ -98,7 +105,7 @@ public class MultipleFileUploadController {
 		return "result";
 
 	}
-	
+
 	@RequestMapping(value = "/loadMultipleFileUpload")
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -114,9 +121,9 @@ public class MultipleFileUploadController {
 	}
 
 	/*
-	@RequestMapping(value = "/loadMultipleFileUpload")
-	public String loadMultipleFileUpload(Map<String, Object> model) {
-		return "MultipleFileUpload";
-	}*/
+	 * @RequestMapping(value = "/loadMultipleFileUpload") public String
+	 * loadMultipleFileUpload(Map<String, Object> model) { return
+	 * "MultipleFileUpload"; }
+	 */
 
 }

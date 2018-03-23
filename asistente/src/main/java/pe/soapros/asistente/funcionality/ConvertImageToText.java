@@ -3,7 +3,6 @@ package pe.soapros.asistente.funcionality;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,22 +27,31 @@ import com.google.protobuf.ByteString;
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
 
+/***
+ * Clase que encapsula las funcionalidades para convertir una imagen en texto
+ * 
+ * @author Raúl Talledo
+ * @version 1.0
+ *
+ */
 public class ConvertImageToText {
-	
-	public static void main(String[] args) throws IOException, Exception {
-		
-		String pathfile = "c:/Temp/";
-		
-		PrintStream out = new PrintStream(pathfile + "respuesta1.txt");
-		
-		detectDocumentText(out);
-	}
-	
-	public static void detectDocumentText(PrintStream out) throws Exception, IOException {
-		
-		String pathfile = "c:/Temp/";
 
-		String filePath = pathfile + "contr70272219.png";
+	/**
+	 * Método que convierte una imagen subida a un archivo de texto
+	 * 
+	 * @param file
+	 *            Archivo subido por la página
+	 * @param pathFile
+	 *            Ruta destino donde se guardan los archivos y los textos
+	 *            convertidos
+	 * @throws Exception
+	 * @throws IOException
+	 */
+	public void detectDocumentText(MultipartFile file, String pathFile) throws Exception, IOException {
+
+		file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
+
+		String filePath = pathFile + File.separator + file.getOriginalFilename();
 
 		List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
 
@@ -54,10 +62,9 @@ public class ConvertImageToText {
 		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
 		requests.add(request);
 
-		//String contenido = new String();
-
+		// String contenido = new String();
 		Documento dcto = new Documento();
-		
+
 		try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
 			BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
 			List<AnnotateImageResponse> responses = response.getResponsesList();
@@ -65,7 +72,6 @@ public class ConvertImageToText {
 
 			for (AnnotateImageResponse res : responses) {
 				if (res.hasError()) {
-					out.printf("Error: %s\n", res.getError().getMessage());
 					throw new Exception("Error");
 				}
 
@@ -77,7 +83,7 @@ public class ConvertImageToText {
 						String blockText = "";
 						for (Paragraph para : block.getParagraphsList()) {
 							String paraText = "";
-							
+
 							Palabra palabra;
 							for (Word word : para.getWordsList()) {
 								String wordText = "";
@@ -85,95 +91,33 @@ public class ConvertImageToText {
 									wordText = wordText + symbol.getText();
 								}
 								paraText = paraText + wordText;
+
 								palabra = new Palabra();
-								
+
 								palabra.setValor(wordText);
-								palabra.addPuntos(word.getBoundingBox().getVertices(0).getX(), word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(1).getX(), word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(2).getX(), word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(3).getX(), word.getBoundingBox().getVertices(0).getY());
-								
+								palabra.addPuntos(word.getBoundingBox().getVertices(0).getX(),
+										word.getBoundingBox().getVertices(0).getY());
+								palabra.addPuntos(word.getBoundingBox().getVertices(1).getX(),
+										word.getBoundingBox().getVertices(0).getY());
+								palabra.addPuntos(word.getBoundingBox().getVertices(2).getX(),
+										word.getBoundingBox().getVertices(0).getY());
+								palabra.addPuntos(word.getBoundingBox().getVertices(3).getX(),
+										word.getBoundingBox().getVertices(0).getY());
+
 								dcto.addPalabra(palabra);
-								
-								out.println("palabra: \n" + wordText);
-								out.println("limites: \n" + word.getBoundingBox().getVertices(0)+ "\n");
 							}
-							// Output Example using Paragraph:
-							//out.println("Paragraph: \n" + paraText);
-							//out.println("Bounds: \n" + para.getBoundingBox() + "\n");
-							blockText = blockText + paraText;
-						}
-						//pageText = pageText + blockText;
-					}
-				}
-				//out.println(annotation.getText());
-				//contenido = annotation.getText();
-			}
-		}
-		//dcto.ordernarDocumento();
-		dcto.formarResultante();
-		System.out.print("prueba");
-	}
 
-	public byte[] detectDocumentText(MultipartFile file, PrintStream out) throws Exception, IOException {
-
-		String pathfile = "c:/Temp/";
-
-		file.transferTo(new File(pathfile + file.getOriginalFilename()));
-
-		String filePath = pathfile + file.getOriginalFilename();
-
-		List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-
-		ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
-
-		Image img = Image.newBuilder().setContent(imgBytes).build();
-		Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-		requests.add(request);
-
-		String contenido = new String();
-
-		try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-			BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-			List<AnnotateImageResponse> responses = response.getResponsesList();
-			client.close();
-
-			for (AnnotateImageResponse res : responses) {
-				if (res.hasError()) {
-					out.printf("Error: %s\n", res.getError().getMessage());
-					throw new Exception("Error");
-				}
-
-				// For full list of available annotations, see http://g.co/cloud/vision/docs
-				TextAnnotation annotation = res.getFullTextAnnotation();
-				for (Page page : annotation.getPagesList()) {
-					String pageText = "";
-					for (Block block : page.getBlocksList()) {
-						String blockText = "";
-						for (Paragraph para : block.getParagraphsList()) {
-							String paraText = "";
-							for (Word word : para.getWordsList()) {
-								String wordText = "";
-								for (Symbol symbol : word.getSymbolsList()) {
-									wordText = wordText + symbol.getText();
-								}
-								paraText = paraText + wordText;
-							}
-							// Output Example using Paragraph:
-							// out.println("Paragraph: \n" + paraText);
-							// out.println("Bounds: \n" + para.getBoundingBox() + "\n");
 							blockText = blockText + paraText;
 						}
 						pageText = pageText + blockText;
 					}
 				}
-				out.println(annotation.getText());
-				contenido = annotation.getText();
+
 			}
 		}
-		
-		return contenido.getBytes();
+
+		dcto.formarResultante(pathFile, file.getOriginalFilename().toString() + ".txt");
+
 	}
 
 	public static void convert(byte[] imagen) throws Exception {

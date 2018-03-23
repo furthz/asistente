@@ -1,10 +1,15 @@
 package pe.soapros.asistente.domain;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Clase para trabajar las entidades extraídas del OCR
@@ -13,9 +18,18 @@ import java.util.List;
  * @version 1.0
  *
  */
+
+@Configuration
+@PropertySource("classpath:propiedades.properties")
 public class Documento {
-	List<Palabra> palabras;
-	double promedioLetra;
+	
+	private List<Palabra> palabras;
+		
+	@Value("${anchorenglon}")
+	private int anchoRenglon = 15;
+	
+	@Value("${anchocol}")
+	private int anchoCol = 9;
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
@@ -64,7 +78,13 @@ public class Documento {
 		return rpta;
 	}
 
-	public void formarResultante() throws IOException {
+	/**
+	 * Método que permite ordenar el archivo resultando, acercandolo al formato definido en la imagen
+	 * @param pathFile Ruta Destino del archivo resultante
+	 * @param fileName Nombre del archivo
+	 * @throws IOException
+	 */
+	public void formarResultante(String pathFile, String fileName) throws IOException {
 
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
@@ -73,7 +93,7 @@ public class Documento {
 		List<List<Palabra>> lstRenglones = new ArrayList<List<Palabra>>();
 
 		// tamaño del renglon
-		int inc = 15;
+		int inc = this.anchoRenglon;
 
 		// valor inicial de la posición del renglon más el valor increental
 		int minY = palabras.get(0).getPuntos().get(0).getY() + inc;
@@ -106,16 +126,16 @@ public class Documento {
 
 		}
 
-		String pathfile = "c:/Temp/";
+		//String pathfile = "c:/Temp/";
 
-		PrintStream out = new PrintStream(pathfile + "respuesta33.txt");
+		PrintStream out = new PrintStream(pathFile + File.separator + fileName);
 
 		StringBuffer cadena = new StringBuffer();
-
+		
 		// recorrer los renglones
 		for (List<Palabra> pals : lstRenglones) {
 
-			int anchoCol = 8;
+			int anchoCol = this.anchoCol;
 			int colActual = 0;
 
 			for (Palabra pp : pals) {
@@ -147,14 +167,15 @@ public class Documento {
 				colActual = colActual + (int) calCol;
 
 			}
+			
+			colActual = 0;
 
 			out.println(cadena.toString());
-
 			cadena.delete(0, cadena.length());			
 
 		}
 
-		System.out.println("Fin");
-
+		//
+		out.close();
 	}
 }
