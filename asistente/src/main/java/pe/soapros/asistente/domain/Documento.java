@@ -22,14 +22,14 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:propiedades.properties")
 public class Documento {
-	
+
 	private List<Palabra> palabras;
-		
+
 	@Value("${anchorenglon}")
 	private int anchoRenglon = 15;
-	
+
 	@Value("${anchocol}")
-	private int anchoCol = 9;
+	private int anchoCol = 8;
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
@@ -79,9 +79,13 @@ public class Documento {
 	}
 
 	/**
-	 * Método que permite ordenar el archivo resultando, acercandolo al formato definido en la imagen
-	 * @param pathFile Ruta Destino del archivo resultante
-	 * @param fileName Nombre del archivo
+	 * Método que permite ordenar el archivo resultando, acercandolo al formato
+	 * definido en la imagen
+	 * 
+	 * @param pathFile
+	 *            Ruta Destino del archivo resultante
+	 * @param fileName
+	 *            Nombre del archivo
 	 * @throws IOException
 	 */
 	public void formarResultante(String pathFile, String fileName) throws IOException {
@@ -126,12 +130,12 @@ public class Documento {
 
 		}
 
-		//String pathfile = "c:/Temp/";
+		// String pathfile = "c:/Temp/";
 
 		PrintStream out = new PrintStream(pathFile + File.separator + fileName);
 
 		StringBuffer cadena = new StringBuffer();
-		
+
 		// recorrer los renglones
 		for (List<Palabra> pals : lstRenglones) {
 
@@ -142,36 +146,40 @@ public class Documento {
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
 				// columna estar
 				int izqCol = pp.getPuntos().get(0).getX();
+				int derCol = pp.getPuntos().get(1).getX();
 
-				// calcular cuantas columnas existen respecto al punto izquierdo
-				double calCol = (Math.ceil(izqCol / anchoCol)) - colActual;
+				// Identificación de las columnas
+				// int colDer = (int)Math.ceil(derCol / anchoCol);
+				int colIzq = (int) Math.ceil(izqCol / anchoCol);
 
-				for (int k = 0; k < calCol - 1; k++) {
+				// calcular cuantas columnas existen en blanco respecto a la última palabra
+				int colEspacio = colIzq - colActual;
+
+				// determinar la cantidad de palabras o columnas reales de la palabra
+				int cantLetras = pp.getValor().length();
+
+				for (int k = 0; k < colEspacio - 2; k++) {
 					cadena.append(" ");
+					colActual++;
 				}
-
-				colActual = colActual + (int) calCol;
 
 				// se agrega el valor de la palabra
-
 				cadena.append(pp.getValor());
 
-				if (pp.getValor().length()>1 && Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
+				colActual = colActual + cantLetras;
+
+				if (pp.getValor().length() > 1
+						&& Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
 					cadena.append(" ");
+					colActual++;
 				}
 
-				// determinar el ancho de la palabra y cuantas columnas ocupa
-
-				calCol = Math.ceil(pp.getAncho() / anchoCol)+ 1;
-
-				colActual = colActual + (int) calCol;
-
 			}
-			
+
 			colActual = 0;
 
 			out.println(cadena.toString());
-			cadena.delete(0, cadena.length());			
+			cadena.delete(0, cadena.length());
 
 		}
 
