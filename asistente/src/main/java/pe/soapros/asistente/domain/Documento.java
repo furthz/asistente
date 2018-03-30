@@ -146,7 +146,7 @@ public class Documento {
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
 				// columna estar
 				int izqCol = pp.getPuntos().get(0).getX();
-				int derCol = pp.getPuntos().get(1).getX();
+//				int derCol = pp.getPuntos().get(1).getX();
 
 				// Identificación de las columnas
 				// int colDer = (int)Math.ceil(derCol / anchoCol);

@@ -26,6 +26,8 @@ import com.google.protobuf.ByteString;
 
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
+import pe.soapros.asistente.util.BatRunner;
+import pe.soapros.asistente.util.Desempaquetar;
 
 /***
  * Clase que encapsula las funcionalidades para convertir una imagen en texto
@@ -49,74 +51,90 @@ public class ConvertImageToText {
 	 */
 	public void detectDocumentText(MultipartFile file, String pathFile) throws Exception, IOException {
 
+		// enviar los archivos a una ruta temporal
 		file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
 
-		String filePath = pathFile + File.separator + file.getOriginalFilename();
+		List<String> lstArchivos = Desempaquetar.doit(pathFile, file.getOriginalFilename());
+		
+		String filePathMod = "";
 
-		List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
+		for (String filePath : lstArchivos) {
+			
+			//llamar al script para rotar la imagen
+			
+			filePathMod = filePath.substring(0, filePath.length()-3) + "png";
+			
+			BatRunner.runProcess(filePath, filePathMod);
 
-		ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
 
-		Image img = Image.newBuilder().setContent(imgBytes).build();
-		Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-		requests.add(request);
+			ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePathMod));
 
-		// String contenido = new String();
-		Documento dcto = new Documento();
+			Image img = Image.newBuilder().setContent(imgBytes).build();
+			Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
+			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+			requests.add(request);
 
-		try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-			BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-			List<AnnotateImageResponse> responses = response.getResponsesList();
-			client.close();
+			// String contenido = new String();
+			Documento dcto = new Documento();
 
-			for (AnnotateImageResponse res : responses) {
-				if (res.hasError()) {
-					throw new Exception("Error");
-				}
+			try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+				List<AnnotateImageResponse> responses = response.getResponsesList();
+				client.close();
 
-				// For full list of available annotations, see http://g.co/cloud/vision/docs
-				TextAnnotation annotation = res.getFullTextAnnotation();
-				for (Page page : annotation.getPagesList()) {
-					String pageText = "";
-					for (Block block : page.getBlocksList()) {
-						String blockText = "";
-						for (Paragraph para : block.getParagraphsList()) {
-							String paraText = "";
-
-							Palabra palabra;
-							for (Word word : para.getWordsList()) {
-								String wordText = "";
-								for (Symbol symbol : word.getSymbolsList()) {
-									wordText = wordText + symbol.getText();
-								}
-								paraText = paraText + wordText;
-
-								palabra = new Palabra();
-
-								palabra.setValor(wordText);
-								palabra.addPuntos(word.getBoundingBox().getVertices(0).getX(),
-										word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(1).getX(),
-										word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(2).getX(),
-										word.getBoundingBox().getVertices(0).getY());
-								palabra.addPuntos(word.getBoundingBox().getVertices(3).getX(),
-										word.getBoundingBox().getVertices(0).getY());
-
-								dcto.addPalabra(palabra);
-							}
-
-							blockText = blockText + paraText;
-						}
-						pageText = pageText + blockText;
+				for (AnnotateImageResponse res : responses) {
+					if (res.hasError()) {
+						throw new Exception("Error");
 					}
+
+					// For full list of available annotations, see http://g.co/cloud/vision/docs
+					TextAnnotation annotation = res.getFullTextAnnotation();
+					for (Page page : annotation.getPagesList()) {
+						String pageText = "";
+						for (Block block : page.getBlocksList()) {
+							String blockText = "";
+							for (Paragraph para : block.getParagraphsList()) {
+								String paraText = "";
+
+								Palabra palabra;
+								for (Word word : para.getWordsList()) {
+									String wordText = "";
+									for (Symbol symbol : word.getSymbolsList()) {
+										wordText = wordText + symbol.getText();
+									}
+									paraText = paraText + wordText;
+
+									palabra = new Palabra();
+
+									palabra.setValor(wordText);
+									palabra.addPuntos(word.getBoundingBox().getVertices(0).getX(),
+											word.getBoundingBox().getVertices(0).getY());
+									palabra.addPuntos(word.getBoundingBox().getVertices(1).getX(),
+											word.getBoundingBox().getVertices(0).getY());
+									palabra.addPuntos(word.getBoundingBox().getVertices(2).getX(),
+											word.getBoundingBox().getVertices(0).getY());
+									palabra.addPuntos(word.getBoundingBox().getVertices(3).getX(),
+											word.getBoundingBox().getVertices(0).getY());
+
+									dcto.addPalabra(palabra);
+								}
+
+								blockText = blockText + paraText;
+							}
+							pageText = pageText + blockText;
+						}
+					}
+
 				}
-
 			}
-		}
 
-		dcto.formarResultante(pathFile, file.getOriginalFilename().toString() + ".txt");
+			File f = new File(filePath);
+			String nombre = f.getName();
+			nombre = nombre.substring(0, nombre.length()-3);
+			dcto.formarResultante(pathFile, nombre + "txt");
+
+		}
 
 	}
 
