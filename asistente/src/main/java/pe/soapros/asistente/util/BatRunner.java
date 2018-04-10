@@ -1,7 +1,10 @@
 package pe.soapros.asistente.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
+import java.util.List;
 
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
@@ -50,17 +53,24 @@ private static void runProcess(String batfile, String directory, String source, 
  
 		int returnCode = CommandLineUtils.executeCommandLine(commandLine, systemOut, systemErr);
 		if (returnCode != 0) {
-		    System.out.println("Something Bad Happened!");
-		} else {
-		    System.out.println("Taaa!! ddaaaaa!!");
-		};
+		    System.out.println("Ocurrió un error");
+		} /*else {
+		    System.out.println("Todo funcionó");
+		};*/
 	}
  
 	/**
 	 * @param args
+	 * @throws IOException 
+	 * @throws CommandLineException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, CommandLineException {
 		//new BatRunner();
+		List<Path> archivos = Util.listarFicheros("D:\\archivos1", "png");
+		
+		for(Path p: archivos) {
+			runProcess(p.toString(), p.toString());
+		}
 	}
 
 }

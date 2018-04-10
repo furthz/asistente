@@ -97,6 +97,27 @@ public class Palabra implements Comparable<Palabra> {
 
 		return rpta;
 	}
+	
+	public static Comparator<Palabra> PalabraComparatorYX = new Comparator<Palabra>() {
+		
+		@Override
+		public int compare(Palabra p1, Palabra p2) {
+			String svalx1 = "" + p1.getPuntos().get(0).getX();
+			String svaly1 = "" + p1.getPuntos().get(0).getY();
+			String x1 = svalx1 + svaly1;
+			int valx1 = Integer.valueOf(x1);
+			
+			
+			String svalx2 = "" + p2.getPuntos().get(2).getX();
+			String svaly2 = "" + p2.getPuntos().get(2).getY();
+			
+			String x2 = svalx2 + svaly2;
+			int valx2 = Integer.valueOf(x2);
+			
+			return valx1 - valx2;
+		}
+
+	};
 
 	public static Comparator<Palabra> PalabraComparatorX = new Comparator<Palabra>() {
 		@Override
@@ -107,12 +128,33 @@ public class Palabra implements Comparable<Palabra> {
 			return valx1 - valx2;
 		}
 	};
+	
+	public static Comparator<Palabra> PalabraComparatorX2 = new Comparator<Palabra>() {
+		@Override
+		public int compare(Palabra p1, Palabra p2) {
+			int valx1 = p1.getPuntos().get(1).getX();
+			int valx2 = p2.getPuntos().get(1).getX();
+
+			return valx1 - valx2;
+		}
+	};
+
 
 	public static Comparator<Palabra> PalabraComparatorY = new Comparator<Palabra>() {
 		@Override
 		public int compare(Palabra p1, Palabra p2) {
 			int valx1 = p1.getPuntos().get(0).getY();
 			int valx2 = p2.getPuntos().get(0).getY();
+
+			return valx1 - valx2;
+		}
+	};
+	
+	public static Comparator<Palabra> PalabraComparatorY2 = new Comparator<Palabra>() {
+		@Override
+		public int compare(Palabra p1, Palabra p2) {
+			int valx1 = p1.getPuntos().get(1).getY();
+			int valx2 = p2.getPuntos().get(1).getY();
 
 			return valx1 - valx2;
 		}

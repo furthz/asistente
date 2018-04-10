@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -24,16 +26,43 @@ import org.springframework.context.annotation.PropertySource;
 public class Documento {
 
 	private List<Palabra> palabras;
+	
+	private List<Palabra> bloques;
 
-	@Value("${anchorenglon}")
 	private int anchoRenglon = 15;
 
-	@Value("${anchocol}")
-	private int anchoCol = 8;
+	private double anchoCol = 4;
+	
+	private boolean swHorizontal = false;
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
 	}
+	
+	
+
+	public List<Palabra> getBloques() {
+		return bloques;
+	}
+
+
+
+	public void setBloques(List<Palabra> bloques) {
+		this.bloques = bloques;
+	}
+
+	
+	public boolean isSwHorizontal() {
+		return swHorizontal;
+	}
+
+
+
+	public void setSwHorizontal(boolean swHorizontal) {
+		this.swHorizontal = swHorizontal;
+	}
+
+
 
 	public void addPalabra(Palabra palabra) {
 		palabras.add(palabra);
@@ -77,6 +106,58 @@ public class Documento {
 
 		return rpta;
 	}
+	
+	private int calcularCols() {
+		
+		HashMap<Palabra, Integer> lstCols = new HashMap<Palabra, Integer>();
+		
+		Collections.sort(bloques, Palabra.PalabraComparatorX);
+		
+		//Collections.sort(bloques, Palabra.PalabraComparatorY);
+		
+		Palabra inicio = this.bloques.get(0);
+		
+		for(Palabra pal: this.bloques) {
+			//se verificó el eje horizontal
+			if((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 9) ||
+					(pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 9)) {
+				
+				//verificar si estamos dentro de los límites verticales
+				//if((pal.getPuntos().get(1).getY() >= inicio.getPuntos().get(1).getY()) &&
+				//		(pal.getPuntos().get(2).getY()  <= inicio.getPuntos().get(2).getY())) {
+					
+					if(lstCols.get(inicio) == null) {
+						lstCols.put(inicio, 1);
+					}else {
+						int cant = lstCols.get(inicio) + 1;
+						lstCols.put(inicio, cant);
+					}
+					
+				//}else {
+				//	inicio = pal;
+				//}
+				
+				
+				
+
+			}else {
+				inicio = pal;
+			}
+		}
+		
+		
+		Iterator<Entry<Palabra, Integer>> it = lstCols.entrySet().iterator();
+		int col = 0;
+		while(it.hasNext()) {
+			Entry<Palabra, Integer> pair = it.next();
+			Integer value = (Integer)pair.getValue();
+			if( value > 2 ) {
+				col++;
+			}
+		}
+	
+		return col;
+	}
 
 	/**
 	 * Método que permite ordenar el archivo resultando, acercandolo al formato
@@ -90,6 +171,34 @@ public class Documento {
 	 */
 	public void formarResultante(String pathFile, String fileName) throws IOException {
 
+		//calcular las columnas
+		double factor = 0;
+		int col = this.calcularCols();
+		
+		if(this.swHorizontal) {
+			this.anchoRenglon = 6;
+			if(col >= 4) {
+				factor = 1.5;
+			}else {
+				factor = 3;
+			}
+		}else {
+			this.anchoRenglon = 14;
+			if(col > 4) {
+				col = 4;
+				factor = 2;
+			} else if(col == 1) {
+				col = 2;
+				factor = 4;
+			}
+			else {
+				factor = 4.2;
+				
+			}
+		}
+		
+		this.anchoCol = col * factor;		
+		
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
 
@@ -97,10 +206,10 @@ public class Documento {
 		List<List<Palabra>> lstRenglones = new ArrayList<List<Palabra>>();
 
 		// tamaño del renglon
-		int inc = this.anchoRenglon;
+		double inc = this.anchoRenglon;
 
 		// valor inicial de la posición del renglon más el valor increental
-		int minY = palabras.get(0).getPuntos().get(0).getY() + inc;
+		double minY = palabras.get(0).getPuntos().get(0).getY();
 
 		// lista de palabras dentro de cada renglong
 		List<Palabra> palabrasInRenglon = new ArrayList<Palabra>();
@@ -129,27 +238,33 @@ public class Documento {
 			palabrasInRenglon.add(pal);
 
 		}
+		
+		//agregar el ultimo renglon
+		// ordenar dentro de cada renglon por la coordenada X
+		Collections.sort(palabrasInRenglon, Palabra.PalabraComparatorX);
+
+		// se agregó el renglon identificado
+		lstRenglones.add(palabrasInRenglon);
 
 		// String pathfile = "c:/Temp/";
 
-		PrintStream out = new PrintStream(pathFile + File.separator + fileName);
+		PrintStream out = new PrintStream(pathFile + File.separator + fileName, "UTF-8");
 
 		StringBuffer cadena = new StringBuffer();
 
 		// recorrer los renglones
 		for (List<Palabra> pals : lstRenglones) {
 
-			int anchoCol = this.anchoCol;
+			double anchoCol = this.anchoCol;
+			
 			int colActual = 0;
 
 			for (Palabra pp : pals) {
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
 				// columna estar
 				int izqCol = pp.getPuntos().get(0).getX();
-//				int derCol = pp.getPuntos().get(1).getX();
 
 				// Identificación de las columnas
-				// int colDer = (int)Math.ceil(derCol / anchoCol);
 				int colIzq = (int) Math.ceil(izqCol / anchoCol);
 
 				// calcular cuantas columnas existen en blanco respecto a la última palabra

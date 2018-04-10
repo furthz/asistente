@@ -156,7 +156,7 @@ public class Desempaquetar {
 	
 	public static void main(String[] args) throws IOException, CommandLineException {
 		Desempaquetar desemp = new Desempaquetar();
-		desemp.conversionMasiva("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 1", "D:\\archivos");
+		desemp.conversionMasiva("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 5", "D:\\archivos1");
 	}
 
 }
