@@ -292,13 +292,15 @@ public class Documento {
 			}
 
 			colActual = 0;
-
-			out.println(cadena.toString());
+			
+			out.println(cadena.toString() + "\r\n");			
 			cadena.delete(0, cadena.length());
+			
 
 		}
 
 		//
+		out.flush();
 		out.close();
 	}
 }

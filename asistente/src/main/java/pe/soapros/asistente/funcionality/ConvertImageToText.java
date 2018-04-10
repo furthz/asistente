@@ -45,7 +45,7 @@ public class ConvertImageToText {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		detectDocumentText("D:\\archivos1\\contr55031812");
+		detectDocumentText("D:\\archivos1\\contr63062692");
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
