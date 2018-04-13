@@ -6,7 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -30,6 +32,7 @@ import com.google.protobuf.ByteString;
 
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
+import pe.soapros.asistente.domain.TipoDocumento;
 import pe.soapros.asistente.util.BatRunner;
 import pe.soapros.asistente.util.Desempaquetar;
 import pe.soapros.asistente.util.Util;
@@ -45,7 +48,7 @@ public class ConvertImageToText {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		detectDocumentText("D:\\archivos1\\contr63062692");
+		detectDocumentText("D:\\archivos1\\contr63442652");
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
@@ -177,10 +180,14 @@ public class ConvertImageToText {
 		// enviar los archivos a una ruta temporal
 		file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
 
+		//lista de archivos desempaquetados
 		List<String> lstArchivos = Desempaquetar.doit(pathFile, file.getOriginalFilename());
 
 		String filePathMod = "";
 
+		//lista de archivo de texto obtenidos
+		List<String> lstArchivosTXT = new ArrayList<String>();
+		
 		for (String filePath : lstArchivos) {
 
 			// llamar al script para rotar la imagen
@@ -268,7 +275,7 @@ public class ConvertImageToText {
 
 			
 			dcto.setBloques(bloques);
-			File f = new File(filePath);
+			File f = new File(filePathMod);
 			String nombre = f.getName();
 			nombre = nombre.substring(0, nombre.length() - 3);
 			
@@ -282,6 +289,29 @@ public class ConvertImageToText {
 			
 			dcto.formarResultante(pathFile, nombre + "txt");
 
+			lstArchivosTXT.add(pathFile + File.separator +  nombre + "txt");
+		}
+		
+		//verificar todos los archivos TXT resueltos, para ver si son balances u otros tipos
+		
+		TipoDocumentoNLU tipoNLU = new TipoDocumentoNLU();
+		ServiceECM serviceECM = new ServiceECM();
+		
+		for(String arch: lstArchivosTXT) {
+			TipoDocumento tipodoc = tipoNLU.consultarTipoDcto(arch);
+			File f = new File(arch);
+			String nombre = f.getName();
+			nombre = nombre.substring(0, nombre.length() - 3);
+			
+			Map<String, Object> metadata = new HashMap<String, Object>();
+			metadata.put("estado_financiero:empresa", tipodoc.getEmpresa());
+			metadata.put("estado_financiero:fecha", tipodoc.getFecha());
+			metadata.put("estado_financiero:id", tipodoc.getId());
+			metadata.put("estado_financiero:tipodoc", tipodoc.getTipoDoc());
+			metadata.put("estado_financiero:unidad", tipodoc.getUnidad());
+			
+			String objectID = serviceECM.uploadDocument(pathFile + File.separator + nombre + "png", metadata);
+			tipodoc.setObjectId(objectID);
 		}
 
 	}

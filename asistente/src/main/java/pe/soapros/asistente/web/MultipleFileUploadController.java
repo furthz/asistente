@@ -74,9 +74,7 @@ public class MultipleFileUploadController {
 		try {
 
 			UploadFile archivo;
-			for (int i = 0; i < files.size(); i++) {
-				//llamar al script de python para convertir la imagen
-				
+			for (int i = 0; i < files.size(); i++) {				
 				
 				archivo = new UploadFile();
 				archivo.setFileName(files.get(i).getOriginalFilename());
@@ -85,10 +83,8 @@ public class MultipleFileUploadController {
 
 				ConvertImageToText convertImage = new ConvertImageToText();
 
-				// convertir en texto la imagen.
+				// metodo que desempaqueta, limpia y convierte en texto
 				convertImage.detectDocumentText(files.get(i), path.toString());
-
-				// llamar a NLU para obtener el valor de las entidades
 
 				// llamar para guardar en el ECM los conteidos
 

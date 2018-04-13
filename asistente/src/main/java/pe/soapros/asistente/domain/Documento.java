@@ -26,43 +26,34 @@ import org.springframework.context.annotation.PropertySource;
 public class Documento {
 
 	private List<Palabra> palabras;
-	
+
 	private List<Palabra> bloques;
 
 	private int anchoRenglon = 15;
 
 	private double anchoCol = 4;
-	
+
 	private boolean swHorizontal = false;
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
 	}
-	
-	
 
 	public List<Palabra> getBloques() {
 		return bloques;
 	}
 
-
-
 	public void setBloques(List<Palabra> bloques) {
 		this.bloques = bloques;
 	}
 
-	
 	public boolean isSwHorizontal() {
 		return swHorizontal;
 	}
 
-
-
 	public void setSwHorizontal(boolean swHorizontal) {
 		this.swHorizontal = swHorizontal;
 	}
-
-
 
 	public void addPalabra(Palabra palabra) {
 		palabras.add(palabra);
@@ -106,56 +97,54 @@ public class Documento {
 
 		return rpta;
 	}
-	
-	private int calcularCols() {
-		
-		HashMap<Palabra, Integer> lstCols = new HashMap<Palabra, Integer>();
-		
-		Collections.sort(bloques, Palabra.PalabraComparatorX);
-		
-		//Collections.sort(bloques, Palabra.PalabraComparatorY);
-		
-		Palabra inicio = this.bloques.get(0);
-		
-		for(Palabra pal: this.bloques) {
-			//se verificó el eje horizontal
-			if((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 9) ||
-					(pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 9)) {
-				
-				//verificar si estamos dentro de los límites verticales
-				//if((pal.getPuntos().get(1).getY() >= inicio.getPuntos().get(1).getY()) &&
-				//		(pal.getPuntos().get(2).getY()  <= inicio.getPuntos().get(2).getY())) {
-					
-					if(lstCols.get(inicio) == null) {
-						lstCols.put(inicio, 1);
-					}else {
-						int cant = lstCols.get(inicio) + 1;
-						lstCols.put(inicio, cant);
-					}
-					
-				//}else {
-				//	inicio = pal;
-				//}
-				
-				
-				
 
-			}else {
+	private int calcularCols() {
+
+		HashMap<Palabra, Integer> lstCols = new HashMap<Palabra, Integer>();
+
+		Collections.sort(bloques, Palabra.PalabraComparatorX);
+
+		// Collections.sort(bloques, Palabra.PalabraComparatorY);
+
+		Palabra inicio = this.bloques.get(0);
+
+		for (Palabra pal : this.bloques) {
+			// se verificó el eje horizontal
+			if ((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 4
+					&& pal.getPuntos().get(0).getX() >= inicio.getPuntos().get(0).getX() - 4)
+					|| (pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 4
+							&& pal.getPuntos().get(1).getX() >= inicio.getPuntos().get(1).getX() - 4)) {
+
+				// verificar si estamos dentro de los límites verticales
+				// if((pal.getPuntos().get(1).getY() >= inicio.getPuntos().get(1).getY()) &&
+				// (pal.getPuntos().get(2).getY() <= inicio.getPuntos().get(2).getY())) {
+
+				if (lstCols.get(inicio) == null) {
+					lstCols.put(inicio, 1);
+				} else {
+					int cant = lstCols.get(inicio) + 1;
+					lstCols.put(inicio, cant);
+				}
+
+				// }else {
+				// inicio = pal;
+				// }
+
+			} else {
 				inicio = pal;
 			}
 		}
-		
-		
+
 		Iterator<Entry<Palabra, Integer>> it = lstCols.entrySet().iterator();
 		int col = 0;
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Entry<Palabra, Integer> pair = it.next();
-			Integer value = (Integer)pair.getValue();
-			if( value > 2 ) {
+			Integer value = (Integer) pair.getValue();
+			if (value > 2) {
 				col++;
 			}
 		}
-	
+
 		return col;
 	}
 
@@ -171,34 +160,33 @@ public class Documento {
 	 */
 	public void formarResultante(String pathFile, String fileName) throws IOException {
 
-		//calcular las columnas
+		// calcular las columnas
 		double factor = 0;
 		int col = this.calcularCols();
-		
-		if(this.swHorizontal) {
+
+		if (this.swHorizontal) {
 			this.anchoRenglon = 6;
-			if(col >= 4) {
+			if (col > 4) {
 				factor = 1.5;
-			}else {
+			} else {
 				factor = 3;
 			}
-		}else {
+		} else {
 			this.anchoRenglon = 14;
-			if(col > 4) {
+			if (col >= 4) {
 				col = 4;
 				factor = 2;
-			} else if(col == 1) {
+			} else if (col == 1) {
 				col = 2;
 				factor = 4;
-			}
-			else {
-				factor = 4.2;
-				
+			} else {
+				factor = 2.5;
+
 			}
 		}
-		
-		this.anchoCol = col * factor;		
-		
+
+		this.anchoCol = col * factor;
+
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
 
@@ -238,25 +226,27 @@ public class Documento {
 			palabrasInRenglon.add(pal);
 
 		}
-		
-		//agregar el ultimo renglon
+
+		// agregar el ultimo renglon
 		// ordenar dentro de cada renglon por la coordenada X
 		Collections.sort(palabrasInRenglon, Palabra.PalabraComparatorX);
 
 		// se agregó el renglon identificado
 		lstRenglones.add(palabrasInRenglon);
 
-		// String pathfile = "c:/Temp/";
+		// String pathfile = "c:/Temp/";		
 
-		PrintStream out = new PrintStream(pathFile + File.separator + fileName, "UTF-8");
-
-		StringBuffer cadena = new StringBuffer();
-
+		String archivo = new String();
+		StringBuilder cadena;
+		
 		// recorrer los renglones
 		for (List<Palabra> pals : lstRenglones) {
+			
+			cadena = new StringBuilder();
+			// String cadena = new String();
 
 			double anchoCol = this.anchoCol;
-			
+
 			int colActual = 0;
 
 			for (Palabra pp : pals) {
@@ -275,31 +265,36 @@ public class Documento {
 
 				for (int k = 0; k < colEspacio - 2; k++) {
 					cadena.append(" ");
+					// cadena = cadena.concat(" ");
 					colActual++;
 				}
 
 				// se agrega el valor de la palabra
 				cadena.append(pp.getValor());
+				// cadena = cadena.concat(pp.getValor());
 
 				colActual = colActual + cantLetras;
 
 				if (pp.getValor().length() > 1
 						&& Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
 					cadena.append(" ");
+					// cadena = cadena.concat(" ");
 					colActual++;
 				}
 
-			}
+			} // fin del renglon
 
 			colActual = 0;
-			
-			out.println(cadena.toString() + "\r\n");			
-			cadena.delete(0, cadena.length());
-			
+
+			archivo = archivo.concat(cadena.toString() + "\r\n\n");
+			// out.println(cadena.toString() + "\r\n");
+			// cadena.delete(0, cadena.length());
 
 		}
 
 		//
+		PrintStream out = new PrintStream(pathFile + File.separator + fileName, "UTF-8");
+		out.print(archivo);
 		out.flush();
 		out.close();
 	}
