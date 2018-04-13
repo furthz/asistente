@@ -1,13 +1,65 @@
 package pe.soapros.asistente.domain;
 
-public class TipoDocumento {
+import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tipoarchivos")
+public class TipoDocumento implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipos_generator")
+	@SequenceGenerator(name = "tipos_generator", sequenceName = "tipo_seq", allocationSize = 1)
+	@Column(name = "id", updatable = false, nullable = false)
+	private long id;
+
+	@ManyToOne(fetch = FetchType.LAZY) //(optional = false, fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @JoinColumn(name = "idarchivo")
+	private UploadFile archivo;
+	
 	private String empresa;
-	private String id;
+	private String idEmpresa;
 	private String tipoDoc;
 	private String fecha;
 	private String unidad;
 	private String objectId;
+	private String filename;
+	private String objectIdTxt;
+	private String filenameTxt;
+
+	private Date fechacreacion;
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	
+
+	public UploadFile getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(UploadFile archivo) {
+		this.archivo = archivo;
+	}
 
 	public String getEmpresa() {
 		return empresa;
@@ -17,12 +69,12 @@ public class TipoDocumento {
 		this.empresa = empresa;
 	}
 
-	public String getId() {
-		return id;
+	public String getIdEmpresa() {
+		return idEmpresa;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setIdEmpresa(String id) {
+		this.idEmpresa = id;
 	}
 
 	public String getTipoDoc() {
@@ -57,10 +109,44 @@ public class TipoDocumento {
 		this.objectId = objectId;
 	}
 
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public String getObjectIdTxt() {
+		return objectIdTxt;
+	}
+
+	public void setObjectIdTxt(String objectIdTxt) {
+		this.objectIdTxt = objectIdTxt;
+	}
+
+	public String getFilenameTxt() {
+		return filenameTxt;
+	}
+
+	public void setFilenameTxt(String filenameTxt) {
+		this.filenameTxt = filenameTxt;
+	}
+
+	
+	public Date getFechacreacion() {
+		return fechacreacion;
+	}
+
+	public void setFechacreacion(Date fechacreacion) {
+		this.fechacreacion = fechacreacion;
+	}
+
 	@Override
 	public String toString() {
-		return "TipoDocumento [empresa=" + empresa + ", id=" + id + ", tipoDoc=" + tipoDoc + ", fecha=" + fecha
-				+ ", unidad=" + unidad + "]";
+		return "TipoDocumento [empresa=" + empresa + ", id=" + idEmpresa + ", tipoDoc=" + tipoDoc + ", fecha=" + fecha
+				+ ", unidad=" + unidad + ", objectId=" + objectId + ", filename=" + filename + ", objectIdTxt="
+				+ objectIdTxt + ", filenameTxt=" + filenameTxt + "]";
 	}
 
 }

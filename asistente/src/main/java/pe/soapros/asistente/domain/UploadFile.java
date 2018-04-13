@@ -1,14 +1,20 @@
 package pe.soapros.asistente.domain;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -18,16 +24,21 @@ public class UploadFile {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "file_generator")
-	@SequenceGenerator(name = "file_generator", sequenceName = "file_seq", allocationSize = 5)
+	@SequenceGenerator(name = "file_generator", sequenceName = "file_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
 	private String fileName;
 	private byte[] datos;
-	
-	@ManyToOne(optional = false)
-    @JoinColumn(name = "idempresa")
+
+	@ManyToOne(fetch = FetchType.LAZY) // (optional = false, fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+	@JoinColumn(name = "idempresa")
 	private Empresa empresa;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "archivo", cascade = CascadeType.ALL)
+	private Set<TipoDocumento> tipos = new HashSet<>();
+
+	private Date fecha;
 
 	public long getId() {
 		return id;
@@ -37,7 +48,7 @@ public class UploadFile {
 		this.id = id;
 	}
 
-	@Column(name = "file_name")
+	@Column(name = "filename")
 	public String getFileName() {
 		return fileName;
 	}
@@ -55,7 +66,10 @@ public class UploadFile {
 		this.datos = data;
 	}
 
-	
+	public void addTipos(TipoDocumento tipo) {
+		this.tipos.add(tipo);
+	}
+
 	public Empresa getEmpresa() {
 		return empresa;
 	}
@@ -64,13 +78,21 @@ public class UploadFile {
 		this.empresa = empresa;
 	}
 
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
 	@Override
 	public int hashCode() {
-		 final int prime = 31;
-	        int result = 1;
-	        result = prime * result + ((id == null) ? 0 : id.hashCode());
-	        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-	        return result;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+		return result;
 	}
 
 	@Override

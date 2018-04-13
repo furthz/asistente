@@ -34,7 +34,7 @@ public class TipoDocumentoNLU {
 		 
 		String texto = Util.leerArchivoTXT(archivo);
 		
-		System.out.println(texto);
+//		System.out.println(texto);
 		
 		EntitiesOptions entities= new EntitiesOptions.Builder()
 				  .model("10:ef6e94f2-cfbf-4482-bc40-677e9e61680b")				  
@@ -60,8 +60,14 @@ public class TipoDocumentoNLU {
 	
 	public static void main(String[] args) throws IOException {
 		TipoDocumentoNLU dctoNLU = new TipoDocumentoNLU();
-		TipoDocumento valor = dctoNLU.consultarTipoDcto("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Entrenamiento\\Plan Cuentas\\Fase2\\convert-contr63163304.0.txt");
+		TipoDocumento valor = dctoNLU.consultarTipoDcto("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Node\\convert-contr63062692.0.txt");
 		System.out.println(valor.toString());
+//		String cadena = "DICIEMBRE        31   DE   2014";
+//		String[] valores = cadena.split("\\W+");
+//		
+//		for(String val: valores) {
+//			System.out.println(val);
+//		}
 	}
 	
 }

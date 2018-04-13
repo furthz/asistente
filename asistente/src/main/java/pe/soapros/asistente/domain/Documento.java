@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
 /**
  * Clase para trabajar las entidades extraídas del OCR
  * 
@@ -21,8 +18,6 @@ import org.springframework.context.annotation.PropertySource;
  *
  */
 
-@Configuration
-@PropertySource("classpath:propiedades.properties")
 public class Documento {
 
 	private List<Palabra> palabras;

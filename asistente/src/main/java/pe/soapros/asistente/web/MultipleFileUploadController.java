@@ -25,11 +25,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import pe.soapros.asistente.domain.Empresa;
+import pe.soapros.asistente.domain.TipoDocumento;
 import pe.soapros.asistente.domain.UploadFile;
 import pe.soapros.asistente.form.MultipleFileUploadForm;
 import pe.soapros.asistente.funcionality.ConvertImageToText;
 import pe.soapros.asistente.service.EmpresaManager;
 import pe.soapros.asistente.service.FileUploadManager;
+import pe.soapros.asistente.service.TipoDocumentoManager;
 
 @Controller
 public class MultipleFileUploadController {
@@ -43,6 +45,9 @@ public class MultipleFileUploadController {
 
 	@Autowired
 	private EmpresaManager empresaManager;
+	
+	@Autowired
+	private TipoDocumentoManager tipoDocumentoManager;
 
 	public void setFileUploadManager(FileUploadManager fileUploadManager) {
 		this.fileUploadManager = fileUploadManager;
@@ -60,17 +65,19 @@ public class MultipleFileUploadController {
 
 		List<MultipartFile> files = multipleFileUploadForm.getFiles();
 
-		long id = multipleFileUploadForm.getEmpresa();
-
-		System.out.println("Id Empresa: " + id);
-
-		Empresa emp = this.empresaManager.buscarById(id);
+		// long id = multipleFileUploadForm.getEmpresa();
+		//
+		// System.out.println("Id Empresa: " + id);
+		//
+		// Empresa emp = this.empresaManager.buscarById(id);
 
 		logger.info(" Files count " + files.size());
 
 		Path basePath = Paths.get(this.pathfile);
 		Path path = Files.createTempDirectory(basePath, "upload");
 
+		Date fecha = new Date();
+		
 		try {
 
 			UploadFile archivo;
@@ -79,19 +86,50 @@ public class MultipleFileUploadController {
 				archivo = new UploadFile();
 				archivo.setFileName(files.get(i).getOriginalFilename());
 				archivo.setDatos(files.get(i).getBytes());
-				archivo.setEmpresa(emp);
-
+				archivo.setFecha(fecha);
+				
 				ConvertImageToText convertImage = new ConvertImageToText();
 
+				logger.debug("Se llama la conversion de texto");
 				// metodo que desempaqueta, limpia y convierte en texto
-				convertImage.detectDocumentText(files.get(i), path.toString());
-
-				// llamar para guardar en el ECM los conteidos
-
+				List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files.get(i), path.toString());
+				logger.debug("Terminó la conversion de texto");
+				
+				// obtener los datos de la empresa, usnado el primer elemento de la lista
+				TipoDocumento tipo = lstDctos.get(0);
+				
+				logger.debug("Se crea la empresa");
+				Empresa empresa = new Empresa();
+				empresa.setIdDoc(tipo.getIdEmpresa());
+				empresa.setNombre(tipo.getEmpresa());
+				empresa.setFecha(fecha);
+				
+				logger.debug("se crea el registro del archivo");
+				
+				archivo.setEmpresa(empresa);
+				
+				empresa.addFile(archivo);				
+				
+				
+				
 				// guardar en la base de datos
 				// files.get(i).transferTo(new File(filePath +
 				// files.get(i).getOriginalFilename()));
-				this.fileUploadManager.saveArchivo(archivo);
+				//this.fileUploadManager.saveArchivo(archivo);
+				
+				for(TipoDocumento tipdoc: lstDctos) {
+					tipdoc.setArchivo(archivo);
+					//this.tipoDocumentoManager.crearTipoDocumento(tipdoc);
+					tipdoc.setArchivo(archivo);
+					tipdoc.setFechacreacion(fecha);
+					archivo.addTipos(tipdoc);
+					
+				}
+				
+				this.empresaManager.crearEmpresa(empresa);
+				logger.debug("Se guardó en la base de datoss");
+				
+				
 			}
 		} catch (Exception e) {
 			return "Error While uploading your files " + e.getMessage();
@@ -106,14 +144,15 @@ public class MultipleFileUploadController {
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String now = (new Date()).toString();
-		logger.info("Returning hello view with " + now);
+		// String now = (new Date()).toString();
+		// logger.info("Returning hello view with " + now);
+		//
+		// Map<String, Object> myModel = new HashMap<String, Object>();
+		// myModel.put("now", now);
+		// myModel.put("empresas", this.empresaManager.getEmpresas());
 
-		Map<String, Object> myModel = new HashMap<String, Object>();
-		myModel.put("now", now);
-		myModel.put("empresas", this.empresaManager.getEmpresas());
-
-		return new ModelAndView("MultipleFileUpload", "model", myModel);
+		// return new ModelAndView("MultipleFileUpload", "model", myModel);
+		return new ModelAndView("MultipleFileUpload");
 	}
 
 	/*
