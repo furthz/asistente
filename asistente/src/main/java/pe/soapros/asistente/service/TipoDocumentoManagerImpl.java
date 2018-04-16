@@ -17,8 +17,8 @@ public class TipoDocumentoManagerImpl implements TipoDocumentoManager{
 	private TipoDocumentoDao tipoDocumentoDao;
 	
 	@Override
-	public List<TipoDocumento> getEmpresas() {
-		List<TipoDocumento> lst = this.tipoDocumentoDao.getEmpresaList();
+	public List<TipoDocumento> getTiposDocumentos() {
+		List<TipoDocumento> lst = this.tipoDocumentoDao.getTiposDocumentos();
 		return lst;
 	}
 
@@ -26,6 +26,12 @@ public class TipoDocumentoManagerImpl implements TipoDocumentoManager{
 	public void crearTipoDocumento(TipoDocumento tipo) {
 		this.tipoDocumentoDao.saveTipoDocumento(tipo);
 		
+	}
+
+	@Override
+	public List<TipoDocumento> getTiposDocumentosById(Long id) {
+
+		return this.tipoDocumentoDao.getTiposDocumentosById(id);
 	}
 
 }

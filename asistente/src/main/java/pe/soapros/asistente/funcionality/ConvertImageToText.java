@@ -52,7 +52,7 @@ public class ConvertImageToText {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		detectDocumentText("D:\\archivos1\\contr65354677");
+		detectDocumentText("D:\\archivos1\\contr72037174");
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
@@ -160,7 +160,7 @@ public class ConvertImageToText {
 				String nombre = f.getName();
 				nombre = nombre.substring(0, nombre.length() - 3);
 
-				dcto.formarResultante(pathFile, nombre + "txt");
+				dcto.formarResultante(pathFile, nombre + "txt", true);
 
 			}
 
@@ -300,7 +300,7 @@ public class ConvertImageToText {
 				dcto.setSwHorizontal(true);
 			}
 
-			dcto.formarResultante(pathFile, nombre + "txt");
+			dcto.formarResultante(pathFile, nombre + "txt", false);
 			logger.debug("Se formo el archivo txt: " + pathFile + nombre + "txt");
 
 			lstArchivosTXT.add(pathFile + File.separator + nombre + "txt");

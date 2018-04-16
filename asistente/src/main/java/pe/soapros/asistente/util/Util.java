@@ -11,21 +11,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import pe.soapros.asistente.domain.PlanCuenta;
 import pe.soapros.asistente.domain.TipoDocumento;
 
 public class Util {
 
 	protected final static Log logger = LogFactory.getLog(Util.class);
 
+	public static void leerPlanCuentas(String json, PlanCuenta plan) {
+
+		JSONObject obj = new JSONObject(json);
+		logger.debug("JSON: " + json);
+		
+		JSONArray entidades = obj.getJSONArray("entities");
+		logger.debug("Entidades: " + entidades);
+		
+		String etiqueta = "";
+		String valor = "";
+
+		for (int i = 0; i < entidades.length(); i++) {
+
+			etiqueta = entidades.getJSONObject(i).getString("type");
+			valor = entidades.getJSONObject(i).getString("text");
+
+			String[] valEtiqueta = valor.split("\\W+");
+
+			valor = "";
+			for (String ss : valEtiqueta) {
+				valor += ss;
+			}
+
+			Long lvalor = Long.valueOf(valor);
+
+			plan.addCuenta(etiqueta, lvalor);
+
+		}
+
+	}
+
 	public static String leerEtiquetaJSON(String json, String etiqueta) {
 		String rpta = "";
-		
+
 		JSONObject obj = new JSONObject(json);
 		JSONArray entidades = obj.getJSONArray("entities");
 		List<String> valores = new ArrayList<String>();
@@ -33,45 +64,43 @@ public class Util {
 		for (int i = 0; i < entidades.length(); i++) {
 			if (entidades.getJSONObject(i).getString("type").equals(etiqueta)) {
 				valores.add(entidades.getJSONObject(i).getString("text"));
-				
+
 			}
 		}
 
 		boolean swLetras = false;
-		
+
 		List<String> valoresMod = new ArrayList<String>();
-		//iterar en cada una de las mismas etiquetas
-		for(String val:valores) {
+		// iterar en cada una de las mismas etiquetas
+		for (String val : valores) {
 			String[] valEtiqueta = val.split("\\W+");
 			String valReconocido = "";
-			for(String valRec: valEtiqueta) {
-				
+			for (String valRec : valEtiqueta) {
 
-				if(valRec.length() > 1 && Character.isLetter(valRec.charAt(valRec.length()-1))) {
+				if (valRec.length() > 1 && Character.isLetter(valRec.charAt(valRec.length() - 1))) {
 					valReconocido += " ";
-										
+
 					swLetras = true;
-				}else {
-					if(swLetras && NumberUtils.isNumber(valRec)) {
+				} else {
+					if (swLetras && NumberUtils.isNumber(valRec)) {
 						valReconocido += " ";
 						swLetras = false;
-					}else if(!swLetras && !NumberUtils.isNumber(valRec)) {
+					} else if (!swLetras && !NumberUtils.isNumber(valRec)) {
 						valReconocido += " ";
 						swLetras = true;
 					}
 				}
-					
+
 				valReconocido += valRec;
-					
+
 			}
 			valoresMod.add(valReconocido);
 		}
-		
-		
-		for(String pal: valoresMod) {
+
+		for (String pal : valoresMod) {
 			rpta += pal;
 		}
-		
+
 		return rpta.trim();
 	}
 
@@ -101,12 +130,12 @@ public class Util {
 
 		// se agrega la empresa
 		String empresa = Util.leerEtiquetaJSON(json, "empresa");
-//		String[] palEmpresa = empresa.split("\\W+");
-		
-//		empresa = "";
-//		for(String pal: palEmpresa) {
-//			empresa = empresa + pal + " ";
-//		}
+		// String[] palEmpresa = empresa.split("\\W+");
+
+		// empresa = "";
+		// for(String pal: palEmpresa) {
+		// empresa = empresa + pal + " ";
+		// }
 		logger.debug("empresa: " + empresa);
 
 		tipoDcto.setEmpresa(empresa);

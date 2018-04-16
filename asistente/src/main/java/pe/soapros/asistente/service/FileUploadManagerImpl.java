@@ -1,5 +1,7 @@
 package pe.soapros.asistente.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,5 +23,18 @@ public class FileUploadManagerImpl implements FileUploadManager{
 	public void saveArchivo(UploadFile file) {
 		this.fileUploadDao.save(file);
 	}
+
+	@Override
+	public List<UploadFile> getFiles() {
+		return this.fileUploadDao.getFiles();
+	}
+
+	@Override
+	public List<UploadFile> getFilesWithSoons() {
+
+		return this.fileUploadDao.getFileWithSoons();
+	}
+
+
 
 }

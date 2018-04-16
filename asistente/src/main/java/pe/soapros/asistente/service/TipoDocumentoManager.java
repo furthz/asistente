@@ -8,7 +8,10 @@ import pe.soapros.asistente.domain.TipoDocumento;
 
 public interface TipoDocumentoManager extends Serializable{
 
-	public List<TipoDocumento> getEmpresas();
+	public List<TipoDocumento> getTiposDocumentos();
 	
 	public void crearTipoDocumento(TipoDocumento tipo);
+	
+	public List<TipoDocumento> getTiposDocumentosById(Long id);
+	
 }

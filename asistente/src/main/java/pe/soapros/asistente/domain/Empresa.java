@@ -84,6 +84,15 @@ public class Empresa implements Serializable {
 		this.fecha = fecha;
 	}
 
+	
+	public Set<UploadFile> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Set<UploadFile> files) {
+		this.files = files;
+	}
+
 	@Override
 	public String toString() {
 		return "Empresa [id=" + id + ", nombre=" + nombre + ", idDoc=" + idDoc + "]";

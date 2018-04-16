@@ -6,7 +6,9 @@ import pe.soapros.asistente.domain.TipoDocumento;
 
 public interface TipoDocumentoDao {
 
-	public List<TipoDocumento> getEmpresaList();
+	public List<TipoDocumento> getTiposDocumentos();
+	
+	public List<TipoDocumento> getTiposDocumentosById(Long id);
 	
 	public void saveTipoDocumento(TipoDocumento tipo);
 	

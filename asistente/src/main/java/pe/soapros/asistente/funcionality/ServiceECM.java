@@ -50,8 +50,8 @@ public class ServiceECM {
 	 * @return
 	 */
 	public String downloadFileById(String documentID, String fileName, String destinationFolder) {		
-
-		String fullPath = destinationFolder + fileName;
+		
+		String fullPath = destinationFolder + File.separator + fileName;
 		logger.debug("Ruta destino: " + fullPath);
 		
 		try {					
@@ -64,8 +64,9 @@ public class ServiceECM {
 			BufferedInputStream in = new BufferedInputStream(cs.getStream());
 			logger.debug("archivo bytes a escribir: " + in.available());
 			
+			
 			FileOutputStream fos = new FileOutputStream(fullPath);
-			logger.debug("archivo destino: " + fos.toString());
+			logger.debug("archivo destino: " + fullPath);
 			
 			OutputStream bufferedOutputStream = new BufferedOutputStream(fos);
 			
@@ -187,7 +188,9 @@ public class ServiceECM {
 		
 		logger.debug("Id del dcto: " + newContent1.getId());
 		
-		return newContent1.getId();
+		String idx = newContent1.getId();
+		idx = idx.substring(0,idx.indexOf(";"));
+		return idx; //newContent1.getId();
 	}
 
 	private Folder createFolderIfNotExists(Session cmisSession, Folder parentFolder, String folderName) {

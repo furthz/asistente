@@ -52,7 +52,7 @@ public class TipoDocumentoNLU {
 		AnalysisResults response = service
 				  .analyze(parameters)
 				  .execute();
-				System.out.println(response);
+				//System.out.println(response);
 		
 		return Util.getTipoDcto(response.toString());
 		

@@ -153,7 +153,7 @@ public class Documento {
 	 *            Nombre del archivo
 	 * @throws IOException
 	 */
-	public void formarResultante(String pathFile, String fileName) throws IOException {
+	public void formarResultante(String pathFile, String fileName, boolean swPrueba) throws IOException {
 
 		// calcular las columnas
 		double factor = 0;
@@ -281,7 +281,10 @@ public class Documento {
 
 			colActual = 0;
 
-			archivo = archivo.concat(cadena.toString() + "\r\n\n");
+			archivo = archivo.concat(cadena.toString() + "\r\n");
+			if(swPrueba) {
+				archivo = archivo.concat("\n");
+			}
 			// out.println(cadena.toString() + "\r\n");
 			// cadena.delete(0, cadena.length());
 

@@ -135,7 +135,8 @@ public class MultipleFileUploadController {
 			return "Error While uploading your files " + e.getMessage();
 		}
 
-		model.addAttribute("files", files);
+		//List<Empresa> lstEmpresas = this.empresaManager.getEmpresas();
+		//model.addAttribute("empresas", lstEmpresas);
 		return "result";
 
 	}
