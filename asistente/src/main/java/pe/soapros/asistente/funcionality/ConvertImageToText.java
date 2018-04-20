@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.imageio.ImageIO;
 
@@ -31,11 +32,12 @@ import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.cloud.vision.v1.Word;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
+import pe.soapros.asistente.domain.Propiedades;
 import pe.soapros.asistente.domain.TipoDocumento;
-import pe.soapros.asistente.util.BatRunner;
 import pe.soapros.asistente.util.Desempaquetar;
 import pe.soapros.asistente.util.Util;
 
@@ -49,10 +51,12 @@ import pe.soapros.asistente.util.Util;
 public class ConvertImageToText {
 
 	protected final Log logger = LogFactory.getLog(getClass());
+	
+	private Propiedades propiedades;
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		detectDocumentText("D:\\archivos1\\contr72037174");
+		detectDocumentText("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2");
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
@@ -61,8 +65,6 @@ public class ConvertImageToText {
 
 		String filePathMod = "";
 
-		// filePathMod = "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
-		// Financiero\\EEFF\\scripts\\convert-contr92672159.0.png";
 
 		for (Path p : archivos) {
 
@@ -81,7 +83,8 @@ public class ConvertImageToText {
 			Documento dcto = new Documento();
 
 			List<Palabra> bloques = new ArrayList<Palabra>();
-			try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+			try {
+				ImageAnnotatorClient client = ImageAnnotatorClient.create();
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
 				List<AnnotateImageResponse> responses = response.getResponsesList();
 				client.close();
@@ -160,8 +163,11 @@ public class ConvertImageToText {
 				String nombre = f.getName();
 				nombre = nombre.substring(0, nombre.length() - 3);
 
-				dcto.formarResultante(pathFile, nombre + "txt", true);
+				
+				dcto.formarResultante(input.getParent(), nombre + "txt", true);
 
+			}catch (Exception e) {
+			    e.printStackTrace();
 			}
 
 		}
@@ -188,13 +194,19 @@ public class ConvertImageToText {
 		logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
 				+ file.getOriginalFilename());
 
+		Desempaquetar desem = new Desempaquetar();
 		// lista de archivos desempaquetados
-		List<String> lstArchivos = Desempaquetar.doit(pathFile, file.getOriginalFilename());
+		List<String> lstArchivos = desem.doit(pathFile, file.getOriginalFilename());
 		logger.debug("Archivos desempaquetados");
+		logger.debug("Cant archivos: " + lstArchivos.size());
 
 		String filePathMod = "";
 		// lista de archivo de texto obtenidos
 		List<String> lstArchivosTXT = new ArrayList<String>();
+		
+		BatRunner batRunner = new BatRunner();
+		
+		batRunner.setPropiedades(this.propiedades);
 
 		logger.debug("Recorrer los archivos desempaquetados");
 		for (String filePath : lstArchivos) {
@@ -203,7 +215,7 @@ public class ConvertImageToText {
 			filePathMod = filePath.substring(0, filePath.length() - 3) + "png";
 			logger.debug("Archivo a modificar: " + filePathMod);
 
-			BatRunner.runProcess(filePath, filePathMod);
+			batRunner.runProcess(filePath, filePathMod);
 			logger.debug("Ejecutar el archivo Python");
 
 			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
@@ -219,9 +231,11 @@ public class ConvertImageToText {
 
 			// String contenido = new String();
 			Documento dcto = new Documento();
+			dcto.setPropiedades(this.propiedades);
 
 			List<Palabra> bloques = new ArrayList<Palabra>();
-			try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+			try {
+				ImageAnnotatorClient client = ImageAnnotatorClient.create();
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
 				List<AnnotateImageResponse> responses = response.getResponsesList();
 				client.close();
@@ -283,6 +297,8 @@ public class ConvertImageToText {
 					}
 
 				}
+			}catch (Exception e) {
+			    logger.error(e);
 			}
 
 			logger.debug("Se obtuvo la información liquida");
@@ -310,7 +326,12 @@ public class ConvertImageToText {
 		// tipos
 
 		TipoDocumentoNLU tipoNLU = new TipoDocumentoNLU();
+		tipoNLU.setPropiedades(this.propiedades);
+		logger.debug("Se creó TipoNLU: " + tipoNLU.toString());
+		
 		ServiceECM serviceECM = new ServiceECM();
+		serviceECM.setPropiedades(this.propiedades);
+		logger.debug("Se creo ServiceECM: " + serviceECM.toString());
 
 		List<TipoDocumento> lstTipos = new ArrayList<TipoDocumento>();
 		String empresa = "";
@@ -372,35 +393,48 @@ public class ConvertImageToText {
 
 	}
 
-	public static void convert(byte[] imagen) throws Exception {
-
-		try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-
-			ByteString imgBytes = ByteString.copyFrom(imagen);
-
-			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-
-			Image img = Image.newBuilder().setContent(imgBytes).build();
-
-			Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
-			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-			requests.add(request);
-
-			BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
-			List<AnnotateImageResponse> responses = response.getResponsesList();
-
-			for (AnnotateImageResponse res : responses) {
-				if (res.hasError()) {
-					System.out.printf("Error: %s\n", res.getError().getMessage());
-					return;
-				}
-
-				for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-					annotation.getAllFields().forEach((k, v) -> System.out.printf("%s : %s\n", k, v.toString()));
-				}
-
-			}
-
-		}
+	
+	public Propiedades getPropiedades() {
+		return propiedades;
 	}
+
+	public void setPropiedades(Propiedades propiedades) {
+		this.propiedades = propiedades;
+	}
+
+//	public static void convert(byte[] imagen) throws Exception {
+//
+//		try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
+//
+//			ByteString imgBytes = ByteString.copyFrom(imagen);
+//
+//			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
+//
+//			Image img = Image.newBuilder().setContent(imgBytes).build();
+//
+//			Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
+//			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+//			requests.add(request);
+//
+//			BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
+//			List<AnnotateImageResponse> responses = response.getResponsesList();
+//
+//			for (AnnotateImageResponse res : responses) {
+//				if (res.hasError()) {
+//					System.out.printf("Error: %s\n", res.getError().getMessage());
+//					return;
+//				}
+//
+//				for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
+//					annotation.getAllFields().forEach(new BiConsumer<FieldDescriptor, Object>() {
+//						public void accept(FieldDescriptor k, Object v) {
+//							System.out.printf("%s : %s\n", k, v.toString());
+//						}
+//					});
+//				}
+//
+//			}
+//
+//		}
+//	}
 }

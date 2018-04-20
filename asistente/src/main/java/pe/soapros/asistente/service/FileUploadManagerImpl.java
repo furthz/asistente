@@ -24,12 +24,10 @@ public class FileUploadManagerImpl implements FileUploadManager{
 		this.fileUploadDao.save(file);
 	}
 
-	@Override
 	public List<UploadFile> getFiles() {
 		return this.fileUploadDao.getFiles();
 	}
 
-	@Override
 	public List<UploadFile> getFilesWithSoons() {
 
 		return this.fileUploadDao.getFileWithSoons();

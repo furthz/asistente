@@ -9,7 +9,6 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pe.soapros.asistente.domain.Empresa;
 import pe.soapros.asistente.domain.TipoDocumento;
 
 @Repository(value = "tipoDocumentoDao")
@@ -38,7 +37,6 @@ public class JPATipoDocumentoDao implements TipoDocumentoDao {
 
 	}
 
-	@Override
 	public List<TipoDocumento> getTiposDocumentosById(Long id) {
 
 		System.out.println("JPA Empresa: " + id);

@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
@@ -20,6 +21,8 @@ import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.SeekableStream;
 import com.sun.media.jai.codec.TIFFEncodeParam;
+
+import pe.soapros.asistente.funcionality.BatRunner;
 
 /***
  * Clase para desempaquetar las imagenes contenidas dentro de un TIF
@@ -39,7 +42,7 @@ public class Desempaquetar {
 	 * @return Lista con la ruta de cada archivo convertido
 	 * @throws IOException
 	 */
-	public static List<String> doit(String path, String filename) throws IOException {
+	public List<String> doit(String path, String filename) throws IOException {
 
 		FileSeekableStream ss = new FileSeekableStream(path + File.separator + filename);
 
@@ -61,7 +64,7 @@ public class Desempaquetar {
 			pb.add("tiff");
 			pb.add(param);
 			RenderedOp r = JAI.create("filestore", pb);
-			//r.dispose();
+			// r.dispose();
 
 			lstArchivos.add(archivo);
 
@@ -73,12 +76,12 @@ public class Desempaquetar {
 	public static List<String> extractMultiPageTiff(String path, String filename) throws IOException {
 
 		List<String> lstArchivos = new ArrayList<String>();
-		
+
 		/*
 		 * create object of RenderedIamge to produce image data in form of Rasters
 		 */
 		RenderedImage renderedImage[], page;
-		//File file = new File(tiffFilePath);
+		// File file = new File(tiffFilePath);
 		File file = new File(path + File.separator + filename);
 		/*
 		 * SeekabaleStream is use for taking input from file. FileSeekableStream is not
@@ -95,16 +98,16 @@ public class Desempaquetar {
 			count++;
 		}
 
-//		/* set output folder path */
-//		String outputFolderName;
-//		String[] temp = null;
-//		temp = tiffFilePath.split("\\.");
-//		outputFolderName = temp[0];
-//		/*
-//		 * create file object of output folder and make a directory
-//		 */
-//		File fileObjForOPFolder = new File(outputFolderName);
-//		fileObjForOPFolder.mkdirs();
+		// /* set output folder path */
+		// String outputFolderName;
+		// String[] temp = null;
+		// temp = tiffFilePath.split("\\.");
+		// outputFolderName = temp[0];
+		// /*
+		// * create file object of output folder and make a directory
+		// */
+		// File fileObjForOPFolder = new File(outputFolderName);
+		// fileObjForOPFolder.mkdirs();
 
 		/*
 		 * extract no. of image available inside the input tiff file
@@ -126,7 +129,7 @@ public class Desempaquetar {
 			parameterBlock.add("png");
 			/* create output image using JAI filestore */
 			RenderedOp renderedOp = JAI.create("filestore", parameterBlock);
-			//renderedOp.dispose();
+			// renderedOp.dispose();
 			lstArchivos.add(archivo);
 		}
 		return lstArchivos;
@@ -164,11 +167,13 @@ public class Desempaquetar {
 	}
 
 	private List<Path> listarFicheros(String path) throws IOException {
-		List<Path> archivos = new ArrayList<Path>();
-		Files.walk(Paths.get(path)).forEach(ruta -> {
-			if (Files.isRegularFile(ruta) && this.getFileExtension(new File(ruta.toString())).equals("tif")) {
-				// System.out.println(ruta);
-				archivos.add(ruta);
+		final List<Path> archivos = new ArrayList<Path>();
+		Files.walk(Paths.get(path)).forEach(new Consumer<Path>() {
+			public void accept(Path ruta) {
+				if (Files.isRegularFile(ruta) && Desempaquetar.this.getFileExtension(new File(ruta.toString())).equals("tif")) {
+					// System.out.println(ruta);
+					archivos.add(ruta);
+				}
 			}
 		});
 
@@ -186,6 +191,8 @@ public class Desempaquetar {
 	public void conversionMasiva(String path, String dest) throws IOException, CommandLineException {
 
 		List<Path> archivos = this.listarFicheros(path);
+		
+		BatRunner batRunner = new BatRunner();
 
 		String carpetaDest = "";
 		String nombreArchivo = "";
@@ -206,7 +213,7 @@ public class Desempaquetar {
 
 				filePathMod = filePath.substring(0, filePath.length() - 3) + "png";
 
-				BatRunner.runProcess(filePath, filePathMod);
+				batRunner.runProcess(filePath, filePathMod);
 
 				File ff = new File(filePath);
 				ff.delete();
@@ -220,9 +227,11 @@ public class Desempaquetar {
 	}
 
 	public static void main(String[] args) throws IOException, CommandLineException {
-		Desempaquetar desemp = new Desempaquetar();
-		desemp.conversionMasiva("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 5",
-				"D:\\archivos1");
+		 //Desempaquetar desemp = new Desempaquetar();
+		 //desemp.conversionMasiva( args[0], //"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\lista1\\Bajo",
+		 //args[1]);//"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino");
+	
+
 	}
 
 }

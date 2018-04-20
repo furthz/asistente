@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -27,26 +30,70 @@ public class Util {
 
 		JSONObject obj = new JSONObject(json);
 		logger.debug("JSON: " + json);
-		
+
 		JSONArray entidades = obj.getJSONArray("entities");
 		logger.debug("Entidades: " + entidades);
-		
+
+		boolean swNum = false;
 		String etiqueta = "";
 		String valor = "";
 
 		for (int i = 0; i < entidades.length(); i++) {
 
+			swNum = false;
+
 			etiqueta = entidades.getJSONObject(i).getString("type");
 			valor = entidades.getJSONObject(i).getString("text");
 
-			String[] valEtiqueta = valor.split("\\W+");
+			try {
+				Character pto = valor.charAt(valor.length() - 3);
+
+				if (pto.toString().equals(",") || pto.toString().equals(".")) {
+					swNum = true;
+				}
+			} catch (Exception e) {
+				swNum = false;
+				logger.error(e);
+			}
+			//
+			String all = "";
+			Pattern pat = Pattern.compile("\\d+(?:[.,]\\d+)?|Free");
+			Matcher m = pat.matcher(valor);
+
+			while (m.find()) {
+
+				// System.out.println(m.group(0));
+				// System.out.println(" - Coincidencia: " + m.group(0));
+				all += m.group(0);
+			}
+
+			// all = all.replace(pto.toString(), ".");
+
+			// valor = valor.replaceAll(" ", "");
+			// valor = valor.replaceAll(".", "");
+			// valor = valor.replaceAll(",", "");
+
+			String[] valEtiqueta = all.split("\\W+");
 
 			valor = "";
 			for (String ss : valEtiqueta) {
 				valor += ss;
 			}
 
-			Long lvalor = Long.valueOf(valor);
+			if (swNum) {
+				valor = valor.substring(0, valor.length() - 2) + "."
+						+ valor.substring(valor.length() - 2, valor.length());
+				logger.debug("valor: " + valor);
+			}
+
+			Double lvalor = 0.0;
+			try {
+				lvalor = Double.parseDouble(valor);
+				logger.debug("valor convertido: " + lvalor);
+			} catch (Exception e) {
+				logger.error(e);
+				// lvalor = (long)-1.00;
+			}
 
 			plan.addCuenta(etiqueta, lvalor);
 
@@ -176,12 +223,14 @@ public class Util {
 		return texto;
 	}
 
-	public static List<Path> listarFicheros(String path, String extension) throws IOException {
-		List<Path> archivos = new ArrayList<Path>();
-		Files.walk(Paths.get(path)).forEach(ruta -> {
-			if (Files.isRegularFile(ruta) && getFileExtension(new File(ruta.toString())).equals(extension)) {
-				// System.out.println(ruta);
-				archivos.add(ruta);
+	public static List<Path> listarFicheros(String path, final String extension) throws IOException {
+		final List<Path> archivos = new ArrayList<Path>();
+		Files.walk(Paths.get(path)).forEach(new Consumer<Path>() {
+			public void accept(Path ruta) {
+				if (Files.isRegularFile(ruta) && getFileExtension(new File(ruta.toString())).equals(extension)) {
+					// System.out.println(ruta);
+					archivos.add(ruta);
+				}
 			}
 		});
 

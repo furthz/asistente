@@ -2,13 +2,11 @@ package pe.soapros.asistente.funcionality;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -26,11 +24,12 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import pe.soapros.asistente.domain.Propiedades;
 
 /**
  * 
@@ -41,6 +40,17 @@ import org.apache.commons.logging.LogFactory;
 public class ServiceECM {
 
 	protected final Log logger = LogFactory.getLog(getClass());
+	
+	private Propiedades propiedades;
+
+	
+	public Propiedades getPropiedades() {
+		return propiedades;
+	}
+
+	public void setPropiedades(Propiedades propiedades) {
+		this.propiedades = propiedades;
+	}
 
 	/**
 	 * Return la ruta del archivo descargdo del ECM
@@ -107,23 +117,6 @@ public class ServiceECM {
 		logger.debug("inicio subir archivos al ECM");
 		
 
-		/*
-		 * Map<String, String> sessionParameters = new HashMap<String, String>();
-		 * 
-		 * sessionParameters.put(SessionParameter.USER, "admin");
-		 * sessionParameters.put(SessionParameter.PASSWORD, "S0apros321");
-		 * sessionParameters.put(SessionParameter.ATOMPUB_URL,
-		 * "http://192.168.1.216:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom"
-		 * ); sessionParameters.put(SessionParameter.BINDING_TYPE,
-		 * BindingType.ATOMPUB.value());
-		 * 
-		 * SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
-		 * 
-		 * Session lSession =
-		 * sessionFactory.getRepositories(sessionParameters).get(0).createSession();
-		 * 
-		 */
-
 		// obtener la session de conexión
 		Session lSession = this.getCmisSession();
 		logger.debug("Se inició la session");
@@ -146,20 +139,7 @@ public class ServiceECM {
 		Folder newFolder = this.createFolderIfNotExists(lSession, folderSitio, razonSocial);
 		logger.debug("Se creo la carpeta con el nombre de la emrpesa");
 
-		/*
-		 * Map<String, Object> folderProperties = new HashMap<String, Object>();
-		 * folderProperties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
-		 * folderProperties.put(PropertyIds.NAME, "testfolder");
-		 * 
-		 * Folder newFolder = f.createFolder(folderProperties);
-		 */
-
-		// Map<String, Object> lProperties = new HashMap<String, Object>();
-		// String name = "testdocument.txt";
-		 //lProperties.put(PropertyIds.OBJECT_TYPE_ID, "D:estado_financiero:estado_financiero");
-		// lProperties.put(PropertyIds.NAME, fileName);
-		// lProperties.put("estado_financiero:razon_social", "probando");
-		// byte[] content = "CMIS Testdata One".getBytes();
+		
 		File file = new File(path);
 		logger.debug("archivo: " + file.getPath());
 		
@@ -202,7 +182,7 @@ public class ServiceECM {
 		}
 
 		if (subFolder == null) {
-			Map<String, Object> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<String, Object>();
 			props.put("cmis:objectTypeId", "cmis:folder");
 			props.put("cmis:name", folderName);
 
@@ -233,10 +213,10 @@ public class ServiceECM {
 
 		Map<String, String> sessionParameters = new HashMap<String, String>();
 
-		sessionParameters.put(SessionParameter.USER, "admin");
-		sessionParameters.put(SessionParameter.PASSWORD, "S0apros321");
-		sessionParameters.put(SessionParameter.ATOMPUB_URL,
-				"http://148.102.51.17:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+		sessionParameters.put(SessionParameter.USER, this.propiedades.getEcmUser());//"admin");
+		sessionParameters.put(SessionParameter.PASSWORD, this.propiedades.getEcmPass());//"S0apros321");
+		sessionParameters.put(SessionParameter.ATOMPUB_URL,this.propiedades.getEcmUrl());
+				//"http://148.102.51.17:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
 		sessionParameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 
 		Session lSession = sessionFactory.getRepositories(sessionParameters).get(0).createSession();

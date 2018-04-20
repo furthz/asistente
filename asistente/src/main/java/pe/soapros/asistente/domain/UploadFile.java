@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "archivos")
@@ -36,8 +38,9 @@ public class UploadFile {
 	private Empresa empresa;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "archivo", cascade = CascadeType.ALL)
-	private Set<TipoDocumento> tipos = new HashSet<>();
+	private Set<TipoDocumento> tipos = new HashSet<TipoDocumento>();
 
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
 
 	public long getId() {

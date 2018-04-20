@@ -29,7 +29,7 @@ def enderezar(entrada, salida):
     # grado (pi/720) y quedándose sólo con las líneas que
     # alcancen puntuación de 1000 o más (que serán las
     # más largas)
-    lineas = cv2.HoughLines(binaria, 1, np.pi/720, 400)
+    lineas = cv2.HoughLines(binaria, 1, np.pi/720, 300)
 
     # Recopilemos qué ángulos ha encontrado la transformada
     # de hough para cada una de las líneas halladas

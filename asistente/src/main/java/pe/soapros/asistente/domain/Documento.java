@@ -10,6 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Clase para trabajar las entidades extraídas del OCR
  * 
@@ -29,6 +33,10 @@ public class Documento {
 	private double anchoCol = 4;
 
 	private boolean swHorizontal = false;
+	
+	private Propiedades propiedades;
+	
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
@@ -58,6 +66,14 @@ public class Documento {
 		// ordenar primero por la coordenada "y" de menor a mayor
 		Collections.sort(palabras);
 
+	}
+	
+	public Propiedades getPropiedades() {
+		return propiedades;
+	}
+
+	public void setPropiedades(Propiedades propiedades) {
+		this.propiedades = propiedades;
 	}
 
 	public double getPromedioLetra() {
@@ -95,24 +111,25 @@ public class Documento {
 
 	private int calcularCols() {
 
+		logger.debug("Calcular cols");
+		
 		HashMap<Palabra, Integer> lstCols = new HashMap<Palabra, Integer>();
 
 		Collections.sort(bloques, Palabra.PalabraComparatorX);
 
-		// Collections.sort(bloques, Palabra.PalabraComparatorY);
-
 		Palabra inicio = this.bloques.get(0);
+		logger.debug("inicio: " + inicio);
 
 		for (Palabra pal : this.bloques) {
+			logger.debug("pal: " + pal);
 			// se verificó el eje horizontal
-			if ((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 4
-					&& pal.getPuntos().get(0).getX() >= inicio.getPuntos().get(0).getX() - 4)
-					|| (pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 4
-							&& pal.getPuntos().get(1).getX() >= inicio.getPuntos().get(1).getX() - 4)) {
+			if ((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 5
+					&& pal.getPuntos().get(0).getX() >= inicio.getPuntos().get(0).getX() - 5)
+					|| (pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 5
+							&& pal.getPuntos().get(1).getX() >= inicio.getPuntos().get(1).getX() - 5)) {
 
-				// verificar si estamos dentro de los límites verticales
-				// if((pal.getPuntos().get(1).getY() >= inicio.getPuntos().get(1).getY()) &&
-				// (pal.getPuntos().get(2).getY() <= inicio.getPuntos().get(2).getY())) {
+				logger.debug("condicion bloque: " + pal);
+
 
 				if (lstCols.get(inicio) == null) {
 					lstCols.put(inicio, 1);
@@ -126,16 +143,19 @@ public class Documento {
 				// }
 
 			} else {
+				logger.debug("condicion inicio: " + pal);
 				inicio = pal;
 			}
 		}
 
+		logger.debug("columnas: " + lstCols);
+		
 		Iterator<Entry<Palabra, Integer>> it = lstCols.entrySet().iterator();
 		int col = 0;
 		while (it.hasNext()) {
 			Entry<Palabra, Integer> pair = it.next();
 			Integer value = (Integer) pair.getValue();
-			if (value > 2) {
+			if (value >= 2) {
 				col++;
 			}
 		}
@@ -155,9 +175,15 @@ public class Documento {
 	 */
 	public void formarResultante(String pathFile, String fileName, boolean swPrueba) throws IOException {
 
+		logger.debug("resultante");
+		
 		// calcular las columnas
 		double factor = 0;
 		int col = this.calcularCols();
+		
+		if(col==0)
+			col = 2;
+		logger.debug("columnas: " + col);
 
 		if (this.swHorizontal) {
 			this.anchoRenglon = 6;
@@ -167,19 +193,23 @@ public class Documento {
 				factor = 3;
 			}
 		} else {
-			this.anchoRenglon = 14;
-			if (col >= 4) {
+			this.anchoRenglon = Integer.valueOf(this.propiedades.getAnchoRenglon());
+			if(col >=8) {
+				col = 4;
+				factor = 2.5;
+			}
+			else if (col >= 4 && col < 8) {
 				col = 4;
 				factor = 2;
 			} else if (col == 1) {
 				col = 2;
 				factor = 4;
 			} else {
-				factor = 2.5;
+				factor = 6;
 
 			}
 		}
-
+				
 		this.anchoCol = col * factor;
 
 		// ordenar por la coordenada Y todas las palabras detectadas
@@ -233,9 +263,13 @@ public class Documento {
 
 		String archivo = new String();
 		StringBuilder cadena;
-		
+
+		logger.debug("Formar el TXT");
+		boolean swNum = false;
 		// recorrer los renglones
 		for (List<Palabra> pals : lstRenglones) {
+			logger.debug("Renglones: " + pals);
+			swNum = false;
 			
 			cadena = new StringBuilder();
 			// String cadena = new String();
@@ -245,27 +279,52 @@ public class Documento {
 			int colActual = 0;
 
 			for (Palabra pp : pals) {
+				logger.debug("Palabra: " + pp);
+				
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
 				// columna estar
 				int izqCol = pp.getPuntos().get(0).getX();
+				logger.debug("Col izq: " + izqCol);
 
 				// Identificación de las columnas
 				int colIzq = (int) Math.ceil(izqCol / anchoCol);
+				logger.debug("Cant col: " + colIzq);
 
 				// calcular cuantas columnas existen en blanco respecto a la última palabra
 				int colEspacio = colIzq - colActual;
+				logger.debug("Espacios: " + colEspacio);
 
 				// determinar la cantidad de palabras o columnas reales de la palabra
 				int cantLetras = pp.getValor().length();
+				logger.debug("Cant letras: " + cantLetras);
 
 				for (int k = 0; k < colEspacio - 2; k++) {
 					cadena.append(" ");
 					// cadena = cadena.concat(" ");
 					colActual++;
 				}
+				logger.debug("Se agregaron espacions blancos: " + (colEspacio - 2));
+				
+				
+				//si ha habido un numero antes, verificar que no siga una "," o un "." de no ser asi agregar un espacio en blanco
+				
+				if(swNum && pp.getValor().contains(",") && pp.getValor().length()==1) {					
+					logger.debug("Se continua escribiendo un numero");
+				}else if(swNum && pp.getValor().contains(".") && pp.getValor().length()==1) {
+					logger.debug("Se continua escribiendo un numero");
+				}else if(swNum && StringUtils.isNumeric(pp.getValor())){
+					logger.debug("Se continua escribiendo un numero");
+				}
+				else if (swNum && !StringUtils.isNumeric(pp.getValor()) && pp.getValor().length()>1) {
+					cadena.append(" ");
+					colActual++;
+					logger.debug("Se agregó un espacio en blanco");
+					swNum = false;
+				}
 
 				// se agrega el valor de la palabra
 				cadena.append(pp.getValor());
+				logger.debug("Se agrego: " + pp.getValor());
 				// cadena = cadena.concat(pp.getValor());
 
 				colActual = colActual + cantLetras;
@@ -273,9 +332,18 @@ public class Documento {
 				if (pp.getValor().length() > 1
 						&& Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
 					cadena.append(" ");
-					// cadena = cadena.concat(" ");
 					colActual++;
+					logger.debug("Se agregó un espacio en blanco");
+					//caso para letras unicas
+				}else if(pp.getValor().length() == 1 && Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
+					cadena.append(" ");
+					colActual++;
+					logger.debug("Se agregó un espacio en blanco");
+					//en el caso que sea solo un numero
+				}else if(StringUtils.isNumeric(pp.getValor())) {
+					swNum = true;
 				}
+				
 
 			} // fin del renglon
 

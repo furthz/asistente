@@ -1,7 +1,15 @@
 package pe.soapros.asistente.funcionality;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.google.common.io.Files;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.NaturalLanguageUnderstanding;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalysisResults;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalyzeOptions;
@@ -9,29 +17,52 @@ import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.En
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.Features;
 
 import pe.soapros.asistente.domain.PlanCuenta;
+import pe.soapros.asistente.domain.Propiedades;
 import pe.soapros.asistente.util.Util;
 
 public class PlanCuentaNLU {
 
 	private NaturalLanguageUnderstanding service;
 	
+	private Propiedades propiedades;
+	
+	protected final Log logger = LogFactory.getLog(getClass());
+	
 	public PlanCuentaNLU() {
-		service = new NaturalLanguageUnderstanding(
-				  "2018-03-16",
-				  "69f6c95d-797d-45b7-87a9-13bbf1eb49b0",
-				  "Wtq0dtw3cXLG"
-				);
+		
 	}
 	
 	
+	
+	public Propiedades getPropiedades() {
+		return propiedades;
+	}
+
+
+
+	public void setPropiedades(Propiedades propiedades) {
+		this.propiedades = propiedades;
+	}
+
+
+
 	public PlanCuenta consultarCuentas(String archivo) throws IOException {
+		
+		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
+		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
+		
+		service = new NaturalLanguageUnderstanding(
+				  "2018-03-16",
+				  propiedades.getPlanCuentasUserNLU(),//"d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
+				  propiedades.getPlanCuentasPassNLU()//"OEwEY17bgaaT"//"Wtq0dtw3cXLG"
+				);
 		
 		PlanCuenta plancuenta =  new PlanCuenta();
 		
 		//String texto = Util.leerArchivoTXT(archivo);
 		
 		EntitiesOptions entities= new EntitiesOptions.Builder()
-				  .model("10:91a8915d-9855-439e-b71b-61800fc6f1d5")				  
+				  .model(this.propiedades.getPlanCuentasModeloNLU()) //"10:8870c7a0-0c79-4923-9d83-61eead0c949f")				  
 				  .build();
 
 		Features features = new Features.Builder()
@@ -55,17 +86,45 @@ public class PlanCuentaNLU {
 	
 	
 	public static void main(String[] args) throws IOException {
-		PlanCuentaNLU planNLU = new PlanCuentaNLU();
-		PlanCuenta valor = planNLU.consultarCuentas("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Node\\convert-contr63062692.0.txt");
-		
-		
-		System.out.println(valor.toString());
-//		String cadena = "DICIEMBRE        31   DE   2014";
-//		String[] valores = cadena.split("\\W+");
+//		PlanCuentaNLU planNLU = new PlanCuentaNLU();
+//		PlanCuenta valor = planNLU.consultarCuentas("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Node\\convert-contr63062692.0.txt");
 //		
-//		for(String val: valores) {
-//			System.out.println(val);
-//		}
+//		
+//		System.out.println(valor.toString());
+		
+		String cadena = Util.leerArchivoTXT("C:\\Users\\Furth\\Desktop\\listado.txt");
+		String[] arch = cadena.split(".txt");
+		
+		List<Path> archivos = Util.listarFicheros("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 5", "tif");
+		
+		List<File> enc = new ArrayList<File>();
+		
+		for (String ar: arch) {
+			
+			for(Path p: archivos) {
+				File f = new File(p.toString());
+				
+				if(f.getName().equals(ar + ".tif")) {
+					enc.add(f);
+					break;
+				}
+			}
+			
+		}
+		
+		System.out.println(enc);
+		File tmp;
+		for(File f: enc) {
+			try {
+				tmp = new File("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\lista3\\" + f.getName());
+				Files.move(f, tmp);
+			}catch(Exception e) {
+				
+			}
+		}
+		
+		System.out.println(enc);
+
 	}
 
 }

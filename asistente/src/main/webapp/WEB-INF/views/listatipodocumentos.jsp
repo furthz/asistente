@@ -1,7 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <html>
 <head>
-
 <head>
 <title>SOA Professionals</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +24,7 @@
 <body
 	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;">
 
-<div class="pos-f-t">
+	<div class="pos-f-t">
 		<div class="collapse" id="navbarToggleExternalContent">
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -62,62 +61,69 @@
 
 
 
-<div class="cabecera" style="background:url('<c:url value="/resources/img/fdo1.png"/>') no-repeat left top;">
-<div class="cont2"><a href="index.html"><img class="logo_m" src="<c:url value="/resources/images/logo-soa.png"/>"></a></div>
-<div class="cont6 tit1">Asistente Financiero</div>
-<div class="cont2"><img class="logo_m" src="<c:url value="/resources/images/banco.jpg"/>"></div>
-</div>
+	<div class="cabecera"
+		style="background:url('<c:url value="/resources/img/fdo1.png"/>') no-repeat left top;">
+		<div class="cont2">
+			<a href="index.html"><img class="logo_m"
+				src="<c:url value="/resources/images/logo-soa.png"/>"></a>
+		</div>
+		<div class="cont6 tit1">Asistente Financiero</div>
+		<div class="cont2">
+			<img class="logo_m"
+				src="<c:url value="/resources/images/banco.jpg"/>">
+		</div>
+	</div>
 
 
-<div class="btn_cont">
+	<div class="btn_cont">
 
 
-<div class="container">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h3>Archivos Convertidos</h3>
-          <table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Empresa</th>
-      <th scope="col">ID Empresa</th>
-      <th scope="col">Tipo Doc.</th>
-      <th scope="col">Fecha</th>
-      <th scope="col">Unidad</th>
-      <th scope="col">ID Imagen</th>
-      <th scope="col">ID Texto</th>
-    </tr>
-  </thead>
-  <tbody>
+		<div class="container">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<h3>Archivos Convertidos</h3>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">Empresa</th>
+								<th scope="col">ID Empresa</th>
+								<th scope="col">Tipo Doc.</th>
+								<th scope="col">Fecha</th>
+								<th scope="col">Unidad</th>
+								<th scope="col">ID Imagen</th>
+								<th scope="col">ID Texto</th>
+							</tr>
+						</thead>
+						<tbody>
 
-		<c:forEach items="${tipos}" var="file">
-			<tr>
-				<td><c:out value="${file.empresa}" /></td>
-				<td><c:out value="${file.idEmpresa}" /></td>
-				<td><c:out value="${file.tipoDoc}" /></td>
-				<td><c:out value="${file.fechacreacion}" /></td>
-				<td><c:out value="${file.unidad}" /></td>
-				<td><a
-					href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectId}"/>"
-					target="_blank"> Imagen </a></td>
-				<td><a
-					href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectIdTxt}"/>"
-					target="_blank"> Texto </a></td>
+							<c:forEach items="${tipos}" var="file">
+								<tr>
+									<td><c:out value="${file.empresa}" /></td>
+									<td><c:out value="${file.idEmpresa}" /></td>
+									<td><c:out value="${file.tipoDoc}" /></td>
+									<td><c:out value="${file.fechacreacion}" /></td>
+									<td><c:out value="${file.unidad}" /></td>
+									<td><a
+										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectId}"/>"
+										target="_blank"> Imagen </a></td>
+									<td><a
+										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectIdTxt}"/>"
+										target="_blank"> Texto </a></td>
 
-			</tr>
+								</tr>
 
-		</c:forEach>
-
-    
-  </tbody>
-</table>
-
-        </div>
-      </div>
-    </div>
+							</c:forEach>
 
 
-</div>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
 
 
 

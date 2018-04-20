@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,34 +24,26 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import pe.soapros.asistente.domain.Empresa;
+import pe.soapros.asistente.domain.Propiedades;
 import pe.soapros.asistente.domain.TipoDocumento;
 import pe.soapros.asistente.domain.UploadFile;
 import pe.soapros.asistente.form.MultipleFileUploadForm;
 import pe.soapros.asistente.funcionality.ConvertImageToText;
 import pe.soapros.asistente.service.EmpresaManager;
-import pe.soapros.asistente.service.FileUploadManager;
-import pe.soapros.asistente.service.TipoDocumentoManager;
 
 @Controller
 public class MultipleFileUploadController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
-
-	private String pathfile = "C:/Temp/";
-
+	
 	@Autowired
-	private FileUploadManager fileUploadManager;
+	private Propiedades propiedades;
+
+	private String pathfile = ""; //"C:/Temp";
 
 	@Autowired
 	private EmpresaManager empresaManager;
 	
-	@Autowired
-	private TipoDocumentoManager tipoDocumentoManager;
-
-	public void setFileUploadManager(FileUploadManager fileUploadManager) {
-		this.fileUploadManager = fileUploadManager;
-	}
-
 	@RequestMapping(value = "/loadMultipleFileUploadMA")
 	public String loadMultipleFileUploadMA(Map<String, Object> model) {
 		return "MultipleFileUploadMA";
@@ -63,13 +54,9 @@ public class MultipleFileUploadController {
 			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model)
 			throws IOException {
 
+		this.pathfile = this.propiedades.getTemporal();
+		
 		List<MultipartFile> files = multipleFileUploadForm.getFiles();
-
-		// long id = multipleFileUploadForm.getEmpresa();
-		//
-		// System.out.println("Id Empresa: " + id);
-		//
-		// Empresa emp = this.empresaManager.buscarById(id);
 
 		logger.info(" Files count " + files.size());
 
@@ -80,6 +67,9 @@ public class MultipleFileUploadController {
 		
 		try {
 
+			ConvertImageToText convertImage = new ConvertImageToText();
+			convertImage.setPropiedades(this.propiedades);
+			
 			UploadFile archivo;
 			for (int i = 0; i < files.size(); i++) {				
 				
@@ -88,7 +78,7 @@ public class MultipleFileUploadController {
 				archivo.setDatos(files.get(i).getBytes());
 				archivo.setFecha(fecha);
 				
-				ConvertImageToText convertImage = new ConvertImageToText();
+				
 
 				logger.debug("Se llama la conversion de texto");
 				// metodo que desempaqueta, limpia y convierte en texto
@@ -111,15 +101,8 @@ public class MultipleFileUploadController {
 				empresa.addFile(archivo);				
 				
 				
-				
-				// guardar en la base de datos
-				// files.get(i).transferTo(new File(filePath +
-				// files.get(i).getOriginalFilename()));
-				//this.fileUploadManager.saveArchivo(archivo);
-				
 				for(TipoDocumento tipdoc: lstDctos) {
 					tipdoc.setArchivo(archivo);
-					//this.tipoDocumentoManager.crearTipoDocumento(tipdoc);
 					tipdoc.setArchivo(archivo);
 					tipdoc.setFechacreacion(fecha);
 					archivo.addTipos(tipdoc);

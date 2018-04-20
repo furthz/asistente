@@ -10,8 +10,6 @@
 	<!-- holding properties for database connectivity / -->
 	<context:property-placeholder location="classpath:jdbc.properties" />
 	
-	<context:property-placeholder location="classpath:propiedades.properties" />
-
 	<!-- enabling annotation driven configuration / -->
 	<context:annotation-config />
 
@@ -22,6 +20,24 @@
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
 	</bean>
+	
+		<!-- Cargamos el bean al contexto e inyectamos las propiedades. -->
+    <bean id="propiedades" class="pe.soapros.asistente.domain.Propiedades">
+        <property name="temporal" value="${web.temporal}"/>
+        <property name="anchoRenglon" value="${documento.anchorenglon}"/>
+        <property name="planCuentasUserNLU" value="${plancuentas.username}"/>
+        <property name="planCuentasPassNLU" value="${plancuentas.password}"/>
+        <property name="planCuentasModeloNLU" value="${plancuentas.modeloId}"/>
+        <property name="ecmUser" value="${ecm.user}"/>
+        <property name="ecmPass" value="${ecm.password}"/>
+        <property name="ecmUrl" value="${ecm.url}"/>
+        <property name="ecmClase" value="${ecm.clase}"/>
+        <property name="tipodocUserNLU" value="${tipodoc.username}"/>
+        <property name="tipodocPassNLU" value="${tipodoc.password}"/>
+        <property name="tipodocModeloNLU" value="${tipodoc.modeloId}"/>
+        <property name="batchName" value="${batch.name}"/>
+        <property name="batchPath" value="${batch.path}"/>
+    </bean>
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
@@ -45,6 +61,6 @@
 	<!-- Scans the classpath of this application for @Components to deploy as 
 		beans -->
 	<context:component-scan base-package="pe.soapros.asistente.repository" />
-	<context:component-scan base-package="pe.soapros.asistente.service" />
+	<context:component-scan base-package="pe.soapros.asistente.service" />	
 
 </beans>
