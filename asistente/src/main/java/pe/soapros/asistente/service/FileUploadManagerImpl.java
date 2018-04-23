@@ -32,7 +32,5 @@ public class FileUploadManagerImpl implements FileUploadManager{
 
 		return this.fileUploadDao.getFileWithSoons();
 	}
-
-
-
+	
 }

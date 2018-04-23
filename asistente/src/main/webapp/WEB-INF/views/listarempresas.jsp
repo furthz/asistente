@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
+<%@ page import="org.apache.commons.lang.StringUtils"%>
 <html>
 <head>
 <title>SOA Professionals</title>
@@ -76,11 +77,22 @@
 
 	<div class="btn_cont">
 
-
+		<c:set var="pageListHolder" value="${pageList}" scope="request" />
+		<!-- 
+		<jsp:useBean id="pageList" scope="request" type="org.springframework.beans.support.PagedListHolder"/>
+		<c:url value="/listaempresas.htm" var="pagedLink">
+			<c:param name="p" value="~" />
+		</c:url>
+		
+		 -->
 		<div class="container">
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<h3>Ejecuciones</h3>
+					<h4>
+						<a href="<c:url value="downloadExcelAll.htm"/>">Descargar
+							Excel</a>
+					</h4>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -93,7 +105,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach items="${model.files}" var="file">
+							<c:forEach items="${pageListHolder.pageList}" var="file">
 								<tr>
 									<td><c:out value="${file.empresa.nombre}" /></td>
 									<td><c:out value="${file.empresa.idDoc}" /></td>
@@ -111,8 +123,49 @@
 						</tbody>
 					</table>
 
+					<!-- 
+					<c:if test="${model.files.pageCount > 1 }">
+					
+						<c:if test="${!model.files.firstPage }">
+							<li>
+								<
+							</li>
+						
+						</c:if>
+					
+					</c:if>
+					 -->
 				</div>
 			</div>
+		</div>
+
+		<!-- paginacion -->
+
+		<div>
+			<span style="float: left;"> <c:choose>
+					<c:when test="${pageListHolder.firstPage}">Prev</c:when>
+					<c:otherwise>
+						<a href="listaempresas.htm?p=${pageurl}prev">Prev</a>
+					</c:otherwise>
+				</c:choose>
+			</span> <span> <c:forEach begin="0"
+					end="${pageListHolder.pageCount-1}" varStatus="loop">
+ 
+    <c:choose>
+						<c:when test="${loop.index == pageListHolder.page}">${loop.index+1}</c:when>
+						<c:otherwise>
+							<a href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a>
+						</c:otherwise>
+					</c:choose>
+ 
+    </c:forEach>
+			</span> <span> <c:choose>
+					<c:when test="${pageListHolder.lastPage}">Next</c:when>
+					<c:otherwise>
+						<a href="listaempresas.htm?p=${pageurl}next">Next</a>
+					</c:otherwise>
+				</c:choose>
+			</span>
 		</div>
 	</div>
 </body>

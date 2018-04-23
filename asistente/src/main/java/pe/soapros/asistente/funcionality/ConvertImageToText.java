@@ -219,28 +219,44 @@ public class ConvertImageToText {
 			logger.debug("Ejecutar el archivo Python");
 
 			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-
+			logger.debug("se carga AnnotateImageRequest");
+			
 			ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePathMod));
+			logger.debug("Bytes");
 
 			Image img = Image.newBuilder().setContent(imgBytes).build();
+			logger.debug("Img");
+			
 			Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
+			logger.debug("Feature");
+			
 			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+			logger.debug("Request");
+			
 			requests.add(request);
-
 			logger.debug("Se llamó l servicio de google vision");
 
 			// String contenido = new String();
 			Documento dcto = new Documento();
 			dcto.setPropiedades(this.propiedades);
+			logger.debug("Se asignó las propiedades");
 
 			List<Palabra> bloques = new ArrayList<Palabra>();
 			try {
 				ImageAnnotatorClient client = ImageAnnotatorClient.create();
+				logger.debug("Se creo el client");
+				
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+				logger.debug("Se creo el response");
+				
 				List<AnnotateImageResponse> responses = response.getResponsesList();
+				logger.debug("se creo las respuestas");
+				
 				client.close();
-
+				logger.debug("Se cerró el client");
+				
 				for (AnnotateImageResponse res : responses) {
+					
 					if (res.hasError()) {
 						throw new Exception("Error");
 					}
@@ -352,16 +368,7 @@ public class ConvertImageToText {
 			}
 			logger.debug("Datos Extraídos: " + tipodoc.toString());
 
-			// Map<String, Object> metadata = new HashMap<String, Object>();
-			// metadata.put("estado_financiero:empresa", tipodoc.getEmpresa());
-			// metadata.put("estado_financiero:fecha", tipodoc.getFecha());
-			// metadata.put("estado_financiero:id", tipodoc.getId());
-			// metadata.put("estado_financiero:tipodoc", tipodoc.getTipoDoc());
-			// metadata.put("estado_financiero:unidad", tipodoc.getUnidad());
-			//
-			// String objectID = serviceECM.uploadDocument(pathFile + File.separator +
-			// nombre + "png", metadata);
-			// tipodoc.setObjectId(objectID);
+
 		}
 
 		logger.debug("Enviar los archivos al ECM");

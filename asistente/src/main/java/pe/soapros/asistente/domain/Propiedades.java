@@ -18,6 +18,7 @@ public class Propiedades {
 	private String tipodocModeloNLU;
 	private String batchName;
 	private String batchPath;
+	private String windows;
 	
 	public String getTemporal() {
 		return temporal;
@@ -102,6 +103,13 @@ public class Propiedades {
 	}
 	public void setBatchPath(String batchPath) {
 		this.batchPath = batchPath;
+	}	
+	
+	public String getWindows() {
+		return windows;
+	}
+	public void setWindows(String windows) {
+		this.windows = windows;
 	}
 	@Override
 	public String toString() {

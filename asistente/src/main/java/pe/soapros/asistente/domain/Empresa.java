@@ -43,7 +43,7 @@ public class Empresa implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "empresa", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "empresa", cascade = CascadeType.ALL)
 	private Set<UploadFile> files = new HashSet<UploadFile>();
 
 	public long getId() {

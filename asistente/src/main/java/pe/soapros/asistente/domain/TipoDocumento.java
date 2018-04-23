@@ -28,7 +28,7 @@ public class TipoDocumento implements Serializable {
 	@Column(name = "id", updatable = false, nullable = false)
 	private long id;
 
-	@ManyToOne(fetch = FetchType.LAZY) // (optional = false, fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER) // (optional = false, fetch = FetchType.EAGER, cascade= CascadeType.ALL)
 	@JoinColumn(name = "idarchivo")
 	private UploadFile archivo;
 

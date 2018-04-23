@@ -33,11 +33,11 @@ public class UploadFile {
 	private String fileName;
 	private byte[] datos;
 
-	@ManyToOne(fetch = FetchType.LAZY) // (optional = false, fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER) // (optional = false, fetch = FetchType.LAZY, cascade= CascadeType.ALL)
 	@JoinColumn(name = "idempresa")
 	private Empresa empresa;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "archivo", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "archivo", cascade = CascadeType.ALL)
 	private Set<TipoDocumento> tipos = new HashSet<TipoDocumento>();
 
 	@Temporal(TemporalType.TIMESTAMP)

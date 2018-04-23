@@ -41,5 +41,4 @@ public class JPAFileUploadDao implements FileUploadDao {
 
 		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.fecha").getResultList();
 	}
-
 }

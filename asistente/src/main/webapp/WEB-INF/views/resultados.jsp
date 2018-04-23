@@ -82,7 +82,7 @@
 		<div class="row">
 			<div class="col-8">
 				<img class="rounded" style="width: 100% !important"
-					src="<c:out value="${objetos.imagen}"/>" />
+					src="data:image/jpg;base64,<c:out value="${objetos.imagen}"/>" />
 			</div>
 			<div class="col-4">
 				<div class="panel panel-default">

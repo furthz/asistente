@@ -270,15 +270,18 @@ public class PlanCuenta {
 		
 		if(activo.get(key) != null) {
 			valores = activo.get(key);
-			valores += val;
+			valores = valores + val;
+			logger.debug("Agregar Activo: " + key + " valor: " + valores);
 			activo.put(key, valores);
 		}else if(pasivo.get(key) != null) {
 			valores = pasivo.get(key);
-			valores += val;
+			valores = valores + val;
+			logger.debug("Agregar Pasivo: " + key + " valor: " + valores);
 			pasivo.put(key, valores);
 		}else if(patrimonio.get(key)!= null){
 			valores = patrimonio.get(key);
-			valores += val;
+			valores = valores + val;
+			logger.debug("Agregar Patrimonio: " + key + " valor: " + valores);
 			patrimonio.put(key, valores);
 		}
 		

@@ -43,11 +43,15 @@ public class Util {
 			swNum = false;
 
 			etiqueta = entidades.getJSONObject(i).getString("type");
+			logger.debug("Etiqueta: " + etiqueta);
+			
 			valor = entidades.getJSONObject(i).getString("text");
+			logger.debug("Valor: " + valor);
 
 			try {
 				Character pto = valor.charAt(valor.length() - 3);
-
+				logger.debug("Caracter: " + pto.toString());
+				
 				if (pto.toString().equals(",") || pto.toString().equals(".")) {
 					swNum = true;
 				}
@@ -66,6 +70,7 @@ public class Util {
 				// System.out.println(" - Coincidencia: " + m.group(0));
 				all += m.group(0);
 			}
+			logger.debug("Numero: " + all);
 
 			// all = all.replace(pto.toString(), ".");
 
@@ -171,7 +176,10 @@ public class Util {
 			tipoDcto.setTipoDoc("Estado Resultados");
 		} else if (valor.toUpperCase().contains(csNota)) {
 			tipoDcto.setTipoDoc("Notas");
-		} else {
+		} else if("".equals(valor) || valor == null) {
+			tipoDcto.setTipoDoc("Balance");
+		}
+		else {
 			tipoDcto.setTipoDoc(valor);
 		}
 

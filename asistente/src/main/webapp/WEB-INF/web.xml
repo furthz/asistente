@@ -13,7 +13,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
-	<display-name>Asistente</display-name>
+	<display-name>Asistente</display-name>	
 
 	<servlet>
 		<servlet-name>asistente</servlet-name>
@@ -25,9 +25,11 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+
 	<servlet-mapping>
 		<servlet-name>asistente</servlet-name>
 		<url-pattern>*.htm</url-pattern>
 	</servlet-mapping>
+
 
 </web-app>

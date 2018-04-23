@@ -13,8 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import pe.soapros.asistente.domain.UploadFile;
@@ -32,27 +35,23 @@ public class ListarEmpresaController {
 	@Autowired
 	private FileUploadManager fileManager;
 
-	@RequestMapping(value = "/listaempresas.htm")
+	@RequestMapping(value = "/listaempresas.htm", method = RequestMethod.GET)
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String now = (new Date()).toString();
-		logger.info("Returning hello view with " + now);
 
-		Map<String, Object> myModel = new HashMap<String, Object>();
-		myModel.put("now", now);
-		// List<Empresa> lstEmpresas = this.empresaManager.getEmpresas();
-		//
-		// for(Empresa emp: lstEmpresas) {
-		// emp.getFiles();
-		// }
-
+		
 		List<UploadFile> lstFiles = this.fileManager.getFilesWithSoons();
+		
+		PagedListHolder pageList = new PagedListHolder(lstFiles);
+		
+		int page = ServletRequestUtils.getIntParameter(request, "p", 0);
+		
+		pageList.setPage(page);
+		pageList.setPageSize(20);
+		
 
-		// myModel.put("empresas", lstEmpresas);
-		myModel.put("files", lstFiles);
-
-		return new ModelAndView("listarempresas", "model", myModel);
+		return new ModelAndView("listarempresas", "pageList", pageList);
 	}
 
 	//public void setEmpresaManager(EmpresaManager empresaManager) {

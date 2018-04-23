@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,27 +34,27 @@ import pe.soapros.asistente.service.EmpresaManager;
 public class MultipleFileUploadController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
-	
+
 	@Autowired
 	private Propiedades propiedades;
 
-	private String pathfile = ""; //"C:/Temp";
+	private String pathfile = ""; 
 
 	@Autowired
 	private EmpresaManager empresaManager;
-	
-	@RequestMapping(value = "/loadMultipleFileUploadMA")
-	public String loadMultipleFileUploadMA(Map<String, Object> model) {
-		return "MultipleFileUploadMA";
-	}
 
-	@RequestMapping(value = "/uploadMultipleFilesMA", method = RequestMethod.POST)
+//	@RequestMapping(value = "/loadMultipleFileUploadMA.htm")
+//	public String loadMultipleFileUploadMA(Map<String, Object> model) {
+//		return "MultipleFileUploadMA";
+//	}
+
+	@RequestMapping(value = "/uploadMultipleFilesMA.htm", method = RequestMethod.POST)
 	public String handleFileUploadMA(
 			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model)
 			throws IOException {
 
 		this.pathfile = this.propiedades.getTemporal();
-		
+
 		List<MultipartFile> files = multipleFileUploadForm.getFiles();
 
 		logger.info(" Files count " + files.size());
@@ -64,85 +63,69 @@ public class MultipleFileUploadController {
 		Path path = Files.createTempDirectory(basePath, "upload");
 
 		Date fecha = new Date();
-		
+
 		try {
 
 			ConvertImageToText convertImage = new ConvertImageToText();
 			convertImage.setPropiedades(this.propiedades);
-			
+
 			UploadFile archivo;
-			for (int i = 0; i < files.size(); i++) {				
-				
+			for (int i = 0; i < files.size(); i++) {
+
 				archivo = new UploadFile();
 				archivo.setFileName(files.get(i).getOriginalFilename());
 				archivo.setDatos(files.get(i).getBytes());
 				archivo.setFecha(fecha);
-				
-				
 
 				logger.debug("Se llama la conversion de texto");
 				// metodo que desempaqueta, limpia y convierte en texto
 				List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files.get(i), path.toString());
 				logger.debug("Terminó la conversion de texto");
-				
+
 				// obtener los datos de la empresa, usnado el primer elemento de la lista
 				TipoDocumento tipo = lstDctos.get(0);
-				
+
 				logger.debug("Se crea la empresa");
 				Empresa empresa = new Empresa();
 				empresa.setIdDoc(tipo.getIdEmpresa());
 				empresa.setNombre(tipo.getEmpresa());
 				empresa.setFecha(fecha);
-				
+
 				logger.debug("se crea el registro del archivo");
-				
+
 				archivo.setEmpresa(empresa);
-				
-				empresa.addFile(archivo);				
-				
-				
-				for(TipoDocumento tipdoc: lstDctos) {
+
+				empresa.addFile(archivo);
+
+				for (TipoDocumento tipdoc : lstDctos) {
 					tipdoc.setArchivo(archivo);
 					tipdoc.setArchivo(archivo);
 					tipdoc.setFechacreacion(fecha);
 					archivo.addTipos(tipdoc);
-					
+
 				}
-				
+
 				this.empresaManager.crearEmpresa(empresa);
 				logger.debug("Se guardó en la base de datoss");
-				
-				
+
 			}
 		} catch (Exception e) {
 			return "Error While uploading your files " + e.getMessage();
 		}
 
-		//List<Empresa> lstEmpresas = this.empresaManager.getEmpresas();
-		//model.addAttribute("empresas", lstEmpresas);
+		// List<Empresa> lstEmpresas = this.empresaManager.getEmpresas();
+		// model.addAttribute("empresas", lstEmpresas);
 		return "result";
 
 	}
 
-	@RequestMapping(value = "/loadMultipleFileUpload")
+	@RequestMapping(value = "/loadMultipleFileUpload.htm")
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// String now = (new Date()).toString();
-		// logger.info("Returning hello view with " + now);
-		//
-		// Map<String, Object> myModel = new HashMap<String, Object>();
-		// myModel.put("now", now);
-		// myModel.put("empresas", this.empresaManager.getEmpresas());
 
-		// return new ModelAndView("MultipleFileUpload", "model", myModel);
 		return new ModelAndView("MultipleFileUpload");
 	}
 
-	/*
-	 * @RequestMapping(value = "/loadMultipleFileUpload") public String
-	 * loadMultipleFileUpload(Map<String, Object> model) { return
-	 * "MultipleFileUpload"; }
-	 */
 
 }

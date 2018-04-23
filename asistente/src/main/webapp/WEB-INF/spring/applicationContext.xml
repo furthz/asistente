@@ -37,6 +37,7 @@
         <property name="tipodocModeloNLU" value="${tipodoc.modeloId}"/>
         <property name="batchName" value="${batch.name}"/>
         <property name="batchPath" value="${batch.path}"/>
+        <property name="windows" value="${sistema.windows}"/>
     </bean>
 
 	<bean id="entityManagerFactory"
@@ -62,5 +63,6 @@
 		beans -->
 	<context:component-scan base-package="pe.soapros.asistente.repository" />
 	<context:component-scan base-package="pe.soapros.asistente.service" />	
-
+	
+	
 </beans>

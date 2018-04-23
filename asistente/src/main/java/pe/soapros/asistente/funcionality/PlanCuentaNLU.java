@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.common.io.Files;
+//import com.google.common.io.Files;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.NaturalLanguageUnderstanding;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalysisResults;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalyzeOptions;
@@ -92,38 +92,38 @@ public class PlanCuentaNLU {
 //		
 //		System.out.println(valor.toString());
 		
-		String cadena = Util.leerArchivoTXT("C:\\Users\\Furth\\Desktop\\listado.txt");
-		String[] arch = cadena.split(".txt");
-		
-		List<Path> archivos = Util.listarFicheros("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 5", "tif");
-		
-		List<File> enc = new ArrayList<File>();
-		
-		for (String ar: arch) {
-			
-			for(Path p: archivos) {
-				File f = new File(p.toString());
-				
-				if(f.getName().equals(ar + ".tif")) {
-					enc.add(f);
-					break;
-				}
-			}
-			
-		}
-		
-		System.out.println(enc);
-		File tmp;
-		for(File f: enc) {
-			try {
-				tmp = new File("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\lista3\\" + f.getName());
-				Files.move(f, tmp);
-			}catch(Exception e) {
-				
-			}
-		}
-		
-		System.out.println(enc);
+//		String cadena = Util.leerArchivoTXT("C:\\Users\\Furth\\Desktop\\listado.txt");
+//		String[] arch = cadena.split(".txt");
+//		
+//		List<Path> archivos = Util.listarFicheros("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Lista 5", "tif");
+//		
+//		List<File> enc = new ArrayList<File>();
+//		
+//		for (String ar: arch) {
+//			
+//			for(Path p: archivos) {
+//				File f = new File(p.toString());
+//				
+//				if(f.getName().equals(ar + ".tif")) {
+//					enc.add(f);
+//					break;
+//				}
+//			}
+//			
+//		}
+//		
+//		System.out.println(enc);
+//		File tmp;
+//		for(File f: enc) {
+//			try {
+//				tmp = new File("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\lista3\\" + f.getName());
+//				Files.move(f, tmp);
+//			}catch(Exception e) {
+//				
+//			}
+//		}
+//		
+//		System.out.println(enc);
 
 	}
 
