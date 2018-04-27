@@ -49,6 +49,7 @@
 				</div>
 			</nav>
 		</div>
+		
 		<nav class="navbar navbar-dark bg-dark">
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarToggleExternalContent"
@@ -101,7 +102,8 @@
 								<th scope="col">Archivo</th>
 								<th scope="col">Fecha</th>
 								<th scope="col">Detalle</th>
-								<th scope="col">Analizar</th>
+								<th scope="col">IA</th>
+								<th scope="col">IA + RegEx</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -116,6 +118,9 @@
 									</td>
 									<td><a
 										href="<c:url value="resultados.htm?id="/> <c:out value="${file.id}"/> ">Procesar</a>
+									</td>
+									<td><a
+										href="<c:url value="resultadosRegex.htm?id="/> <c:out value="${file.id}"/> ">Procesar</a>
 									</td>
 								</tr>
 

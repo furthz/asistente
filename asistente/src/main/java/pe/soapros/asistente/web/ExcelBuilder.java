@@ -41,6 +41,18 @@ public class ExcelBuilder extends AbstractExcelView {
 		int i = 0;
 		// create header row
 		HSSFRow header = sheet.createRow(0);
+		
+		header.createCell(i).setCellValue("Razon_Social");
+		header.getCell(i).setCellStyle(style);
+		i++;
+		
+		header.createCell(i).setCellValue("Nro_Id");
+		header.getCell(i).setCellStyle(style);
+		i++;
+		
+		header.createCell(i).setCellValue("Fecha_Doc");
+		header.getCell(i).setCellStyle(style);
+		i++;
 
 		header.createCell(i).setCellValue("Efectivo");
 		header.getCell(i).setCellStyle(style);
@@ -353,6 +365,15 @@ public class ExcelBuilder extends AbstractExcelView {
 			// for (PlanCuenta plan : plancuentas) {
 			HSSFRow aRow = sheet.createRow(rowCount++);
 
+			aRow.createCell(col).setCellValue(plan.getLstTipoDocumento().get(0).getEmpresa());
+			col++;
+			
+			aRow.createCell(col).setCellValue(plan.getLstTipoDocumento().get(0).getIdEmpresa());
+			col++;
+			
+			aRow.createCell(col).setCellValue(plan.getLstTipoDocumento().get(0).getFecha());
+			col++;
+			
 			aRow.createCell(col).setCellValue(plan.getActivo().get("Efectivo"));
 			col++;
 

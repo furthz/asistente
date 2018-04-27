@@ -46,7 +46,7 @@ public class PlanCuentaNLU {
 
 
 
-	public PlanCuenta consultarCuentas(String archivo) throws IOException {
+	public PlanCuenta consultarCuentas(String archivo, boolean swRegex) throws IOException {
 		
 		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
 		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
@@ -79,7 +79,10 @@ public class PlanCuentaNLU {
 				  .execute();
 		//		System.out.println(response);
 		
-		Util.leerPlanCuentas(response.toString(), plancuenta);
+		if(!swRegex)
+			Util.leerPlanCuentas(response.toString(), plancuenta);
+		else
+			Util.leerPlanCuentasRegex(response.toString(), plancuenta, archivo);
 		
 		return plancuenta;
 	}

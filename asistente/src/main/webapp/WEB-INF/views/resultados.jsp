@@ -6,7 +6,6 @@
 <head>
 <title>SOA Professionals</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta charset='utf-8' />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link rel="stylesheet" type="text/css"
 	href="https://fonts.googleapis.com/css?family=Josefin+Sans" />
@@ -21,11 +20,34 @@
 	href="<c:url value="/resources/css/style.css"/>">
 <script src="<c:url value="/resources/js/jquery-3.3.1.min.js"/> "></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+
+<script>
+
+function sendJson(datos) {
+	var URL = "http://financiero-a7e2.azurewebsites.net/json";
+    //var dataObject = { 'newWeekEntry': newEntry, 'oldWeekEntry': oldEntry };
+    $.ajax({
+        url: URL,
+        type: 'PUT',    
+        //headers: {"Content-Type": "application/json"},
+        contentType: "application/json",
+        data: JSON.stringify(datos),
+        dataType: 'json',
+        success: function(result) {
+            //alert("exito");
+        }
+    });
+}
+
+</script>
+
+<span class="skype-button bubble " data-bot-id="e2dc44f0-27e8-47eb-8c94-44c8cf125573"></span>
+<script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
 </head>
 
 
 <body
-	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;">
+	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;"  onload ="sendJson(<c:out value="${objetos.json}"/>)">
 
 
 	<div class="pos-f-t">
@@ -88,6 +110,7 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<h4><a href="<c:url value="downloadExcel.htm"/>">Descargar Excel</a></h4>
+						
 						<h3>Activos</h3>
 						<table class="table table-striped">
 							<thead>
@@ -97,12 +120,19 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${objetos.plan.indActivo}" var="activo">
-									<c:if test="${objetos.plan.activo[activo] > 0 }">
+								<c:forEach items="${objetos.plan[0].indActivo}" var="activo">
+									<c:if test="${objetos.plan[0].activo[activo] > 0 }">
 										<tr>
+										
+											<!-- 
+											<c:set var="etsActivo" value="${fn.split('prueba 2', '')}" />
+											<c:forEach items="${etsActivo}" var="current" varStatus="stat">
+												<c:set var="miEtiqueta" value="${stat.first ? '': miEtiqueta } ${current }" />
+											</c:forEach>
+											 -->
 											<th scope="row"><c:out value="${activo}" /></th>
 											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan.activo[activo]}" /></td>
+													pattern="###,###.###" value="${objetos.plan[0].activo[activo]}" /></td>
 
 										</tr>
 									</c:if>
@@ -124,12 +154,12 @@
 							</thead>
 							<tbody>
 
-								<c:forEach items="${objetos.plan.indPasivo}" var="activo">
-									<c:if test="${objetos.plan.pasivo[activo] > 0 }">
+								<c:forEach items="${objetos.plan[0].indPasivo}" var="activo">
+									<c:if test="${objetos.plan[0].pasivo[activo] > 0 }">
 										<tr>
 											<th scope="row"><c:out value="${activo}" /></th>
 											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan.pasivo[activo]}" /></td>
+													pattern="###,###.###" value="${objetos.plan[0].pasivo[activo]}" /></td>
 										</tr>
 									</c:if>
 								</c:forEach>
@@ -151,12 +181,12 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach items="${objetos.plan.indPatrimonio}" var="activo">
-									<c:if test="${objetos.plan.patrimonio[activo] > 0 }">
+								<c:forEach items="${objetos.plan[0].indPatrimonio}" var="activo">
+									<c:if test="${objetos.plan[0].patrimonio[activo] > 0 }">
 										<tr>
 											<th scope="row"><c:out value="${activo}" /></th>
 											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan.patrimonio[activo]}" /></td>
+													pattern="###,###.###" value="${objetos.plan[0].patrimonio[activo]}" /></td>
 										</tr>
 									</c:if>
 								</c:forEach>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 
 public class PlanCuenta {
 	private HashMap<String, Double> activo;	
@@ -16,7 +17,9 @@ public class PlanCuenta {
 	private List<String> indPasivo;
 	private List<String> indPatrimonio;
 	
+	private Empresa empresa;
 	
+	private List<TipoDocumento> lstTipoDocumento;
 
 	protected final Log logger = LogFactory.getLog(getClass());
 	
@@ -92,6 +95,28 @@ public class PlanCuenta {
 
 	public void setIndPatrimonio(List<String> indPatrimonio) {
 		this.indPatrimonio = indPatrimonio;
+	}
+
+	
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+
+	
+	public List<TipoDocumento> getLstTipoDocumento() {
+		return lstTipoDocumento;
+	}
+
+
+	public void setLstTipoDocumento(List<TipoDocumento> lstTipoDocumento) {
+		this.lstTipoDocumento = lstTipoDocumento;
 	}
 
 
@@ -288,6 +313,9 @@ public class PlanCuenta {
 		
 	}
 
+	public JSONObject getJSON() {
+		return new JSONObject(this.activo);
+	}
 	@Override
 	public String toString() {
 		return "PlanCuenta [activo=" + activo + ", pasivo=" + pasivo + ", patrimonio=" + patrimonio + "]";

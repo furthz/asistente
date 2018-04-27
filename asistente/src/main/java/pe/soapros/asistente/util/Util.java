@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,11 +23,147 @@ import org.json.JSONObject;
 
 import pe.soapros.asistente.domain.PlanCuenta;
 import pe.soapros.asistente.domain.TipoDocumento;
+import pe.soapros.asistente.funcionality.RegexPlan;
 
 public class Util {
 
 	protected final static Log logger = LogFactory.getLog(Util.class);
 
+	/**
+	 * 
+	 * @param json
+	 * @param cadena
+	 */
+	public static void leerPlanCuentasRegex(String json, PlanCuenta plan, String archivo) {
+		List<List<String>> a = new ArrayList<List<String>>();
+		
+		List<Double> lstEfectivo = new ArrayList<Double>();
+		
+		JSONObject obj = new JSONObject(json);
+		logger.debug("JSON: " + json);
+
+		JSONArray entidades = obj.getJSONArray("entities");
+		logger.debug("Entidades: " + entidades);
+
+		boolean swNum = false;
+		String etiqueta = "";
+		String valor = "";
+
+		for (int i = 0; i < entidades.length(); i++) {
+
+			swNum = false;
+
+			etiqueta = entidades.getJSONObject(i).getString("type");
+			logger.debug("Etiqueta: " + etiqueta);
+			
+			valor = entidades.getJSONObject(i).getString("text");
+			logger.debug("Valor: " + valor);
+
+			try {
+				Character pto = valor.charAt(valor.length() - 3);
+				logger.debug("Caracter: " + pto.toString());
+				
+				if (pto.toString().equals(",") || pto.toString().equals(".")) {
+					swNum = true;
+				}
+			} catch (Exception e) {
+				swNum = false;
+				logger.error(e);
+			}
+			//
+			String all = "";
+			Pattern pat = Pattern.compile("\\d+(?:[.,]\\d+)?|Free");
+			Matcher m = pat.matcher(valor);
+
+			while (m.find()) {
+				all += m.group(0);
+			}
+			logger.debug("Numero: " + all);
+
+			String[] valEtiqueta = all.split("\\W+");
+
+			valor = "";
+			for (String ss : valEtiqueta) {
+				valor += ss;
+			}
+
+			if (swNum) {
+				valor = valor.substring(0, valor.length() - 2) + "."
+						+ valor.substring(valor.length() - 2, valor.length());
+				logger.debug("valor: " + valor);
+			}
+
+			Double lvalor = 0.0;
+			try {
+				lvalor = Double.parseDouble(valor);
+				logger.debug("valor convertido: " + lvalor);
+			} catch (Exception e) {
+				logger.error(e);
+				// lvalor = (long)-1.00;
+			}
+
+			if(!etiqueta.equals("Efectivo")) {
+				plan.addCuenta(etiqueta, lvalor);
+			}else {				
+				lstEfectivo.add(lvalor);				
+			}
+
+			
+		}
+		
+		RegexPlan regex = new RegexPlan(archivo);
+		
+		Set<Double>lstEfectivosRegex = regex.getEfectivo();
+		logger.debug("Regex Efectivo: " + lstEfectivosRegex);
+		logger.debug("IA Efectivo: " + lstEfectivo);
+		
+		for(Double efe: lstEfectivosRegex ) {
+			lstEfectivo.add(efe);
+		}
+		
+		Set<Double> sethash = new HashSet<Double>();
+		
+		//eliminar valores duplicados
+		sethash.addAll(lstEfectivo);
+		
+		for(Double efe: sethash) {
+			plan.addCuenta("Efectivo", efe);
+		}
+		
+//		boolean swIgual = false;
+//		for(Double efecRegex: lstEfectivosRegex) {
+//			
+//			swIgual = false;
+//			for(Double efec: lstEfectivo) {
+//				if(efecRegex == efec) {
+//					logger.debug("Igual: " + efecRegex + " - " + efec);
+//					swIgual = true;
+//					break;
+//				}
+//			}
+//			
+//			if(!swIgual) {
+//				lstEfectivo.add(efecRegex);
+//				logger.debug("Se agrega un nuevo efectivo: " + efecRegex);
+//			}			
+//			
+//			
+//		}
+		
+		
+		//agregar los efectivos agregados por regex
+		
+//		for(Double efec: lstEfectivo) {
+//			plan.addCuenta("Efectivo", efec);
+//		}
+		
+		
+	}
+	/**
+	 * 
+	 * @param json
+	 * @param plan
+	 */
 	public static void leerPlanCuentas(String json, PlanCuenta plan) {
 
 		JSONObject obj = new JSONObject(json);
@@ -65,18 +203,9 @@ public class Util {
 			Matcher m = pat.matcher(valor);
 
 			while (m.find()) {
-
-				// System.out.println(m.group(0));
-				// System.out.println(" - Coincidencia: " + m.group(0));
 				all += m.group(0);
 			}
 			logger.debug("Numero: " + all);
-
-			// all = all.replace(pto.toString(), ".");
-
-			// valor = valor.replaceAll(" ", "");
-			// valor = valor.replaceAll(".", "");
-			// valor = valor.replaceAll(",", "");
 
 			String[] valEtiqueta = all.split("\\W+");
 
@@ -224,7 +353,7 @@ public class Util {
 		FileReader f = new FileReader(archivo);
 		BufferedReader b = new BufferedReader(f);
 		while ((cadena = b.readLine()) != null) {
-			texto = texto.concat(cadena);
+			texto = texto.concat(cadena + "\n");
 		}
 		b.close();
 

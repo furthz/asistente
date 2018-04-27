@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +41,14 @@ public class JPAFileUploadDao implements FileUploadDao {
 	public List<UploadFile> getFileWithSoons() {
 
 		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.fecha").getResultList();
+	}
+
+	@Override
+	public UploadFile findByName(String name) {
+
+		TypedQuery<UploadFile> query = em.createQuery("select p from UploadFile p where p.fileName = :name",
+				UploadFile.class);
+
+		return query.setParameter("name", name).getSingleResult();
 	}
 }

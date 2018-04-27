@@ -1,6 +1,5 @@
 package pe.soapros.asistente.funcionality;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,9 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
@@ -32,7 +27,6 @@ import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.cloud.vision.v1.Word;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
@@ -56,12 +50,13 @@ public class ConvertImageToText {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		detectDocumentText("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2");
+		//System.out.println(args[0]);
+		detectDocumentText("C:\\Users\\Furth\\Desktop\\Nueva carpeta");
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
 
-		List<Path> archivos = Util.listarFicheros(pathFile, "png");
+		List<Path> archivos = Util.listarFicheros(pathFile, "jpg");
 
 		String filePathMod = "";
 
@@ -82,7 +77,7 @@ public class ConvertImageToText {
 			// String contenido = new String();
 			Documento dcto = new Documento();
 
-			List<Palabra> bloques = new ArrayList<Palabra>();
+//			List<Palabra> bloques = new ArrayList<Palabra>();
 			try {
 				ImageAnnotatorClient client = ImageAnnotatorClient.create();
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
@@ -99,18 +94,6 @@ public class ConvertImageToText {
 					for (Page page : annotation.getPagesList()) {
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
-
-							Palabra blc = new Palabra();
-							blc.addPuntos(block.getBoundingBox().getVertices(0).getX(),
-									block.getBoundingBox().getVertices(0).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(1).getX(),
-									block.getBoundingBox().getVertices(1).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(2).getX(),
-									block.getBoundingBox().getVertices(2).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(3).getX(),
-									block.getBoundingBox().getVertices(3).getY());
-
-							bloques.add(blc);
 
 							String blockText = "";
 							for (Paragraph para : block.getParagraphsList()) {
@@ -149,22 +132,16 @@ public class ConvertImageToText {
 				// }
 
 				File input = new File(filePathMod);
-				BufferedImage image = ImageIO.read(input);
+	
 
-				if (image.getHeight() > 1000) {
-					dcto.setSwHorizontal(false);
-				} else {
-					dcto.setSwHorizontal(true);
-				}
-
-				dcto.setBloques(bloques);
+				//dcto.setBloques(bloques);
 
 				File f = new File(filePathMod);
 				String nombre = f.getName();
 				nombre = nombre.substring(0, nombre.length() - 3);
 
 				
-				dcto.formarResultante(input.getParent(), nombre + "txt", true);
+				dcto.formarResultante(input.getParent(), nombre + "txt");
 
 			}catch (Exception e) {
 			    e.printStackTrace();
@@ -194,19 +171,22 @@ public class ConvertImageToText {
 		logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
 				+ file.getOriginalFilename());
 
+		//Desempaquetar las imagenes que vienen en el TIF
 		Desempaquetar desem = new Desempaquetar();
-		// lista de archivos desempaquetados
 		List<String> lstArchivos = desem.doit(pathFile, file.getOriginalFilename());
 		logger.debug("Archivos desempaquetados");
 		logger.debug("Cant archivos: " + lstArchivos.size());
 
+		
 		String filePathMod = "";
+		
 		// lista de archivo de texto obtenidos
 		List<String> lstArchivosTXT = new ArrayList<String>();
 		
-		BatRunner batRunner = new BatRunner();
-		
+		//clase para ejecutar el archivo en python
+		BatRunner batRunner = new BatRunner();		
 		batRunner.setPropiedades(this.propiedades);
+		
 
 		logger.debug("Recorrer los archivos desempaquetados");
 		for (String filePath : lstArchivos) {
@@ -236,12 +216,10 @@ public class ConvertImageToText {
 			requests.add(request);
 			logger.debug("Se llamó l servicio de google vision");
 
-			// String contenido = new String();
 			Documento dcto = new Documento();
 			dcto.setPropiedades(this.propiedades);
 			logger.debug("Se asignó las propiedades");
 
-			List<Palabra> bloques = new ArrayList<Palabra>();
 			try {
 				ImageAnnotatorClient client = ImageAnnotatorClient.create();
 				logger.debug("Se creo el client");
@@ -261,24 +239,11 @@ public class ConvertImageToText {
 						throw new Exception("Error");
 					}
 
-					// For full list of available annotations, see http://g.co/cloud/vision/docs
 					TextAnnotation annotation = res.getFullTextAnnotation();
 					for (Page page : annotation.getPagesList()) {
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
 							String blockText = "";
-
-							Palabra blc = new Palabra();
-							blc.addPuntos(block.getBoundingBox().getVertices(0).getX(),
-									block.getBoundingBox().getVertices(0).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(1).getX(),
-									block.getBoundingBox().getVertices(1).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(2).getX(),
-									block.getBoundingBox().getVertices(2).getY());
-							blc.addPuntos(block.getBoundingBox().getVertices(3).getX(),
-									block.getBoundingBox().getVertices(3).getY());
-
-							bloques.add(blc);
 
 							for (Paragraph para : block.getParagraphsList()) {
 								String paraText = "";
@@ -319,20 +284,11 @@ public class ConvertImageToText {
 
 			logger.debug("Se obtuvo la información liquida");
 
-			dcto.setBloques(bloques);
 			File f = new File(filePathMod);
 			String nombre = f.getName();
 			nombre = nombre.substring(0, nombre.length() - 3);
 
-			BufferedImage image = ImageIO.read(f);
-
-			if (image.getHeight() > 1000) {
-				dcto.setSwHorizontal(false);
-			} else {
-				dcto.setSwHorizontal(true);
-			}
-
-			dcto.formarResultante(pathFile, nombre + "txt", false);
+			dcto.formarResultante(pathFile, nombre + "txt");
 			logger.debug("Se formo el archivo txt: " + pathFile + nombre + "txt");
 
 			lstArchivosTXT.add(pathFile + File.separator + nombre + "txt");
@@ -408,40 +364,4 @@ public class ConvertImageToText {
 	public void setPropiedades(Propiedades propiedades) {
 		this.propiedades = propiedades;
 	}
-
-//	public static void convert(byte[] imagen) throws Exception {
-//
-//		try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
-//
-//			ByteString imgBytes = ByteString.copyFrom(imagen);
-//
-//			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-//
-//			Image img = Image.newBuilder().setContent(imgBytes).build();
-//
-//			Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
-//			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-//			requests.add(request);
-//
-//			BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
-//			List<AnnotateImageResponse> responses = response.getResponsesList();
-//
-//			for (AnnotateImageResponse res : responses) {
-//				if (res.hasError()) {
-//					System.out.printf("Error: %s\n", res.getError().getMessage());
-//					return;
-//				}
-//
-//				for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-//					annotation.getAllFields().forEach(new BiConsumer<FieldDescriptor, Object>() {
-//						public void accept(FieldDescriptor k, Object v) {
-//							System.out.printf("%s : %s\n", k, v.toString());
-//						}
-//					});
-//				}
-//
-//			}
-//
-//		}
-//	}
 }

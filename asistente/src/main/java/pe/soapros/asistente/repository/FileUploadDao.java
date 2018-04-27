@@ -11,4 +11,6 @@ public interface FileUploadDao {
 	
 	List<UploadFile> getFileWithSoons();
 	
+	UploadFile findByName(String name);
+	
 }

@@ -1,8 +1,5 @@
 package pe.soapros.asistente.web;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -23,22 +19,20 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import pe.soapros.asistente.domain.PlanCuenta;
 import pe.soapros.asistente.domain.Propiedades;
 import pe.soapros.asistente.domain.TipoDocumento;
-import pe.soapros.asistente.domain.UploadFile;
 import pe.soapros.asistente.funcionality.PlanCuentaNLU;
 import pe.soapros.asistente.funcionality.ServiceECM;
-import pe.soapros.asistente.service.FileUploadManager;
 import pe.soapros.asistente.service.TipoDocumentoManager;
 import pe.soapros.asistente.util.Util;
 
 @Controller
-public class ResultadoController {
+public class ResultadoRegexController {
+
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	@Autowired
@@ -48,13 +42,13 @@ public class ResultadoController {
 
 	private List<PlanCuenta> cuentas;
 
-	@Autowired
-	private FileUploadManager fileManager;
+	//@Autowired
+	//private FileUploadManager fileManager;
 
 	@Autowired
 	private TipoDocumentoManager tipoDocumentoManager;
 
-	@RequestMapping(value = "/resultados.htm")
+	@RequestMapping(value = "/resultadosRegex.htm")
 	public ModelAndView handleRequest(@RequestParam("id") Long id) throws ServletException, IOException {
 
 		logger.debug("Carpeta temporal: " + propiedades.getTemporal());
@@ -76,6 +70,7 @@ public class ResultadoController {
 
 		String contenido = "";
 		String ruta = "";
+		
 		String rutaImagen = "";
 
 		for (TipoDocumento tipo : lstFiles) {
@@ -114,77 +109,14 @@ public class ResultadoController {
 
 		cuentas = new ArrayList<PlanCuenta>();
 
-		cuentas.add(plan.consultarCuentas(contenido, false));
+		cuentas.add(plan.consultarCuentas(contenido, true));
 
 		HashMap<String, Object> objetos = new HashMap<String, Object>();
 		objetos.put("plan", cuentas);
 		objetos.put("imagen", encodedString);
 		objetos.put("json", cuentas.get(0).getJSON());
 
-		logger.debug("json a la pagina: " + cuentas.get(0).getJSON());
-		
 		return new ModelAndView("resultados", "objetos", objetos);
 	}
-
-	@RequestMapping(value = "/downloadExcel", method = RequestMethod.GET)
-	public ModelAndView downloadExcel() {
-
-		return new ModelAndView("excelView", "planCuentas", this.cuentas);
-	}
-
-	@RequestMapping(value = "/downloadExcelAll", method = RequestMethod.GET)
-	public ModelAndView downloadExcelAll() throws IOException {
-
-		this.pathfile = propiedades.getTemporal();
-		Path basePath = Paths.get(this.pathfile);
-		Path path = Files.createTempDirectory(basePath, "download");
-
-		ServiceECM service = new ServiceECM();
-		service.setPropiedades(this.propiedades);
-
-		PlanCuentaNLU plan = new PlanCuentaNLU();
-		plan.setPropiedades(this.propiedades);
-
-		List<List<TipoDocumento>> ejes = new ArrayList<List<TipoDocumento>>();
-
-		List<UploadFile> ejecuciones = this.fileManager.getFilesWithSoons();
-
-		List<PlanCuenta> planes = new ArrayList<PlanCuenta>();
-
-		for (UploadFile f : ejecuciones) {
-			List<TipoDocumento> temp = this.tipoDocumentoManager.getTiposDocumentosById(f.getId());
-			ejes.add(temp);
-		}
-
-		try {
-			for (List<TipoDocumento> lst : ejes) {
-				String contenido = "";
-				String ruta = "";
-				
-				TipoDocumento tipDoc = null;
-				for (TipoDocumento tipo : lst) {
-					if (tipo.getTipoDoc().trim().equals("Balance")) {
-
-						ruta = service.downloadFileById(tipo.getObjectIdTxt().trim(), tipo.getFilenameTxt().trim(),
-								path.toString().trim());
-						logger.debug("ruta : " + ruta);
-
-						contenido += Util.leerArchivoTXT(ruta);
-
-						tipDoc = tipo;
-					}
-				}
-
-				PlanCuenta planc = plan.consultarCuentas(contenido, false);
-				planc.getLstTipoDocumento().add(tipDoc);
-
-				planes.add(planc);
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-
-		return new ModelAndView("excelView", "planCuentas", planes);
-	}
-
+	
 }

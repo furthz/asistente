@@ -32,5 +32,10 @@ public class FileUploadManagerImpl implements FileUploadManager{
 
 		return this.fileUploadDao.getFileWithSoons();
 	}
+
+	@Override
+	public UploadFile findByName(String name) {
+		return this.fileUploadDao.findByName(name);
+	}
 	
 }

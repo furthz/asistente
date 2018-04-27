@@ -43,7 +43,7 @@ public class ListarEmpresaController {
 		
 		List<UploadFile> lstFiles = this.fileManager.getFilesWithSoons();
 		
-		PagedListHolder pageList = new PagedListHolder(lstFiles);
+		PagedListHolder<UploadFile> pageList = new PagedListHolder<UploadFile>(lstFiles);
 		
 		int page = ServletRequestUtils.getIntParameter(request, "p", 0);
 		

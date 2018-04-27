@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Clase para trabajar las entidades extraídas del OCR
+ * Clase para trabajar las entidades extraídas del OCR y convertirlas en un txt
+ * formmateado similar a la imagen
  * 
  * @author Raúl Talledo
  * @version 1.0
@@ -24,50 +22,31 @@ import org.apache.commons.logging.LogFactory;
 
 public class Documento {
 
+	// Lista de palabras para formar el txt resultante
 	private List<Palabra> palabras;
 
-	private List<Palabra> bloques;
+	// ancho del renglon
+	private int anchoRenglon = 14;
 
-	private int anchoRenglon = 15;
-
-	private double anchoCol = 4;
-
-	private boolean swHorizontal = false;
-	
+	// propiedades
 	private Propiedades propiedades;
-	
+
+	// logger
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	public Documento() {
 		palabras = new ArrayList<Palabra>();
 	}
 
-	public List<Palabra> getBloques() {
-		return bloques;
-	}
-
-	public void setBloques(List<Palabra> bloques) {
-		this.bloques = bloques;
-	}
-
-	public boolean isSwHorizontal() {
-		return swHorizontal;
-	}
-
-	public void setSwHorizontal(boolean swHorizontal) {
-		this.swHorizontal = swHorizontal;
-	}
-
+	/**
+	 * Método para agregar una palabra a la lista
+	 * 
+	 * @param palabra
+	 */
 	public void addPalabra(Palabra palabra) {
 		palabras.add(palabra);
 	}
 
-	public void ordernarDocumento() {
-		// ordenar primero por la coordenada "y" de menor a mayor
-		Collections.sort(palabras);
-
-	}
-	
 	public Propiedades getPropiedades() {
 		return propiedades;
 	}
@@ -76,92 +55,6 @@ public class Documento {
 		this.propiedades = propiedades;
 	}
 
-	public double getPromedioLetra() {
-		double promedioLetra = 0.0;
-
-		int cantPalabras = palabras.size();
-
-		// sumar el tamaño de cada letra
-		double suma = 0;
-
-		for (Palabra pal : palabras) {
-			suma = suma + pal.calcularTamañoLetra();
-		}
-
-		promedioLetra = suma / cantPalabras;
-
-		return promedioLetra;
-	}
-
-	public double promedioPalabraRenglon(List<Palabra> renglon) {
-		double rpta = 0;
-
-		int cantPalabras = renglon.size();
-
-		double suma = 0;
-
-		for (Palabra pal : renglon) {
-			suma = suma + pal.calcularTamañoLetra();
-		}
-
-		rpta = suma / cantPalabras;
-
-		return rpta;
-	}
-
-	private int calcularCols() {
-
-		logger.debug("Calcular cols");
-		
-		HashMap<Palabra, Integer> lstCols = new HashMap<Palabra, Integer>();
-
-		Collections.sort(bloques, Palabra.PalabraComparatorX);
-
-		Palabra inicio = this.bloques.get(0);
-		logger.debug("inicio: " + inicio);
-
-		for (Palabra pal : this.bloques) {
-			logger.debug("pal: " + pal);
-			// se verificó el eje horizontal
-			if ((pal.getPuntos().get(0).getX() <= inicio.getPuntos().get(0).getX() + 5
-					&& pal.getPuntos().get(0).getX() >= inicio.getPuntos().get(0).getX() - 5)
-					|| (pal.getPuntos().get(1).getX() <= inicio.getPuntos().get(1).getX() + 5
-							&& pal.getPuntos().get(1).getX() >= inicio.getPuntos().get(1).getX() - 5)) {
-
-				logger.debug("condicion bloque: " + pal);
-
-
-				if (lstCols.get(inicio) == null) {
-					lstCols.put(inicio, 1);
-				} else {
-					int cant = lstCols.get(inicio) + 1;
-					lstCols.put(inicio, cant);
-				}
-
-				// }else {
-				// inicio = pal;
-				// }
-
-			} else {
-				logger.debug("condicion inicio: " + pal);
-				inicio = pal;
-			}
-		}
-
-		logger.debug("columnas: " + lstCols);
-		
-		Iterator<Entry<Palabra, Integer>> it = lstCols.entrySet().iterator();
-		int col = 0;
-		while (it.hasNext()) {
-			Entry<Palabra, Integer> pair = it.next();
-			Integer value = (Integer) pair.getValue();
-			if (value >= 2) {
-				col++;
-			}
-		}
-
-		return col;
-	}
 
 	/**
 	 * Método que permite ordenar el archivo resultando, acercandolo al formato
@@ -173,44 +66,9 @@ public class Documento {
 	 *            Nombre del archivo
 	 * @throws IOException
 	 */
-	public void formarResultante(String pathFile, String fileName, boolean swPrueba) throws IOException {
+	public void formarResultante(String pathFile, String fileName) throws IOException {
 
 		logger.debug("resultante");
-		
-		// calcular las columnas
-		double factor = 0;
-		int col = this.calcularCols();
-		
-		if(col==0)
-			col = 2;
-		logger.debug("columnas: " + col);
-
-		if (this.swHorizontal) {
-			this.anchoRenglon = 6;
-			if (col > 4) {
-				factor = 1.5;
-			} else {
-				factor = 3;
-			}
-		} else {
-			this.anchoRenglon = Integer.valueOf(this.propiedades.getAnchoRenglon());
-			if(col >=8) {
-				col = 4;
-				factor = 2.5;
-			}
-			else if (col >= 4 && col < 8) {
-				col = 4;
-				factor = 2;
-			} else if (col == 1) {
-				col = 2;
-				factor = 4;
-			} else {
-				factor = 6;
-
-			}
-		}
-				
-		this.anchoCol = col * factor;
 
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
@@ -222,7 +80,7 @@ public class Documento {
 		double inc = this.anchoRenglon;
 
 		// valor inicial de la posición del renglon más el valor increental
-		double minY = palabras.get(0).getPuntos().get(0).getY();
+		double minY = 0; // palabras.get(0).getPuntos().get(0).getY();
 
 		// lista de palabras dentro de cada renglong
 		List<Palabra> palabrasInRenglon = new ArrayList<Palabra>();
@@ -259,7 +117,7 @@ public class Documento {
 		// se agregó el renglon identificado
 		lstRenglones.add(palabrasInRenglon);
 
-		// String pathfile = "c:/Temp/";		
+		// String pathfile = "c:/Temp/";
 
 		String archivo = new String();
 		StringBuilder cadena;
@@ -270,17 +128,17 @@ public class Documento {
 		for (List<Palabra> pals : lstRenglones) {
 			logger.debug("Renglones: " + pals);
 			swNum = false;
-			
+
 			cadena = new StringBuilder();
 			// String cadena = new String();
 
-			double anchoCol = this.anchoCol;
+			double anchoCol = 10; // this.anchoCol;
 
 			int colActual = 0;
 
 			for (Palabra pp : pals) {
 				logger.debug("Palabra: " + pp);
-				
+
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
 				// columna estar
 				int izqCol = pp.getPuntos().get(0).getX();
@@ -298,24 +156,23 @@ public class Documento {
 				int cantLetras = pp.getValor().length();
 				logger.debug("Cant letras: " + cantLetras);
 
-				for (int k = 0; k < colEspacio - 2; k++) {
+				for (int k = 0; k < colEspacio - 1; k++) {
 					cadena.append(" ");
 					// cadena = cadena.concat(" ");
 					colActual++;
 				}
 				logger.debug("Se agregaron espacions blancos: " + (colEspacio - 2));
-				
-				
-				//si ha habido un numero antes, verificar que no siga una "," o un "." de no ser asi agregar un espacio en blanco
-				
-				if(swNum && pp.getValor().contains(",") && pp.getValor().length()==1) {					
+
+				// si ha habido un numero antes, verificar que no siga una "," o un "." de no
+				// ser asi agregar un espacio en blanco
+
+				if (swNum && pp.getValor().contains(",") && pp.getValor().length() == 1) {
 					logger.debug("Se continua escribiendo un numero");
-				}else if(swNum && pp.getValor().contains(".") && pp.getValor().length()==1) {
+				} else if (swNum && pp.getValor().contains(".") && pp.getValor().length() == 1) {
 					logger.debug("Se continua escribiendo un numero");
-				}else if(swNum && StringUtils.isNumeric(pp.getValor())){
+				} else if (swNum && StringUtils.isNumeric(pp.getValor())) {
 					logger.debug("Se continua escribiendo un numero");
-				}
-				else if (swNum && !StringUtils.isNumeric(pp.getValor()) && pp.getValor().length()>1) {
+				} else if (swNum && !StringUtils.isNumeric(pp.getValor()) && pp.getValor().length() > 1) {
 					cadena.append(" ");
 					colActual++;
 					logger.debug("Se agregó un espacio en blanco");
@@ -334,27 +191,23 @@ public class Documento {
 					cadena.append(" ");
 					colActual++;
 					logger.debug("Se agregó un espacio en blanco");
-					//caso para letras unicas
-				}else if(pp.getValor().length() == 1 && Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
+					// caso para letras unicas
+				} else if (pp.getValor().length() == 1
+						&& Character.isLetter(pp.getValor().charAt(pp.getValor().length() - 1))) {
 					cadena.append(" ");
 					colActual++;
 					logger.debug("Se agregó un espacio en blanco");
-					//en el caso que sea solo un numero
-				}else if(StringUtils.isNumeric(pp.getValor())) {
+					// en el caso que sea solo un numero
+				} else if (StringUtils.isNumeric(pp.getValor())) {
 					swNum = true;
 				}
-				
 
 			} // fin del renglon
 
 			colActual = 0;
 
-			archivo = archivo.concat(cadena.toString() + "\r\n");
-			if(swPrueba) {
-				archivo = archivo.concat("\n");
-			}
-			// out.println(cadena.toString() + "\r\n");
-			// cadena.delete(0, cadena.length());
+			archivo = archivo.concat(cadena.toString() + "\r\n\n");
+
 
 		}
 

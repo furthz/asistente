@@ -29,22 +29,22 @@ public class BatRunner {
 	public BatRunner() {
 
 		logger.debug("Inicio BatRunner");
-
-		// String batfile = propiedades.getBatchName();// "clean.bat";
-		// String directory = propiedades.getBatchPath();//
-		// "C:\\Users\\Furth\\git\\asistente\\asistente";
-		// logger.debug("BatFile: " + batfile);
-		// logger.debug("directory: " + directory);
-
-		// String source = "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
-		// Financiero\\EEFF\\scripts\\prueba2.png";
-		// String dest = "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
-		// Financiero\\EEFF\\scripts\\prueba22222.png";
-		// try {
-		// runProcess(batfile, directory, source, dest);
-		// } catch (CommandLineException e) {
-		// e.printStackTrace();
-		// }
+//
+//String batfile = propiedades.getBatchName();// "clean.bat";
+//		 String directory = propiedades.getBatchPath();//
+//		 "C:\\Users\\Furth\\git\\asistente\\asistente";
+//		 logger.debug("BatFile: " + batfile);
+//		 logger.debug("directory: " + directory);
+//
+//		 String source = "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
+//		 Financiero\\EEFF\\scripts\\prueba2.png";
+//		 String dest = "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
+//		 Financiero\\EEFF\\scripts\\prueba22222.png";
+//		 try {
+//		 runProcess(batfile, directory, source, dest);
+//		 } catch (CommandLineException e) {
+//		 e.printStackTrace();
+//		 }
 	}
 
 	public Propiedades getPropiedades() {
@@ -117,9 +117,7 @@ public class BatRunner {
 	 */
 	public static void main(String[] args) throws IOException, CommandLineException {
 		// new BatRunner();
-		List<Path> archivos = Util.listarFicheros(
-				"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2",
-				"png");
+		
 
 		// for (Path p : archivos) {
 		// runProcess(p.toString(), p.toString());

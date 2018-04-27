@@ -23,7 +23,7 @@
 
 <body
 	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;">
-	
+
 	<div class="pos-f-t">
 		<div class="collapse" id="navbarToggleExternalContent">
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -58,37 +58,42 @@
 			</button>
 		</nav>
 	</div>
-	
-	
-	
-<div class="cabecera" style="background:url('<c:url value="/resources/img/fdo1.png"/>') no-repeat left top;">
-<div class="cont2"><a href="index.html"><img class="logo_m" src="<c:url value="/resources/images/logo-soa.png"/>"></a></div>
-<div class="cont6 tit1">Asistente Financiero</div>
-<div class="cont2"><img class="logo_m" src="<c:url value="/resources/images/banco.jpg"/>"></div>
-</div>
 
 
-<div class="btn_cont">
+
+	<div class="cabecera"
+		style="background:url('<c:url value="/resources/img/fdo1.png"/>') no-repeat left top;">
+		<div class="cont2">
+			<a href="index.html"><img class="logo_m"
+				src="<c:url value="/resources/images/logo-soa.png"/>"></a>
+		</div>
+		<div class="cont6 tit1">Asistente Financiero</div>
+		<div class="cont2">
+			<img class="logo_m"
+				src="<c:url value="/resources/images/banco.jpg"/>">
+		</div>
+	</div>
 
 
-<div class="container">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h3>Resultado del la Subida</h3>
+	<div class="btn_cont">
 
 
-    <p>Uploading of file(s)
-        <c:forEach items="${empresas}" var="emp">
-            ${emp.nombre}
-            
-        </c:forEach>
-   fueron procesadas con exito </p>
-   
-           </div>
-      </div>
-    </div>
+		<div class="container">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<h3>Resultado del la Subida</h3>
 
 
-</div>
+					<p>
+						Resultado:
+						<c:out value="${mensaje}"></c:out>
+					</p>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
 </body>
 </html>

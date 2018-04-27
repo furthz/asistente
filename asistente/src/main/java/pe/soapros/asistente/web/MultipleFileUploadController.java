@@ -29,6 +29,7 @@ import pe.soapros.asistente.domain.UploadFile;
 import pe.soapros.asistente.form.MultipleFileUploadForm;
 import pe.soapros.asistente.funcionality.ConvertImageToText;
 import pe.soapros.asistente.service.EmpresaManager;
+import pe.soapros.asistente.service.FileUploadManager;
 
 @Controller
 public class MultipleFileUploadController {
@@ -38,18 +39,21 @@ public class MultipleFileUploadController {
 	@Autowired
 	private Propiedades propiedades;
 
-	private String pathfile = ""; 
+	private String pathfile = "";
 
 	@Autowired
 	private EmpresaManager empresaManager;
 
-//	@RequestMapping(value = "/loadMultipleFileUploadMA.htm")
-//	public String loadMultipleFileUploadMA(Map<String, Object> model) {
-//		return "MultipleFileUploadMA";
-//	}
+	@Autowired
+	private FileUploadManager fileUploadManager;
+
+	// @RequestMapping(value = "/loadMultipleFileUploadMA.htm")
+	// public String loadMultipleFileUploadMA(Map<String, Object> model) {
+	// return "MultipleFileUploadMA";
+	// }
 
 	@RequestMapping(value = "/uploadMultipleFilesMA.htm", method = RequestMethod.POST)
-	public String handleFileUploadMA(
+	public ModelAndView handleFileUploadMA(
 			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model)
 			throws IOException {
 
@@ -64,6 +68,8 @@ public class MultipleFileUploadController {
 
 		Date fecha = new Date();
 
+		String mensaje = "";
+
 		try {
 
 			ConvertImageToText convertImage = new ConvertImageToText();
@@ -72,50 +78,65 @@ public class MultipleFileUploadController {
 			UploadFile archivo;
 			for (int i = 0; i < files.size(); i++) {
 
-				archivo = new UploadFile();
-				archivo.setFileName(files.get(i).getOriginalFilename());
-				archivo.setDatos(files.get(i).getBytes());
-				archivo.setFecha(fecha);
-
-				logger.debug("Se llama la conversion de texto");
-				// metodo que desempaqueta, limpia y convierte en texto
-				List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files.get(i), path.toString());
-				logger.debug("Terminó la conversion de texto");
-
-				// obtener los datos de la empresa, usnado el primer elemento de la lista
-				TipoDocumento tipo = lstDctos.get(0);
-
-				logger.debug("Se crea la empresa");
-				Empresa empresa = new Empresa();
-				empresa.setIdDoc(tipo.getIdEmpresa());
-				empresa.setNombre(tipo.getEmpresa());
-				empresa.setFecha(fecha);
-
-				logger.debug("se crea el registro del archivo");
-
-				archivo.setEmpresa(empresa);
-
-				empresa.addFile(archivo);
-
-				for (TipoDocumento tipdoc : lstDctos) {
-					tipdoc.setArchivo(archivo);
-					tipdoc.setArchivo(archivo);
-					tipdoc.setFechacreacion(fecha);
-					archivo.addTipos(tipdoc);
-
+				// verificar que el archivo no se haya subido anteriormente
+				UploadFile file;
+				try {
+					file = this.fileUploadManager.findByName(files.get(i).getOriginalFilename());
+				} catch (javax.persistence.NoResultException e1) {
+					file = null;
 				}
 
-				this.empresaManager.crearEmpresa(empresa);
-				logger.debug("Se guardó en la base de datoss");
+				if (file == null) {
+
+					archivo = new UploadFile();
+					archivo.setFileName(files.get(i).getOriginalFilename());
+					archivo.setDatos(files.get(i).getBytes());
+					archivo.setFecha(fecha);
+
+					logger.debug("Se llama la conversion de texto");
+					// metodo que desempaqueta, limpia y convierte en texto
+					List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files.get(i), path.toString());
+					logger.debug("Terminó la conversion de texto");
+
+					// obtener los datos de la empresa, usnado el primer elemento de la lista
+					TipoDocumento tipo = lstDctos.get(0);
+
+					logger.debug("Se crea la empresa");
+					Empresa empresa = new Empresa();
+					empresa.setIdDoc(tipo.getIdEmpresa());
+					empresa.setNombre(tipo.getEmpresa());
+					empresa.setFecha(fecha);
+
+					logger.debug("se crea el registro del archivo");
+
+					archivo.setEmpresa(empresa);
+
+					empresa.addFile(archivo);
+
+					for (TipoDocumento tipdoc : lstDctos) {
+						tipdoc.setArchivo(archivo);
+						tipdoc.setArchivo(archivo);
+						tipdoc.setFechacreacion(fecha);
+						archivo.addTipos(tipdoc);
+
+					}
+
+					this.empresaManager.crearEmpresa(empresa);
+					mensaje = "Se subieron correctamente";
+
+					logger.debug("Se guardó en la base de datoss");
+				} else {
+					mensaje = "Este archivo ya ha sido procesado";
+				}
 
 			}
 		} catch (Exception e) {
-			return "Error While uploading your files " + e.getMessage();
+			mensaje = "Hubo un error en el procesamiento de la imagen";
+			logger.error(e);
 		}
 
-		// List<Empresa> lstEmpresas = this.empresaManager.getEmpresas();
-		// model.addAttribute("empresas", lstEmpresas);
-		return "result";
+		return new ModelAndView("result", "mensaje", mensaje);
+		// return "result";
 
 	}
 
@@ -123,9 +144,7 @@ public class MultipleFileUploadController {
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-
 		return new ModelAndView("MultipleFileUpload");
 	}
-
 
 }
