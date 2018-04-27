@@ -49,7 +49,7 @@
 				</div>
 			</nav>
 		</div>
-		
+
 		<nav class="navbar navbar-dark bg-dark">
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarToggleExternalContent"
@@ -113,14 +113,20 @@
 									<td><c:out value="${file.empresa.idDoc}" /></td>
 									<td><c:out value="${file.fileName}" /></td>
 									<td><c:out value="${file.fecha}" /></td>
-									<td><a
-										href="<c:url value="listatipodocumentos.htm?id="/> <c:out value="${file.id}"/> ">Detalle</a>
+									<td>
+										<button type="button" class="btn btn-outline-primary"
+											onclick="window.location.href='<c:url value="listatipodocumentos.htm?id="/> <c:out value="${file.id}"/> '">Detalle</button>
+
 									</td>
-									<td><a
-										href="<c:url value="resultados.htm?id="/> <c:out value="${file.id}"/> ">Procesar</a>
+									<td>
+										<button type="button" class="btn btn-outline-warning"
+											onclick="window.location.href='<c:url value="resultados.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
+
 									</td>
-									<td><a
-										href="<c:url value="resultadosRegex.htm?id="/> <c:out value="${file.id}"/> ">Procesar</a>
+									<td>
+										<button type="button" class="btn btn-outline-warning"
+											onclick="window.location.href='<c:url value="resultadosRegex.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
+
 									</td>
 								</tr>
 
@@ -147,30 +153,57 @@
 		<!-- paginacion -->
 
 		<div>
-			<span style="float: left;"> <c:choose>
-					<c:when test="${pageListHolder.firstPage}">Prev</c:when>
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-center">
+			 
+				<c:choose>
+					<c:when test="${pageListHolder.firstPage}">
+						<li class="page-item disabled">
+      						<a class="page-link" href="#" tabindex="-1">Previous</a>
+    					</li>
+					</c:when>
 					<c:otherwise>
-						<a href="listaempresas.htm?p=${pageurl}prev">Prev</a>
+						<li class="page-item">
+      						<a class="page-link" href="listaempresas.htm?p=${pageListHolder.page-1}" tabindex="-1">Previous</a>
+    					</li>						
 					</c:otherwise>
 				</c:choose>
-			</span> <span> <c:forEach begin="0"
+				
+				<c:forEach begin="0"
 					end="${pageListHolder.pageCount-1}" varStatus="loop">
- 
-    <c:choose>
-						<c:when test="${loop.index == pageListHolder.page}">${loop.index+1}</c:when>
+
+					<c:choose>
+						<c:when test="${loop.index == pageListHolder.page}">
+							<li class="page-item active">
+      							<span class="page-link">
+        							${loop.index+1}			
+        						<span class="sr-only">(current)</span>
+							      </span>
+							    </li>
+						
+						
+						</c:when>
 						<c:otherwise>
-							<a href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a>
+							<li class="page-item"><a class="page-link" href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a></li>
+							<!-- <a href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a>-->
 						</c:otherwise>
 					</c:choose>
- 
-    </c:forEach>
-			</span> <span> <c:choose>
-					<c:when test="${pageListHolder.lastPage}">Next</c:when>
+				</c:forEach>
+				<c:choose>
+					<c:when test="${pageListHolder.lastPage}">
+						<li class="page-item disabled">
+      						<a class="page-link" href="#" tabindex="-1">Previous</a>
+    					</li>					
+					</c:when>
 					<c:otherwise>
-						<a href="listaempresas.htm?p=${pageurl}next">Next</a>
+						<li class="page-item">
+      						<a class="page-link" href="listaempresas.htm?p=${pageListHolder.page+1}" tabindex="-1">Next</a>
+    					</li>						
 					</c:otherwise>
 				</c:choose>
-			</span>
+			
+				</ul>
+			</nav>
 		</div>
 	</div>
 </body>

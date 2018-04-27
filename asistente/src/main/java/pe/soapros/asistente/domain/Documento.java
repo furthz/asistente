@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -26,7 +28,7 @@ public class Documento {
 	private List<Palabra> palabras;
 
 	// ancho del renglon
-	private int anchoRenglon = 14;
+	private int anchoRenglon = 13;
 
 	// propiedades
 	private Propiedades propiedades;
@@ -80,7 +82,7 @@ public class Documento {
 		double inc = this.anchoRenglon;
 
 		// valor inicial de la posición del renglon más el valor increental
-		double minY = 0; // palabras.get(0).getPuntos().get(0).getY();
+		double minY = palabras.get(0).getPuntos().get(0).getY();
 
 		// lista de palabras dentro de cada renglong
 		List<Palabra> palabrasInRenglon = new ArrayList<Palabra>();
@@ -205,8 +207,30 @@ public class Documento {
 			} // fin del renglon
 
 			colActual = 0;
-
-			archivo = archivo.concat(cadena.toString() + "\r\n\n");
+			List<String> patrones = new ArrayList<String>();
+			patrones.add("(\\d{1,3}(\\s*[,|.]\\d{3})+)(\\s*[,|.]\\d{2})?");
+			patrones.add("\\d{1,2}(\\s*[,|.]\\d{2})?\\s*%");
+			//String patron = "(\\d{1,3}(\\s*[,|.]\\d{3})+)(\\s*[,|.]\\d{2})?"; //falta el patron porcentajes
+			
+			String numero = "";
+			String numeroMod = "";
+			String cadenaMod = cadena.toString();
+			
+			for(String patron: patrones) {
+				numero = "";
+				numeroMod = "";
+				Pattern pat = Pattern.compile(patron);
+				Matcher mat = pat.matcher(cadena.toString());				
+				while (mat.find()) {
+					numero = mat.group(); 
+					System.out.println(numero);
+					numeroMod = numero.replaceAll("\\s", "");
+					System.out.println(numeroMod);
+					cadenaMod = cadenaMod.toString().replaceAll(numero, numeroMod + " ");
+				}
+			}
+			
+			archivo = archivo.concat(cadenaMod.toString() + "\r\n\n");
 
 
 		}

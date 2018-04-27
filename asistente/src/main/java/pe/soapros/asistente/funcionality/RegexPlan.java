@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -32,21 +31,6 @@ public class RegexPlan {
 		List<Double> lst = new ArrayList<Double>();
 
 		// patrones de cuenta efectivo
-		// String patronDisponible =
-		// "DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronCaja =
-		// "CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronEfectivo =
-		// "EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronBanco =
-		// "BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronCtaAhorro =
-		// "AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronDeposito =
-		// "DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-		// String patronFdoCarter = "FONDO DE
-		// CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
-
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
@@ -138,32 +122,34 @@ public class RegexPlan {
 		FileReader fr = null;
 		BufferedReader br = null;
 
-		String patron = "BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)";
+		String patron = "(\\d{1,3}(\\s*[,|.]\\d{3})*|(\\d+))([,|.]\\d{2})?";
 		Pattern pat = Pattern.compile(patron);
 
-		String contenido = Util.leerArchivoTXT("D:\\Downloads\\convert-contr63676725.0.txt");
+		String contenido = "2.142,569,3342.725,000,000";//Util.leerArchivoTXT("D:\\Downloads\\convert-contr63676725.0.txt");
 		//System.out.println(contenido);
 		
-		String[] lineas = contenido.split("\\r?\\n");
+		
+		//String[] lineas = contenido.split("\\r?\\n");
 	
-		for(String ln: lineas) {
+		//for(String ln: lineas) {
 			//System.out.println(ln);
 			
-			Matcher mat = pat.matcher(ln.toUpperCase());
+			Matcher mat = pat.matcher(contenido.toUpperCase());
 
-			boolean find = mat.find();
+			//boolean find = mat.find();
 
+			//System.out.println(contenido.replaceAll(patron, mat.group() + " "));
 			// System.out.println(find);
 
-			if (find) {
-				System.out.println(mat.group(0));
-				System.out.println(mat.group(1));
+			while (mat.find()) {
+				System.out.println(mat.group());
+				//System.out.println(mat.group(1));
 				// System.out.println(mat.group(2));
 
 			}
 
 			
-		}
+		//}
 		
 //		try {
 //			// Apertura del fichero y creacion de BufferedReader para poder

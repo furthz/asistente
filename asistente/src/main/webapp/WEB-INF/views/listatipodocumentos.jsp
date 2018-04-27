@@ -103,10 +103,12 @@
 									<td><c:out value="${file.tipoDoc}" /></td>
 									<td><c:out value="${file.fechacreacion}" /></td>
 									<td><c:out value="${file.unidad}" /></td>
-									<td><a
+									<td>
+									<a  class="btn btn-outline-primary"
 										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectId}"/>"
 										target="_blank"> Imagen </a></td>
 									<td><a
+										class="btn btn-outline-primary"
 										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectIdTxt}"/>"
 										target="_blank"> Texto </a></td>
 

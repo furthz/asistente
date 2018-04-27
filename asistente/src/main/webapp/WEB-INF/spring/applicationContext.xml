@@ -8,7 +8,7 @@
 
 
 	<!-- holding properties for database connectivity / -->
-	<context:property-placeholder location="classpath:jdbc-produccion.properties" />
+	<context:property-placeholder location="classpath:jdbc.properties" />
 	
 	<!-- enabling annotation driven configuration / -->
 	<context:annotation-config />

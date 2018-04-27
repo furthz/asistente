@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -41,13 +42,15 @@ function sendJson(datos) {
 
 </script>
 
-<span class="skype-button bubble " data-bot-id="e2dc44f0-27e8-47eb-8c94-44c8cf125573"></span>
+<span class="skype-button bubble "
+	data-bot-id="e2dc44f0-27e8-47eb-8c94-44c8cf125573"></span>
 <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
 </head>
 
 
 <body
-	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;"  onload ="sendJson(<c:out value="${objetos.json}"/>)">
+	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;"
+	onload="sendJson(<c:out value="${objetos.json}"/>)">
 
 
 	<div class="pos-f-t">
@@ -106,101 +109,145 @@ function sendJson(datos) {
 				<img class="rounded" style="width: 100% !important"
 					src="data:image/jpg;base64,<c:out value="${objetos.imagen}"/>" />
 			</div>
-			<div class="col-4">
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<h4><a href="<c:url value="downloadExcel.htm"/>">Descargar Excel</a></h4>
-						
-						<h3>Activos</h3>
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col">Cuenta</th>
-									<th scope="col">Valor</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${objetos.plan[0].indActivo}" var="activo">
-									<c:if test="${objetos.plan[0].activo[activo] > 0 }">
-										<tr>
-										
-											<!-- 
+
+			<div id="accordion">
+				<div class="card">
+					<h4>
+						<a href="<c:url value="downloadExcel.htm"/>">Descargar Excel</a>
+					</h4>
+					<div class="card-header" id="headingOne">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse"
+								data-target="#collapseOne" aria-expanded="true"
+								aria-controls="collapseOne">
+								<h3>Activos</h3>
+							</button>
+						</h5>
+					</div>
+
+					<div id="collapseOne" class="collapse show"
+						aria-labelledby="headingOne" data-parent="#accordion">
+						<div class="card-body">
+
+							<table class="table-responsive table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Cuenta</th>
+										<th scope="col">Valor</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${objetos.plan[0].indActivo}" var="activo">
+										<c:if test="${objetos.plan[0].activo[activo] > 0 }">
+											<tr>
+
+												<!-- 
 											<c:set var="etsActivo" value="${fn.split('prueba 2', '')}" />
 											<c:forEach items="${etsActivo}" var="current" varStatus="stat">
 												<c:set var="miEtiqueta" value="${stat.first ? '': miEtiqueta } ${current }" />
 											</c:forEach>
 											 -->
-											<th scope="row"><c:out value="${activo}" /></th>
-											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan[0].activo[activo]}" /></td>
+												<th scope="row"><c:out value="${activo}" /></th>
+												<td><fmt:formatNumber type="number"
+														pattern="###,###.###"
+														value="${objetos.plan[0].activo[activo]}" /></td>
 
-										</tr>
-									</c:if>
-								</c:forEach>
-							</tbody>
-						</table>
-
-					</div>
+											</tr>
+										</c:if>
+									</c:forEach>
+								</tbody>
+							</table>
 
 
-					<div class="panel-body">
-						<h3>Pasivos</h3>
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col">Cuenta</th>
-									<th scope="col">Valor</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${objetos.plan[0].indPasivo}" var="activo">
-									<c:if test="${objetos.plan[0].pasivo[activo] > 0 }">
-										<tr>
-											<th scope="row"><c:out value="${activo}" /></th>
-											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan[0].pasivo[activo]}" /></td>
-										</tr>
-									</c:if>
-								</c:forEach>
-							</tbody>
-						</table>
+						</div>
 
 					</div>
-
-
-
-
-					<div class="panel-body">
-						<h3>Patrimonio</h3>
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col">Cuenta</th>
-									<th scope="col">Valor</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${objetos.plan[0].indPatrimonio}" var="activo">
-									<c:if test="${objetos.plan[0].patrimonio[activo] > 0 }">
-										<tr>
-											<th scope="row"><c:out value="${activo}" /></th>
-											<td><fmt:formatNumber type="number"
-													pattern="###,###.###" value="${objetos.plan[0].patrimonio[activo]}" /></td>
-										</tr>
-									</c:if>
-								</c:forEach>
-							</tbody>
-						</table>
-
-					</div>
-
-
-
-
 
 				</div>
+				<!-- Fin del card -->
+
+				<div class="card">
+					<div class="card-header" id="headingTwo">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseTwo" aria-expanded="false"
+								aria-controls="collapseTwo">
+								<h3>Pasivos</h3>
+							</button>
+						</h5>
+					</div>
+
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion">
+						<div class="card-body">
+							<table class="table-responsive table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Cuenta</th>
+										<th scope="col">Valor</th>
+									</tr>
+								</thead>
+								<tbody>
+
+									<c:forEach items="${objetos.plan[0].indPasivo}" var="activo">
+										<c:if test="${objetos.plan[0].pasivo[activo] > 0 }">
+											<tr>
+												<th scope="row"><c:out value="${activo}" /></th>
+												<td><fmt:formatNumber type="number"
+														pattern="###,###.###"
+														value="${objetos.plan[0].pasivo[activo]}" /></td>
+											</tr>
+										</c:if>
+									</c:forEach>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="card">
+					<div class="card-header" id="headingThree">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseThree" aria-expanded="false"
+								aria-controls="collapseThree">
+								<h3>Patrimonio</h3>
+							</button>
+						</h5>
+					</div>
+
+					<div id="collapseThree" class="collapse"
+						aria-labelledby="headingThree" data-parent="#accordion">
+						<div class="card-body">
+							<table class="table-responsive table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Cuenta</th>
+										<th scope="col">Valor</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${objetos.plan[0].indPatrimonio}"
+										var="activo">
+										<c:if test="${objetos.plan[0].patrimonio[activo] > 0 }">
+											<tr>
+												<th scope="row"><c:out value="${activo}" /></th>
+												<td><fmt:formatNumber type="number"
+														pattern="###,###.###"
+														value="${objetos.plan[0].patrimonio[activo]}" /></td>
+											</tr>
+										</c:if>
+									</c:forEach>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
+			<!-- Fin del acordeon -->
+
+
 		</div>
 
 

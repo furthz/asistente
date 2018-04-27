@@ -60,8 +60,9 @@ public class BatRunner {
 		logger.debug("runProcess");
 		logger.debug("Batch: " + this.propiedades);
 
-		String batfile = this.propiedades.getBatchName();// "clean.bat";
+		String batfile = this.propiedades.getBatchName();// "clean.bat";		
 		String directory = this.propiedades.getBatchPath(); // "C:\\Users\\Furth\\git\\asistente\\asistente";
+		
 
 		this.runProcess(batfile, directory, source, dest);
 
@@ -118,10 +119,19 @@ public class BatRunner {
 	public static void main(String[] args) throws IOException, CommandLineException {
 		// new BatRunner();
 		
-
-		// for (Path p : archivos) {
-		// runProcess(p.toString(), p.toString());
-		// }
+		Propiedades pr = new Propiedades();
+		pr.setBatchName("clean.bat");
+		pr.setBatchPath("C:\\Users\\Furth\\git\\asistente\\asistente");
+		pr.setWindows("1");
+		
+		
+		List<Path> archivos = Util.listarFicheros("C:\\Users\\Furth\\Desktop\\Nueva carpeta", "png");
+		
+		 for (Path p : archivos) {
+			 BatRunner bat = new BatRunner();
+			 bat.setPropiedades(pr);
+			 bat.runProcess(p.toString(), p.toString());
+		 }
 	}
 
 }

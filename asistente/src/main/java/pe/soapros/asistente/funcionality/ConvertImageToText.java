@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,12 +52,14 @@ public class ConvertImageToText {
 	public static void main(String[] args) throws IOException, Exception {
 
 		//System.out.println(args[0]);
-		detectDocumentText("C:\\Users\\Furth\\Desktop\\Nueva carpeta");
+		detectDocumentText("C:\\Users\\Furth\\Desktop\\Nueva carpeta");	
+		
+		
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
 
-		List<Path> archivos = Util.listarFicheros(pathFile, "jpg");
+		List<Path> archivos = Util.listarFicheros(pathFile, "png");
 
 		String filePathMod = "";
 
@@ -192,7 +195,7 @@ public class ConvertImageToText {
 		for (String filePath : lstArchivos) {
 			logger.debug("Archivo: " + filePath);
 
-			filePathMod = filePath.substring(0, filePath.length() - 3) + "png";
+			filePathMod = filePath.substring(0, filePath.length() - 3) + "jpg";
 			logger.debug("Archivo a modificar: " + filePathMod);
 
 			batRunner.runProcess(filePath, filePathMod);
@@ -315,7 +318,7 @@ public class ConvertImageToText {
 			File f = new File(arch);
 			String nombre = f.getName();
 			nombre = nombre.substring(0, nombre.length() - 3);
-			tipodoc.setFilename(nombre + "png");
+			tipodoc.setFilename(nombre + "jpg");
 			tipodoc.setFilenameTxt(nombre + "txt");
 			lstTipos.add(tipodoc);
 
