@@ -14,4 +14,6 @@ public interface FileUploadManager extends Serializable{
 	public List<UploadFile> getFilesWithSoons();
 	
 	public UploadFile findByName(String name);
+	
+	public List<UploadFile> findByEmpresaNombre(String nombre);
 }

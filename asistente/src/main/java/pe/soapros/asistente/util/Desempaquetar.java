@@ -167,10 +167,12 @@ public class Desempaquetar {
 	}
 
 	private List<Path> listarFicheros(String path) throws IOException {
+		System.out.println(path);
 		final List<Path> archivos = new ArrayList<Path>();
 		Files.walk(Paths.get(path)).forEach(new Consumer<Path>() {
 			public void accept(Path ruta) {
-				if (Files.isRegularFile(ruta) && Desempaquetar.this.getFileExtension(new File(ruta.toString())).equals("tif")) {
+				if (Files.isRegularFile(ruta)
+						&& Desempaquetar.this.getFileExtension(new File(ruta.toString())).equals("tif")) {
 					// System.out.println(ruta);
 					archivos.add(ruta);
 				}
@@ -188,10 +190,10 @@ public class Desempaquetar {
 			return "";
 	}
 
-	public void conversionMasiva(String path, String dest) throws IOException, CommandLineException {
+	public void conversionMasiva(String path) throws IOException, CommandLineException {
 
 		List<Path> archivos = this.listarFicheros(path);
-		
+
 		BatRunner batRunner = new BatRunner();
 
 		String carpetaDest = "";
@@ -200,18 +202,18 @@ public class Desempaquetar {
 			nombreArchivo = p.getFileName().toString();
 			carpetaDest = nombreArchivo.substring(0, nombreArchivo.length() - 4);
 
-			Path pp = Paths.get(dest + File.separator + carpetaDest);
+			Path pp = Paths.get(p.getParent() + File.separator + carpetaDest);
 
 			Files.createDirectory(pp);
 
 			List<String> lstArchivos = this.doit(p.getParent().toString(), nombreArchivo,
-					dest + File.separator + carpetaDest);
+					p.getParent() + File.separator + carpetaDest);
 
 			String filePathMod = "";
 
 			for (String filePath : lstArchivos) {
 
-				filePathMod = filePath.substring(0, filePath.length() - 3) + "png";
+				filePathMod = filePath.substring(0, filePath.length() - 3) + "jpg";
 
 				batRunner.runProcess(filePath, filePathMod);
 
@@ -227,10 +229,8 @@ public class Desempaquetar {
 	}
 
 	public static void main(String[] args) throws IOException, CommandLineException {
-		 //Desempaquetar desemp = new Desempaquetar();
-		 //desemp.conversionMasiva( args[0], //"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\lista1\\Bajo",
-		 //args[1]);//"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino");
-	
+		Desempaquetar desemp = new Desempaquetar();
+		desemp.conversionMasiva(args[0]);
 
 	}
 

@@ -105,11 +105,13 @@
                     <td><input type="file" name="files[0]" size="50" /></td>
                 </tr>
             </table>
-            </div>            
-            <!-- <br>    <input  type="button" value="Add More File"  onclick="AddMoreFile('fuTable')"> -->
-    		<button type="submit" class="btn btn-primary" value="Upload">Subir archivos </button>
+            
+            </div>          
+            <input  type="button" value="Add More File"  onclick="AddMoreFile('fuTable')">
+    		
     		
     	</div>
+    	<button type="submit" class="btn btn-primary" value="Upload">Subir archivos </button>
         </form>
         
          

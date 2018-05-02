@@ -35,7 +35,7 @@ public class Util {
 	 * @param cadena
 	 */
 	public static void leerPlanCuentasRegex(String json, PlanCuenta plan, String archivo) {
-		List<List<String>> a = new ArrayList<List<String>>();
+//		List<List<String>> a = new ArrayList<List<String>>();
 		
 		List<Double> lstEfectivo = new ArrayList<Double>();
 		
@@ -294,23 +294,68 @@ public class Util {
 		String valor = Util.leerEtiquetaJSON(json, "tipodoc");
 		logger.debug("tipodoc: " + valor);
 
-		CharSequence csBalance = "BALANCE";
-		CharSequence csEstado = "ESTADO";
-		CharSequence csNota = "NOTA";
+//		CharSequence csBalance = "BALANCE";
+//		CharSequence csEstado = "ESTADO";
+//		CharSequence csNota = "NOTA";
+		
+		String ptrBalance = "BALANCE\\s*\\W+";
+		String ptrEstado = "ESTADO\\s*\\W+";
+		String ptrNota = "NOTA\\s*\\W+";
 
+		Pattern pat = null;
+		Matcher mat = null;
+		
+		pat = Pattern.compile(ptrBalance);
+		mat = pat.matcher(valor.toUpperCase());
+		
+		boolean find = mat.find();
+		
+		if(find) {
+			tipoDcto.setTipoDoc("Balance");
+		}else {
+			pat = Pattern.compile(ptrEstado);
+			mat = pat.matcher(valor.toUpperCase());
+			
+			boolean findEstado = mat.find();
+			
+			if(findEstado) {
+				tipoDcto.setTipoDoc("Estado Resultados");
+			}else {
+				
+				pat = Pattern.compile(ptrNota);
+				mat = pat.matcher(valor.toUpperCase());
+				
+				boolean findNota = mat.find();
+				
+				if(findNota) {
+					tipoDcto.setTipoDoc("Notas");
+				}else {
+					
+					if("".equals(valor) || valor == null) {
+						tipoDcto.setTipoDoc("Balance");
+					}else {
+						tipoDcto.setTipoDoc(valor);
+					}
+					
+				}
+				
+			}
+			
+		}
+		
 		// Castear el tipo
-		if (valor.toUpperCase().contains(csBalance)) {
-			tipoDcto.setTipoDoc("Balance");
-		} else if (valor.toUpperCase().contains(csEstado)) {
-			tipoDcto.setTipoDoc("Estado Resultados");
-		} else if (valor.toUpperCase().contains(csNota)) {
-			tipoDcto.setTipoDoc("Notas");
-		} else if("".equals(valor) || valor == null) {
-			tipoDcto.setTipoDoc("Balance");
-		}
-		else {
-			tipoDcto.setTipoDoc(valor);
-		}
+//		if (valor.toUpperCase().contains(csBalance)) {
+//			tipoDcto.setTipoDoc("Balance");
+//		} else if (valor.toUpperCase().contains(csEstado)) {
+//			tipoDcto.setTipoDoc("Estado Resultados");
+//		} else if (valor.toUpperCase().contains(csNota)) {
+//			tipoDcto.setTipoDoc("Notas");
+//		} else if("".equals(valor) || valor == null) {
+//			tipoDcto.setTipoDoc("Balance");
+//		}
+//		else {
+//			tipoDcto.setTipoDoc(valor);
+//		}
 
 		// se agrega la empresa
 		String empresa = Util.leerEtiquetaJSON(json, "empresa");

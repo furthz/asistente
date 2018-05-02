@@ -12,4 +12,6 @@ public interface EmpresaManager extends Serializable{
 	public void crearEmpresa(Empresa emp);
 	
 	public Empresa buscarById(long id);
+	
+	public List<Empresa> buscarByName(String texto);
 }

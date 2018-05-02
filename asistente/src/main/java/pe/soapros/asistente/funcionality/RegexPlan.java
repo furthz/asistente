@@ -1,8 +1,5 @@
 package pe.soapros.asistente.funcionality;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,8 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import pe.soapros.asistente.util.Util;
 
 public class RegexPlan {
 
@@ -40,9 +35,9 @@ public class RegexPlan {
 		lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("FONDO DE CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
-		File archivo = null;
-		FileReader fr = null;
-		BufferedReader br = null;
+//		File archivo = null;
+//		FileReader fr = null;
+//		BufferedReader br = null;
 
 		
 		try {
@@ -118,9 +113,9 @@ public class RegexPlan {
 
 	public static void main(String[] args) throws IOException {
 
-		File archivo = null;
-		FileReader fr = null;
-		BufferedReader br = null;
+//		File archivo = null;
+//		FileReader fr = null;
+//		BufferedReader br = null;
 
 		String patron = "(\\d{1,3}(\\s*[,|.]\\d{3})*|(\\d+))([,|.]\\d{2})?";
 		Pattern pat = Pattern.compile(patron);

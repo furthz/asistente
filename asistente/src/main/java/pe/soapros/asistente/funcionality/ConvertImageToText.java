@@ -1,5 +1,6 @@
 package pe.soapros.asistente.funcionality;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,7 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +54,7 @@ public class ConvertImageToText {
 	public static void main(String[] args) throws IOException, Exception {
 
 		//System.out.println(args[0]);
-		detectDocumentText("C:\\Users\\Furth\\Desktop\\Nueva carpeta");	
+		detectDocumentText("D:\\archivos1\\Fase5\\Destino\\Balances");	
 		
 		
 	}
@@ -165,20 +167,26 @@ public class ConvertImageToText {
 	 * @throws Exception
 	 * @throws IOException
 	 */
-	public List<TipoDocumento> detectDocumentText(MultipartFile file, String pathFile) throws Exception, IOException {
+	public List<TipoDocumento> detectDocumentText(List<MultipartFile> files, String pathFile) throws Exception, IOException {
 
-		logger.debug("detectDocumentText");
-
-		// enviar los archivos a una ruta temporal
-		file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
-		logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
-				+ file.getOriginalFilename());
+		logger.debug("detectDocumentText");		
 
 		//Desempaquetar las imagenes que vienen en el TIF
 		Desempaquetar desem = new Desempaquetar();
-		List<String> lstArchivos = desem.doit(pathFile, file.getOriginalFilename());
-		logger.debug("Archivos desempaquetados");
-		logger.debug("Cant archivos: " + lstArchivos.size());
+		List<String> lstArchivos = new ArrayList<String>();
+		
+		for(MultipartFile file: files) {			
+			// enviar los archivos a una ruta temporal
+			file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
+			logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
+					+ file.getOriginalFilename());
+			
+			List<String> lstArchs = desem.doit(pathFile, file.getOriginalFilename());
+			logger.debug("Archivos desempaquetados");
+			logger.debug("Cant archivos: " + lstArchivos.size());
+			lstArchivos.addAll(lstArchs);
+		}
+		
 
 		
 		String filePathMod = "";
@@ -200,6 +208,10 @@ public class ConvertImageToText {
 
 			batRunner.runProcess(filePath, filePathMod);
 			logger.debug("Ejecutar el archivo Python");
+			
+			batRunner.runProcess(filePathMod, filePathMod);
+			
+			batRunner.runProcess(filePathMod, filePathMod);
 
 			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
 			logger.debug("se carga AnnotateImageRequest");
@@ -291,6 +303,14 @@ public class ConvertImageToText {
 			String nombre = f.getName();
 			nombre = nombre.substring(0, nombre.length() - 3);
 
+			BufferedImage image = ImageIO.read(f);
+
+			if (image.getHeight() > 1000) {
+				dcto.setSwHorizontal(false);
+			} else {
+				dcto.setSwHorizontal(true);
+			}
+			
 			dcto.formarResultante(pathFile, nombre + "txt");
 			logger.debug("Se formo el archivo txt: " + pathFile + nombre + "txt");
 
@@ -299,7 +319,10 @@ public class ConvertImageToText {
 
 		// verificar todos los archivos TXT resueltos, para ver si son balances u otros
 		// tipos
-
+	
+		//agregar la clasificacion de imagenes
+		
+		
 		TipoDocumentoNLU tipoNLU = new TipoDocumentoNLU();
 		tipoNLU.setPropiedades(this.propiedades);
 		logger.debug("Se creó TipoNLU: " + tipoNLU.toString());

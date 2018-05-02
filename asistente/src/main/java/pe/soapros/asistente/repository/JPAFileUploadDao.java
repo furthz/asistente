@@ -40,7 +40,7 @@ public class JPAFileUploadDao implements FileUploadDao {
 	@SuppressWarnings("unchecked")
 	public List<UploadFile> getFileWithSoons() {
 
-		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.fecha").getResultList();
+		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.empresa.nombre").getResultList();
 	}
 
 	@Override
@@ -50,5 +50,15 @@ public class JPAFileUploadDao implements FileUploadDao {
 				UploadFile.class);
 
 		return query.setParameter("name", name).getSingleResult();
+	}
+
+	@Override
+	public List<UploadFile> findByEmpresaNombre(String texto) {
+
+		TypedQuery<UploadFile> query = em.createQuery("select p from UploadFile p join fetch p.empresa where p.empresa.nombre like :name order by p.empresa.nombre",
+				UploadFile.class);
+		
+		return query.setParameter("name", "%" + texto + "%").getResultList();
+		
 	}
 }

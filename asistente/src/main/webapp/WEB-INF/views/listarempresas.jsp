@@ -90,9 +90,26 @@
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<h3>Ejecuciones</h3>
+
+					<div class="col-5">
+						<!-- FORMULARIO PARA BUSQUEDAS -->
+						<form class="form-inline my-2 my-lg-0" method="post" action="findEmpresa.htm">
+							<input class="form-control mr-sm-2" type="text" name="texto"
+								placeholder="Buscar ..." aria-label="Buscar ...">
+							<button class="btn btn-dark clearfix">
+								<i class="fas fa-search fa-lg"></i> Buscar
+							</button>
+						</form>
+					</div>
+					<div class="col-3">
+              			
+              			<a class="btn btn-success clearfix" href="<c:url value="downloadExcelAll.htm"/>">
+              				<i class="fas fa-file-excel fa-lg"></i> 
+              				Descargar Excel
+              			</a>
+            		</div>
 					<h4>
-						<a href="<c:url value="downloadExcelAll.htm"/>">Descargar
-							Excel</a>
+						
 					</h4>
 					<table class="table table-striped">
 						<thead>
@@ -155,53 +172,49 @@
 		<div>
 			<nav aria-label="Page navigation example">
 				<ul class="pagination justify-content-center">
-			 
-				<c:choose>
-					<c:when test="${pageListHolder.firstPage}">
-						<li class="page-item disabled">
-      						<a class="page-link" href="#" tabindex="-1">Previous</a>
-    					</li>
-					</c:when>
-					<c:otherwise>
-						<li class="page-item">
-      						<a class="page-link" href="listaempresas.htm?p=${pageListHolder.page-1}" tabindex="-1">Previous</a>
-    					</li>						
-					</c:otherwise>
-				</c:choose>
-				
-				<c:forEach begin="0"
-					end="${pageListHolder.pageCount-1}" varStatus="loop">
 
 					<c:choose>
-						<c:when test="${loop.index == pageListHolder.page}">
-							<li class="page-item active">
-      							<span class="page-link">
-        							${loop.index+1}			
-        						<span class="sr-only">(current)</span>
-							      </span>
-							    </li>
-						
-						
+						<c:when test="${pageListHolder.firstPage}">
+							<li class="page-item disabled"><a class="page-link" href="#"
+								tabindex="-1">Previous</a></li>
 						</c:when>
 						<c:otherwise>
-							<li class="page-item"><a class="page-link" href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a></li>
-							<!-- <a href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a>-->
+							<li class="page-item"><a class="page-link"
+								href="listaempresas.htm?p=${pageListHolder.page-1}"
+								tabindex="-1">Previous</a></li>
 						</c:otherwise>
 					</c:choose>
-				</c:forEach>
-				<c:choose>
-					<c:when test="${pageListHolder.lastPage}">
-						<li class="page-item disabled">
-      						<a class="page-link" href="#" tabindex="-1">Previous</a>
-    					</li>					
-					</c:when>
-					<c:otherwise>
-						<li class="page-item">
-      						<a class="page-link" href="listaempresas.htm?p=${pageListHolder.page+1}" tabindex="-1">Next</a>
-    					</li>						
-					</c:otherwise>
-				</c:choose>
-			
+
+					<c:forEach begin="0" end="${pageListHolder.pageCount-1}"
+						varStatus="loop">
+
+						<c:choose>
+							<c:when test="${loop.index == pageListHolder.page}">
+								<li class="page-item active"><span class="page-link">
+										${loop.index+1} <span class="sr-only">(current)</span>
+								</span></li>
+
+
+							</c:when>
+							<c:otherwise>
+								<li class="page-item"><a class="page-link"
+									href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a></li>
+								<!-- <a href="listaempresas.htm?p=${pageurl}${loop.index}">${loop.index+1}</a>-->
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<c:choose>
+						<c:when test="${pageListHolder.lastPage}">
+							<li class="page-item disabled"><a class="page-link" href="#"
+								tabindex="-1">Previous</a></li>
+						</c:when>
+						<c:otherwise>
+							<li class="page-item"><a class="page-link"
+								href="listaempresas.htm?p=${pageListHolder.page+1}"
+								tabindex="-1">Next</a></li>
+						</c:otherwise>
+					</c:choose>
+
 				</ul>
 			</nav>
 		</div>

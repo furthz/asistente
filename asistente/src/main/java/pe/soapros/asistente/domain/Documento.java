@@ -32,6 +32,8 @@ public class Documento {
 
 	// propiedades
 	private Propiedades propiedades;
+	
+	private boolean swHorizontal;
 
 	// logger
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -56,7 +58,23 @@ public class Documento {
 	public void setPropiedades(Propiedades propiedades) {
 		this.propiedades = propiedades;
 	}
+	
+	public int getAnchoRenglon() {
+		return anchoRenglon;
+	}
 
+	public void setAnchoRenglon(int anchoRenglon) {
+		this.anchoRenglon = anchoRenglon;
+	}
+	
+
+	public boolean isSwHorizontal() {
+		return swHorizontal;
+	}
+
+	public void setSwHorizontal(boolean swHorizontal) {
+		this.swHorizontal = swHorizontal;
+	}
 
 	/**
 	 * Método que permite ordenar el archivo resultando, acercandolo al formato
@@ -134,7 +152,13 @@ public class Documento {
 			cadena = new StringBuilder();
 			// String cadena = new String();
 
-			double anchoCol = 10; // this.anchoCol;
+			double anchoCol = 0;
+			if(this.swHorizontal) {
+				anchoCol = 6;
+			}else {
+				anchoCol = 10; // this.anchoCol;
+			}
+			
 
 			int colActual = 0;
 

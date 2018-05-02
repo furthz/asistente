@@ -33,4 +33,8 @@ public class SimpleEmpresaManager implements EmpresaManager{
 		return this.empresaDao.buscarById(id);
 	}
 
+	public List<Empresa> buscarByName(String texto) {
+		return this.empresaDao.buscarByName(texto);
+	}
+
 }

@@ -11,4 +11,6 @@ public interface EmpresaDao {
 	public void saveEmpresa(Empresa emp);
 	
 	public Empresa buscarById(long id);
+	
+	public List<Empresa> buscarByName(String texto);
 }

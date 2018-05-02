@@ -1,8 +1,5 @@
 package pe.soapros.asistente.web;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -122,7 +118,7 @@ public class ResultadoController {
 		objetos.put("json", cuentas.get(0).getJSON());
 
 		logger.debug("json a la pagina: " + cuentas.get(0).getJSON());
-		
+
 		return new ModelAndView("resultados", "objetos", objetos);
 	}
 
@@ -134,6 +130,7 @@ public class ResultadoController {
 
 	@RequestMapping(value = "/downloadExcelAll", method = RequestMethod.GET)
 	public ModelAndView downloadExcelAll() throws IOException {
+		logger.debug("Descargar todo el excel");
 
 		this.pathfile = propiedades.getTemporal();
 		Path basePath = Paths.get(this.pathfile);
@@ -148,19 +145,24 @@ public class ResultadoController {
 		List<List<TipoDocumento>> ejes = new ArrayList<List<TipoDocumento>>();
 
 		List<UploadFile> ejecuciones = this.fileManager.getFilesWithSoons();
+		logger.debug("Cantidad de ejecuciones: " + ejecuciones.size());
 
 		List<PlanCuenta> planes = new ArrayList<PlanCuenta>();
 
 		for (UploadFile f : ejecuciones) {
 			List<TipoDocumento> temp = this.tipoDocumentoManager.getTiposDocumentosById(f.getId());
+			logger.debug("Archivos de: " + f.getId() + " Cantidad: " + temp.size());
 			ejes.add(temp);
 		}
 
-		try {
-			for (List<TipoDocumento> lst : ejes) {
+		logger.debug("Ejes: " + ejes.size());
+
+		for (List<TipoDocumento> lst : ejes) {
+			try {
 				String contenido = "";
 				String ruta = "";
-				
+				logger.debug("Lst: " + lst.size());
+
 				TipoDocumento tipDoc = null;
 				for (TipoDocumento tipo : lst) {
 					if (tipo.getTipoDoc().trim().equals("Balance")) {
@@ -176,12 +178,16 @@ public class ResultadoController {
 				}
 
 				PlanCuenta planc = plan.consultarCuentas(contenido, false);
+				logger.debug("Plan Cuentas: " + planc);
+
 				planc.getLstTipoDocumento().add(tipDoc);
 
 				planes.add(planc);
+
+			} catch (Exception e) {
+				logger.error(e);
 			}
-		} catch (Exception e) {
-			logger.error(e);
+
 		}
 
 		return new ModelAndView("excelView", "planCuentas", planes);

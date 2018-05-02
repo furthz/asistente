@@ -14,31 +14,40 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.UpdateClassifi
 
 public class Clasificador {
 
+	VisualRecognition service;
+	
+	public Clasificador() {
+		
+		service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
+
+		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
+
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		// crearClasificador();
 
 		// File f = new File(
 		// "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
 		// Financiero\\EEFF\\scripts\\convert-contr92672159.0.png");
-		// clasificarEEFF();
-		updateClasificador();
+		 clasificarEEFF();
+		//updateClasificador();
+		//crearClasificador();
 	}
 
 	@SuppressWarnings("unused")
 	private static void crearClasificador() throws FileNotFoundException {
 
 		VisualRecognition service = new VisualRecognition("2016-05-20");
-		service.setApiKey("67355c3439771662c5da029ee2a00b2cac5dbea9");
+		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
 
 		CreateClassifierOptions createClassifierOptions = new CreateClassifierOptions.Builder().name("eeff")
-				.addClass("balance", new File(
-						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Balances.zip"))
-				.addClass("estado", new File(
+				.addClass("estados", new File(
 						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Estados.zip"))
-				.addClass("nota", new File(
+				.addClass("notas", new File(
 						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Notas.zip"))
 				.negativeExamples(new File(
-						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Otros.zip"))
+						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Otros1.zip"))
 				.build();
 
 		Classifier eeff = service.createClassifier(createClassifierOptions).execute();
@@ -51,26 +60,24 @@ public class Clasificador {
 
 		VisualRecognition service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
 
-		service.setApiKey("67355c3439771662c5da029ee2a00b2cac5dbea9");
+		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
 
-		InputStream imagesStream = new FileInputStream(
-				"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\scripts\\convert-contr55031814.4.png");
+		InputStream imagesStream = new FileInputStream("D:\\archivos1\\Fase5\\Destino\\convert-contr69763804.0.png");
 		ClassifyOptions classifyOptions = new ClassifyOptions.Builder().imagesFile(imagesStream)
-				.imagesFilename("convert-contr55031814.4.png")
-				.parameters("{\"classifier_ids\": [\"eeff_436552270\"] ,\"threshold\": 0.5}").build();
+				.imagesFilename("convert-contr69763804.0.png")
+				.parameters("{\"classifier_ids\": [\"eeff_1483460197\"] ,\"threshold\": 0.5}").build();
 
 		ClassifiedImages result = service.classify(classifyOptions).execute();
 		System.out.println(result);
 
 	}
 
+	@SuppressWarnings("unused")
 	private static void updateClasificador() throws FileNotFoundException {
 		VisualRecognition service = new VisualRecognition("2016-05-20");
-		service.setApiKey("67355c3439771662c5da029ee2a00b2cac5dbea9");
-		String classifierId = "eeff_436552270";
-
-		InputStream negativeExamples = new FileInputStream(
-				"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Otros1.zip");
+		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
+		String classifierId = "eeff_1483460197";
+		
 		UpdateClassifierOptions options = new UpdateClassifierOptions.Builder().classifierId(classifierId)
 				// .addClass("balance", new
 				// File("D:\\Documents\\Proyectos\\Bancolombia\\Asistente
@@ -78,9 +85,9 @@ public class Clasificador {
 				// .addClass("estado", new
 				// File("D:\\Documents\\Proyectos\\Bancolombia\\Asistente
 				// Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Estados1.zip"))
-				.addClass("nota", new File(
-						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Notas3.zip"))
-				.negativeExamples(negativeExamples).negativeExamplesFilename("Otros1.zip").build();
+				.addClass("notas", new File(
+						"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\soa pro\\Entrenamiento\\Notas1.zip")).build();
+				//.negativeExamples(negativeExamples).negativeExamplesFilename("Otros1.zip").build();
 
 		Classifier eeff = service.updateClassifier(options).execute();
 		System.out.println(eeff);

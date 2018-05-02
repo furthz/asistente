@@ -46,4 +46,12 @@ public class JPAEmpresaDao implements EmpresaDao {
 
 	}
 
+	@Override
+	public List<Empresa> buscarByName(String texto) {
+		
+		TypedQuery<Empresa> query = em.createQuery("select em from Empresa em where em.name like :name", Empresa.class);
+		
+		return query.setParameter("name", "%" + texto + "%").getResultList();
+	}
+
 }

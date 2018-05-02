@@ -47,11 +47,6 @@ public class MultipleFileUploadController {
 	@Autowired
 	private FileUploadManager fileUploadManager;
 
-	// @RequestMapping(value = "/loadMultipleFileUploadMA.htm")
-	// public String loadMultipleFileUploadMA(Map<String, Object> model) {
-	// return "MultipleFileUploadMA";
-	// }
-
 	@RequestMapping(value = "/uploadMultipleFilesMA.htm", method = RequestMethod.POST)
 	public ModelAndView handleFileUploadMA(
 			@ModelAttribute("multipleFileUploadForm") MultipleFileUploadForm multipleFileUploadForm, Model model)
@@ -76,26 +71,27 @@ public class MultipleFileUploadController {
 			convertImage.setPropiedades(this.propiedades);
 
 			UploadFile archivo;
-			for (int i = 0; i < files.size(); i++) {
+//			for (int i = 0; i < files.size(); i++) {
 
 				// verificar que el archivo no se haya subido anteriormente
 				UploadFile file;
 				try {
-					file = this.fileUploadManager.findByName(files.get(i).getOriginalFilename());
+					file = this.fileUploadManager.findByName(files.get(0).getOriginalFilename());
 				} catch (javax.persistence.NoResultException e1) {
 					file = null;
 				}
 
+				//en el caso de que sea procesado por primera vez
 				if (file == null) {
 
 					archivo = new UploadFile();
-					archivo.setFileName(files.get(i).getOriginalFilename());
-					archivo.setDatos(files.get(i).getBytes());
+					archivo.setFileName(files.get(0).getOriginalFilename());
+					archivo.setDatos(files.get(0).getBytes());
 					archivo.setFecha(fecha);
 
 					logger.debug("Se llama la conversion de texto");
 					// metodo que desempaqueta, limpia y convierte en texto
-					List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files.get(i), path.toString());
+					List<TipoDocumento> lstDctos = convertImage.detectDocumentText(files, path.toString());
 					logger.debug("Terminó la conversion de texto");
 
 					// obtener los datos de la empresa, usnado el primer elemento de la lista
@@ -104,7 +100,7 @@ public class MultipleFileUploadController {
 					logger.debug("Se crea la empresa");
 					Empresa empresa = new Empresa();
 					empresa.setIdDoc(tipo.getIdEmpresa());
-					empresa.setNombre(tipo.getEmpresa());
+					empresa.setNombre(tipo.getEmpresa().toUpperCase());
 					empresa.setFecha(fecha);
 
 					logger.debug("se crea el registro del archivo");
@@ -129,7 +125,7 @@ public class MultipleFileUploadController {
 					mensaje = "Este archivo ya ha sido procesado";
 				}
 
-			}
+//			}
 		} catch (Exception e) {
 			mensaje = "Hubo un error en el procesamiento de la imagen";
 			logger.error(e);

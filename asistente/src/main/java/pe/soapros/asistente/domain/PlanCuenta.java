@@ -32,6 +32,8 @@ public class PlanCuenta {
 		indPasivo = new ArrayList<String>();
 		indPatrimonio = new ArrayList<String>();
 		
+		this.lstTipoDocumento = new ArrayList<TipoDocumento>();
+		
 		//se inicio las cuentas de activos
 		this.iniciarActivo();
 	}
