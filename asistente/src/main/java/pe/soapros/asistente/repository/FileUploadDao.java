@@ -15,4 +15,6 @@ public interface FileUploadDao {
 	
 	List<UploadFile> findByEmpresaNombre(String texto);
 	
+	UploadFile findById(long id);
+	
 }

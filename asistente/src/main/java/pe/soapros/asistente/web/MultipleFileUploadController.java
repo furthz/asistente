@@ -86,7 +86,7 @@ public class MultipleFileUploadController {
 
 					archivo = new UploadFile();
 					archivo.setFileName(files.get(0).getOriginalFilename());
-					archivo.setDatos(files.get(0).getBytes());
+					archivo.setDatos("1".getBytes());//files.get(0).getBytes());
 					archivo.setFecha(fecha);
 
 					logger.debug("Se llama la conversion de texto");

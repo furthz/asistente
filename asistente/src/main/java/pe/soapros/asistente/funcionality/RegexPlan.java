@@ -18,42 +18,20 @@ public class RegexPlan {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	public RegexPlan(String contenido) {
-		this.contenido = contenido;
+		this.contenido = contenido.toUpperCase();
 	}
 
-	public Set<Double> getEfectivo() {
+	private Set<Double> procesarPatrones(List<String> patrones) {
 
 		List<Double> lst = new ArrayList<Double>();
 
-		// patrones de cuenta efectivo
-		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("FONDO DE CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-
-//		File archivo = null;
-//		FileReader fr = null;
-//		BufferedReader br = null;
-
-		
 		try {
-
-			//archivo = new File(this.contenido);
-
-			//fr = new FileReader(archivo);
-			//br = new BufferedReader(fr);
-
 			String[] lineas = this.contenido.split("\\r?\\n");
-			//String linea;
 			Pattern pat = null;
 			Matcher mat = null;
-			for(String linea : lineas) {
 
-				for (String patron : lstPatrones) {
+			for (String linea : lineas) {
+				for (String patron : patrones) {
 					pat = Pattern.compile(patron);
 					mat = pat.matcher(linea.toUpperCase());
 
@@ -64,13 +42,13 @@ public class RegexPlan {
 					if (find) {
 						String valor = mat.group(1);
 						Character ptoDec = valor.charAt(valor.length() - 3);
-						
+
 						if (ptoDec.toString().equals(",") || ptoDec.toString().equals(".")) {
 							swDecimal = true;
 						}
-						
+
 						String[] valEtiqueta = valor.split("\\W+");
-						
+
 						valor = "";
 						for (String ss : valEtiqueta) {
 							valor += ss;
@@ -88,12 +66,10 @@ public class RegexPlan {
 							logger.debug("valor convertido: " + lvalor);
 						} catch (Exception e) {
 							logger.error(e);
-							// lvalor = (long)-1.00;
 						}
-						
+
 						lst.add(lvalor);
-					
-						
+
 					}
 
 				}
@@ -102,81 +78,319 @@ public class RegexPlan {
 		} catch (Exception e) {
 			logger.error(e);
 		}
-
 		Set<Double> sethash = new HashSet<Double>();
-		
+
 		sethash.addAll(lst);
-		
+
 		return sethash;
+
+	}
+	
+	
+	//ACTIVO FIJO
+	public Set<Double> getActivoFijoTerreno(){
+		
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("TERRENO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RURAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("NO DEPRECIABLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getActivoFijoConstruccionProceso(){
+		
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("EDIFICIO EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDADES EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDADES EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getActivoFijoPropiedadPlanta(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("PROPIEDADES PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD, PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+		
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getActivoFijoMaquinaria(){
+		
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("MAQUINARIA Y EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ACUEDUCTO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("INSTALACI[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	
+	public Set<Double> getActivoFijoMuebles(){
+		
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("EQUIPO DE OFICINA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MUEBLES Y ENSERES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EQUIPO DE COMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EQUIPO DE CÓMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	
+	//PATRIMONIO
+	//LISTA DE CUENTAS
+	
+	
+	public Set<Double> getPatrimonioCapital(){
+
+		//List<Double> lst = new ArrayList<Double>();
+
+		// patrones de cuenta efectivo
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("CAPITAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("^PATRIMONIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CUOTA DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTES SOCIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTE[\\s]*](\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTES DE SOCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("FONDO SOCIAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PARTES DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("^APORTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> capital = this.procesarPatrones(lstPatrones);
+		
+		return capital;
+		
+	}
+
+	public Set<Double> getPatrimonioPrima(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("PRIMA EN COLOC[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+	
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+
+		
+	}
+	
+	public Set<Double> getPatrimonioSuperavit(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("OTROS SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("OTROS SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+	
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getPatrimonioReserva(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("RESERVA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+	
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getPatrimonioResultadoEjercicio(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("UTILIDADES ESTATUTARIAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RESULTADO DEL EJERCICIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("GANANCIAS[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PERDIDAS[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("UTILIDAD DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RESULTADO DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+	
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	public Set<Double> getPatrimonioResultadoAnteriores(){
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("UTILIDADES ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RESULTADOS EJERCICIOS ANTERIORES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("GANANCIAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PÉRDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PERDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		
+	
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+		
+		return cuenta;
+	}
+	
+	
+	//EFECTIVO
+	public Set<Double> getEfectivo() {
+
+		List<Double> lst = new ArrayList<Double>();
+
+		// patrones de cuenta efectivo
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("FONDO DE CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> efectivo = this.procesarPatrones(lstPatrones);
+		
+		return efectivo;
+		
+//		try {
+//
+//			String[] lineas = this.contenido.split("\\r?\\n");
+//			// String linea;
+//			Pattern pat = null;
+//			Matcher mat = null;
+//			for (String linea : lineas) {
+//
+//				for (String patron : lstPatrones) {
+//					pat = Pattern.compile(patron);
+//					mat = pat.matcher(linea.toUpperCase());
+//
+//					boolean find = mat.find();
+//					boolean swDecimal = false;
+//					// System.out.println(find);
+//
+//					if (find) {
+//						String valor = mat.group(1);
+//						Character ptoDec = valor.charAt(valor.length() - 3);
+//
+//						if (ptoDec.toString().equals(",") || ptoDec.toString().equals(".")) {
+//							swDecimal = true;
+//						}
+//
+//						String[] valEtiqueta = valor.split("\\W+");
+//
+//						valor = "";
+//						for (String ss : valEtiqueta) {
+//							valor += ss;
+//						}
+//
+//						if (swDecimal) {
+//							valor = valor.substring(0, valor.length() - 2) + "."
+//									+ valor.substring(valor.length() - 2, valor.length());
+//							logger.debug("valor: " + valor);
+//						}
+//
+//						Double lvalor = 0.0;
+//						try {
+//							lvalor = Double.parseDouble(valor);
+//							logger.debug("valor convertido: " + lvalor);
+//						} catch (Exception e) {
+//							logger.error(e);
+//						}
+//
+//						lst.add(lvalor);
+//
+//					}
+//
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			logger.error(e);
+//		}
+//
+//		Set<Double> sethash = new HashSet<Double>();
+//
+//		sethash.addAll(lst);
+//
+//		return sethash;
 
 	}
 
 	public static void main(String[] args) throws IOException {
 
-//		File archivo = null;
-//		FileReader fr = null;
-//		BufferedReader br = null;
+		// File archivo = null;
+		// FileReader fr = null;
+		// BufferedReader br = null;
 
 		String patron = "(\\d{1,3}(\\s*[,|.]\\d{3})*|(\\d+))([,|.]\\d{2})?";
 		Pattern pat = Pattern.compile(patron);
 
-		String contenido = "2.142,569,3342.725,000,000";//Util.leerArchivoTXT("D:\\Downloads\\convert-contr63676725.0.txt");
-		//System.out.println(contenido);
-		
-		
-		//String[] lineas = contenido.split("\\r?\\n");
-	
-		//for(String ln: lineas) {
-			//System.out.println(ln);
-			
-			Matcher mat = pat.matcher(contenido.toUpperCase());
+		String contenido = "2.142,569,3342.725,000,000";// Util.leerArchivoTXT("D:\\Downloads\\convert-contr63676725.0.txt");
+		// System.out.println(contenido);
 
-			//boolean find = mat.find();
+		// String[] lineas = contenido.split("\\r?\\n");
 
-			//System.out.println(contenido.replaceAll(patron, mat.group() + " "));
-			// System.out.println(find);
+		// for(String ln: lineas) {
+		// System.out.println(ln);
 
-			while (mat.find()) {
-				System.out.println(mat.group());
-				//System.out.println(mat.group(1));
-				// System.out.println(mat.group(2));
+		Matcher mat = pat.matcher(contenido.toUpperCase());
 
-			}
+		// boolean find = mat.find();
 
-			
-		//}
-		
-//		try {
-//			// Apertura del fichero y creacion de BufferedReader para poder
-//			// hacer una lectura comoda (disponer del metodo readLine()).
-//			archivo = new File(
-//					// "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
-//					// Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2\\contr63278309\\convert-contr63278309.0.txt");
-//					"D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2\\contr63372110\\convert-contr63372110.1.txt");
-//			fr = new FileReader(archivo);
-//			br = new BufferedReader(fr);
-//
-//			// Lectura del fichero
-//			String linea;
-//			while ((linea = br.readLine()) != null) {
-//				Matcher mat = pat.matcher(linea.toUpperCase());
-//
-//				boolean find = mat.find();
-//
-//				// System.out.println(find);
-//
-//				if (find) {
-//					System.out.println(mat.group(0));
-//					System.out.println(mat.group(1));
-//					// System.out.println(mat.group(2));
-//
-//				}
-//
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		// System.out.println(contenido.replaceAll(patron, mat.group() + " "));
+		// System.out.println(find);
+
+		while (mat.find()) {
+			System.out.println(mat.group());
+			// System.out.println(mat.group(1));
+			// System.out.println(mat.group(2));
+
+		}
+
+		// }
+
+		// try {
+		// // Apertura del fichero y creacion de BufferedReader para poder
+		// // hacer una lectura comoda (disponer del metodo readLine()).
+		// archivo = new File(
+		// // "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
+		// //
+		// Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2\\contr63278309\\convert-contr63278309.0.txt");
+		// "D:\\Documents\\Proyectos\\Bancolombia\\Asistente
+		// Financiero\\EEFF\\SOA\\seleccionado\\destino\\Fase2\\contr63372110\\convert-contr63372110.1.txt");
+		// fr = new FileReader(archivo);
+		// br = new BufferedReader(fr);
+		//
+		// // Lectura del fichero
+		// String linea;
+		// while ((linea = br.readLine()) != null) {
+		// Matcher mat = pat.matcher(linea.toUpperCase());
+		//
+		// boolean find = mat.find();
+		//
+		// // System.out.println(find);
+		//
+		// if (find) {
+		// System.out.println(mat.group(0));
+		// System.out.println(mat.group(1));
+		// // System.out.println(mat.group(2));
+		//
+		// }
+		//
+		// }
+		//
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 
 	}
 

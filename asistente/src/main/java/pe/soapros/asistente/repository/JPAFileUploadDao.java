@@ -55,10 +55,19 @@ public class JPAFileUploadDao implements FileUploadDao {
 	@Override
 	public List<UploadFile> findByEmpresaNombre(String texto) {
 
-		TypedQuery<UploadFile> query = em.createQuery("select p from UploadFile p join fetch p.empresa where p.empresa.nombre like :name order by p.empresa.nombre",
+		TypedQuery<UploadFile> query = em.createQuery("select p from UploadFile p join fetch p.empresa where UPPER(p.empresa.nombre) like :name order by p.empresa.nombre",
 				UploadFile.class);
 		
 		return query.setParameter("name", "%" + texto + "%").getResultList();
 		
+	}
+
+	@Override
+	public UploadFile findById(long id) {
+	
+		TypedQuery<UploadFile> query = em.createQuery("select p from UploadFile p join fetch p.empresa where p.id = :id",
+				UploadFile.class);
+		
+		return query.setParameter("id", id).getSingleResult();
 	}
 }

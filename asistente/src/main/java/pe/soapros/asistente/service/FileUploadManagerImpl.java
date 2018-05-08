@@ -42,5 +42,11 @@ public class FileUploadManagerImpl implements FileUploadManager{
 	public List<UploadFile> findByEmpresaNombre(String nombre) {
 		return this.fileUploadDao.findByEmpresaNombre(nombre);
 	}
+
+	@Override
+	public UploadFile findById(long id) {
+
+		return this.fileUploadDao.findById(id);
+	}
 	
 }

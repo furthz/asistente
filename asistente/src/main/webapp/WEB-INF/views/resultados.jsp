@@ -109,12 +109,13 @@ function sendJson(datos) {
 				<img class="rounded" style="width: 100% !important"
 					src="data:image/jpg;base64,<c:out value="${objetos.imagen}"/>" />
 			</div>
-
 			<div id="accordion">
 				<div class="card">
+					<!-- 
 					<h4>
 						<a href="<c:url value="downloadExcel.htm"/>">Descargar Excel</a>
 					</h4>
+					 -->
 					<div class="card-header" id="headingOne">
 						<h5 class="mb-0">
 							<button class="btn btn-link" data-toggle="collapse"

@@ -90,6 +90,16 @@ public class Documento {
 
 		logger.debug("resultante");
 
+		double anchoCol = 0;
+		if(this.swHorizontal) {
+			anchoCol = 6;
+			this.anchoRenglon = 10;
+		}else {
+			anchoCol = 10; // this.anchoCol;
+			this.anchoRenglon = 13;
+		}
+		
+		
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
 
@@ -100,7 +110,7 @@ public class Documento {
 		double inc = this.anchoRenglon;
 
 		// valor inicial de la posición del renglon más el valor increental
-		double minY = palabras.get(0).getPuntos().get(0).getY();
+		double minY = 0; //palabras.get(0).getPuntos().get(0).getY();
 
 		// lista de palabras dentro de cada renglong
 		List<Palabra> palabrasInRenglon = new ArrayList<Palabra>();
@@ -152,12 +162,6 @@ public class Documento {
 			cadena = new StringBuilder();
 			// String cadena = new String();
 
-			double anchoCol = 0;
-			if(this.swHorizontal) {
-				anchoCol = 6;
-			}else {
-				anchoCol = 10; // this.anchoCol;
-			}
 			
 
 			int colActual = 0;

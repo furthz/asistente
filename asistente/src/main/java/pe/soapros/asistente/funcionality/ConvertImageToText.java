@@ -54,14 +54,14 @@ public class ConvertImageToText {
 	public static void main(String[] args) throws IOException, Exception {
 
 		//System.out.println(args[0]);
-		detectDocumentText("D:\\archivos1\\Fase5\\Destino\\Balances");	
+		detectDocumentText("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas");	
 		
 		
 	}
 
 	public static void detectDocumentText(String pathFile) throws Exception, IOException {
 
-		List<Path> archivos = Util.listarFicheros(pathFile, "png");
+		List<Path> archivos = Util.listarFicheros(pathFile, "jpg");
 
 		String filePathMod = "";
 

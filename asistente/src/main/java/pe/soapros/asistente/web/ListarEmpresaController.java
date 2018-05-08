@@ -45,7 +45,7 @@ public class ListarEmpresaController {
 		int page = ServletRequestUtils.getIntParameter(request, "p", 0);
 		
 		pageList.setPage(page);
-		pageList.setPageSize(20);
+		pageList.setPageSize(50);
 		
 
 		return new ModelAndView("listarempresas", "pageList", pageList);

@@ -35,9 +35,24 @@ public class Util {
 	 * @param cadena
 	 */
 	public static void leerPlanCuentasRegex(String json, PlanCuenta plan, String archivo) {
-//		List<List<String>> a = new ArrayList<List<String>>();
-		
+		// List<List<String>> a = new ArrayList<List<String>>();
+
 		List<Double> lstEfectivo = new ArrayList<Double>();
+		
+		List<Double> lstCapital = new ArrayList<Double>();
+		List<Double> lstPrima = new ArrayList<Double>();
+		List<Double> lstSuperavit = new ArrayList<Double>();
+		List<Double> lstReserva = new ArrayList<Double>();
+		List<Double> lstResultado = new ArrayList<Double>();
+		List<Double> lstTotalUtilidades = new ArrayList<Double>();
+		
+		//activo fijo
+		List<Double> lstTerrenos = new ArrayList<Double>();
+		List<Double> lstContProceso = new ArrayList<Double>();
+		List<Double> lstEdificios = new ArrayList<Double>();
+		List<Double> lstMaquinaria = new ArrayList<Double>();
+		List<Double> lstMuebles = new ArrayList<Double>();
+		List<Double> lstTransporte = new ArrayList<Double>();
 		
 		JSONObject obj = new JSONObject(json);
 		logger.debug("JSON: " + json);
@@ -55,14 +70,14 @@ public class Util {
 
 			etiqueta = entidades.getJSONObject(i).getString("type");
 			logger.debug("Etiqueta: " + etiqueta);
-			
+
 			valor = entidades.getJSONObject(i).getString("text");
 			logger.debug("Valor: " + valor);
 
 			try {
 				Character pto = valor.charAt(valor.length() - 3);
 				logger.debug("Caracter: " + pto.toString());
-				
+
 				if (pto.toString().equals(",") || pto.toString().equals(".")) {
 					swNum = true;
 				}
@@ -72,11 +87,14 @@ public class Util {
 			}
 			//
 			String all = "";
-			Pattern pat = Pattern.compile("\\d+(?:[.,]\\d+)?|Free");
+			//Pattern pat = Pattern.compile("\\d+(?:[.,]\\d+)?|Free"); //OJO CORREGIR EL PATRON ADECUADO DEL NUMERO PARA OBTENER SOLO UNA COLUMNA
+			Pattern pat = Pattern.compile("(\\d{1,3}(\\s{0,1}[,|.]\\d{3})+)(\\s{0,1}[,|.]\\d{2})?");
+			
+			//Valor: 33.156.863          34.613.408      33.760.000
 			Matcher m = pat.matcher(valor);
 
 			while (m.find()) {
-				all += m.group(0);
+				all += m.group();
 			}
 			logger.debug("Numero: " + all);
 
@@ -102,63 +120,115 @@ public class Util {
 				// lvalor = (long)-1.00;
 			}
 
-			if(!etiqueta.equals("Efectivo")) {
-				plan.addCuenta(etiqueta, lvalor);
-			}else {				
-				lstEfectivo.add(lvalor);				
-			}
-
+			//buscar etiquetas regex
 			
+			if(etiqueta.equals("Efectivo")){
+				lstEfectivo.add(lvalor);
+				
+			}else if(etiqueta.equals("Capital")){
+				lstCapital.add(lvalor);				
+			}else if(etiqueta.equals("Prima_Colocacion_Acciones")) {
+				lstPrima.add(lvalor);
+			}else if(etiqueta.equals("Otros_Superavit_Capital")) {
+				lstSuperavit.add(lvalor);
+			}else if(etiqueta.equals("Reserva_Legal")) {
+				lstReserva.add(lvalor);
+			}else if(etiqueta.equals("Resultado_Ejercicio")) {
+				lstResultado.add(lvalor);
+			}else if(etiqueta.equals("Total_Utilidades")) {
+				lstTotalUtilidades.add(lvalor);
+			}else if(etiqueta.equals("Terrenos")) {
+				lstTerrenos.add(lvalor);
+			}else if(etiqueta.equals("Construccion_Proceso")) {
+				lstContProceso.add(lvalor);			
+			}else if(etiqueta.equals("Edificios_Mejoras")) {
+				lstEdificios.add(lvalor);
+			}
+			else if(etiqueta.equals("Maquinaria_Equipo")) {
+				lstMaquinaria.add(lvalor);
+			}else if(etiqueta.equals("Muebles_Enseres")) {
+				lstMuebles.add(lvalor);
+			}else if(etiqueta.equals("Equipo_Transporte")) {
+				lstTransporte.add(lvalor);
+			}
+			
+			else {
+				plan.addCuenta(etiqueta, lvalor);
+			}
+			
+//			if (!etiqueta.equals("Efectivo")) {
+//				plan.addCuenta(etiqueta, lvalor);
+//			} else {
+//				lstEfectivo.add(lvalor);
+//			}
+
 		}
-		
+
 		RegexPlan regex = new RegexPlan(archivo);
+
+		Set<Double> lstEfectivosRegex = regex.getEfectivo();		
+		limpiarValores(lstEfectivosRegex, lstEfectivo, "Efectivo", plan);
 		
-		Set<Double>lstEfectivosRegex = regex.getEfectivo();
-		logger.debug("Regex Efectivo: " + lstEfectivosRegex);
-		logger.debug("IA Efectivo: " + lstEfectivo);
+		//PATRIMONIO
 		
-		for(Double efe: lstEfectivosRegex ) {
-			lstEfectivo.add(efe);
+		Set<Double> lstCapitalRegex = regex.getPatrimonioCapital();
+		limpiarValores(lstCapitalRegex, lstCapital, "Capital", plan);
+		
+		Set<Double> lstPrimaRegex = regex.getPatrimonioPrima();
+		limpiarValores(lstPrimaRegex, lstPrima, "Prima_Colocacion_Acciones", plan);
+		
+		Set<Double> lstSuperavitRegex = regex.getPatrimonioSuperavit();
+		limpiarValores(lstSuperavitRegex, lstSuperavit, "Otros_Superavit_Capital", plan);
+		
+		Set<Double> lstReservaRegex = regex.getPatrimonioReserva();
+		limpiarValores(lstReservaRegex, lstReserva, "Reserva_Legal", plan);
+		
+		Set<Double> lstResultadoRegex = regex.getPatrimonioResultadoEjercicio();
+		limpiarValores(lstResultadoRegex, lstResultado, "Resultado_Ejercicio", plan);
+		
+		Set<Double> lstTotalRegex = regex.getPatrimonioResultadoAnteriores();
+		limpiarValores(lstTotalRegex, lstTotalUtilidades, "Total_Utilidades", plan);
+		
+		//ACTIVO FIJO
+		Set<Double> lstTerrenosRegex = regex.getActivoFijoTerreno();
+		limpiarValores(lstTerrenosRegex, lstTerrenos, "Terrenos", plan);
+		
+		Set<Double> lstContProcesoRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstContProcesoRegex, lstContProceso, "Construccion_Proceso", plan);
+		
+		Set<Double> lstEdificiosRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstEdificiosRegex, lstEdificios, "Edificios_Mejoras", plan);
+		
+		Set<Double> lstMaquinariaRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstMaquinariaRegex, lstMaquinaria, "Maquinaria_Equipo", plan);
+		
+		Set<Double> lstMueblesRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstMueblesRegex, lstMuebles, "Muebles_Enseres", plan);
+		
+		Set<Double> lstTransporteRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstTransporteRegex, lstTransporte, "Equipo_Transporte", plan);
+		
+		
+
+	}
+	
+	private static void limpiarValores(Set<Double> regexs, List<Double> lista, String etiqueta, PlanCuenta plan){
+		
+		logger.debug("Regex : " + etiqueta + " " + regexs);
+		logger.debug("IA : " + etiqueta + " " + lista);
+		
+		for(Double cuenta: regexs) {
+			lista.add(cuenta);
 		}
 		
 		Set<Double> sethash = new HashSet<Double>();
+		sethash.addAll(lista);
 		
-		//eliminar valores duplicados
-		sethash.addAll(lstEfectivo);
-		
-		for(Double efe: sethash) {
-			plan.addCuenta("Efectivo", efe);
+		for(Double c: sethash) {
+			plan.addCuenta(etiqueta, c);
 		}
-		
-//		boolean swIgual = false;
-//		for(Double efecRegex: lstEfectivosRegex) {
-//			
-//			swIgual = false;
-//			for(Double efec: lstEfectivo) {
-//				if(efecRegex == efec) {
-//					logger.debug("Igual: " + efecRegex + " - " + efec);
-//					swIgual = true;
-//					break;
-//				}
-//			}
-//			
-//			if(!swIgual) {
-//				lstEfectivo.add(efecRegex);
-//				logger.debug("Se agrega un nuevo efectivo: " + efecRegex);
-//			}			
-//			
-//			
-//		}
-		
-		
-		//agregar los efectivos agregados por regex
-		
-//		for(Double efec: lstEfectivo) {
-//			plan.addCuenta("Efectivo", efec);
-//		}
-		
-		
 	}
+
 	/**
 	 * 
 	 * @param json
@@ -182,14 +252,14 @@ public class Util {
 
 			etiqueta = entidades.getJSONObject(i).getString("type");
 			logger.debug("Etiqueta: " + etiqueta);
-			
+
 			valor = entidades.getJSONObject(i).getString("text");
 			logger.debug("Valor: " + valor);
 
 			try {
 				Character pto = valor.charAt(valor.length() - 3);
 				logger.debug("Caracter: " + pto.toString());
-				
+
 				if (pto.toString().equals(",") || pto.toString().equals(".")) {
 					swNum = true;
 				}
@@ -228,6 +298,7 @@ public class Util {
 				logger.error(e);
 				// lvalor = (long)-1.00;
 			}
+			// EVITAR VALORES DUPLICADOS
 
 			plan.addCuenta(etiqueta, lvalor);
 
@@ -294,68 +365,78 @@ public class Util {
 		String valor = Util.leerEtiquetaJSON(json, "tipodoc");
 		logger.debug("tipodoc: " + valor);
 
-//		CharSequence csBalance = "BALANCE";
-//		CharSequence csEstado = "ESTADO";
-//		CharSequence csNota = "NOTA";
-		
+		// CharSequence csBalance = "BALANCE";
+		// CharSequence csEstado = "ESTADO";
+		// CharSequence csNota = "NOTA";
+
 		String ptrBalance = "BALANCE\\s*\\W+";
+		String ptrBalance1 = "ESTADOS DE SITUACION\\s*\\W+";
 		String ptrEstado = "ESTADO\\s*\\W+";
 		String ptrNota = "NOTA\\s*\\W+";
 
 		Pattern pat = null;
 		Matcher mat = null;
-		
+
 		pat = Pattern.compile(ptrBalance);
 		mat = pat.matcher(valor.toUpperCase());
-		
+
 		boolean find = mat.find();
-		
-		if(find) {
+
+		if (find) {
 			tipoDcto.setTipoDoc("Balance");
-		}else {
-			pat = Pattern.compile(ptrEstado);
+		} else {
+			pat = Pattern.compile(ptrBalance1);
 			mat = pat.matcher(valor.toUpperCase());
-			
-			boolean findEstado = mat.find();
-			
-			if(findEstado) {
-				tipoDcto.setTipoDoc("Estado Resultados");
-			}else {
-				
-				pat = Pattern.compile(ptrNota);
+			boolean findEs = mat.find();
+
+			if (findEs) {
+				tipoDcto.setTipoDoc("Balance");
+			} else {
+
+				pat = Pattern.compile(ptrEstado);
 				mat = pat.matcher(valor.toUpperCase());
-				
-				boolean findNota = mat.find();
-				
-				if(findNota) {
-					tipoDcto.setTipoDoc("Notas");
-				}else {
-					
-					if("".equals(valor) || valor == null) {
-						tipoDcto.setTipoDoc("Balance");
-					}else {
-						tipoDcto.setTipoDoc(valor);
+
+				boolean findEstado = mat.find();
+
+				if (findEstado) {
+					tipoDcto.setTipoDoc("Estado Resultados");
+				} else {
+
+					pat = Pattern.compile(ptrNota);
+					mat = pat.matcher(valor.toUpperCase());
+
+					boolean findNota = mat.find();
+
+					if (findNota) {
+						tipoDcto.setTipoDoc("Notas");
+					} else {
+
+						if ("".equals(valor) || valor == null) {
+							tipoDcto.setTipoDoc("Balance");
+						} else {
+							tipoDcto.setTipoDoc(valor);
+						}
+
 					}
-					
+
 				}
-				
 			}
-			
+
 		}
-		
+
 		// Castear el tipo
-//		if (valor.toUpperCase().contains(csBalance)) {
-//			tipoDcto.setTipoDoc("Balance");
-//		} else if (valor.toUpperCase().contains(csEstado)) {
-//			tipoDcto.setTipoDoc("Estado Resultados");
-//		} else if (valor.toUpperCase().contains(csNota)) {
-//			tipoDcto.setTipoDoc("Notas");
-//		} else if("".equals(valor) || valor == null) {
-//			tipoDcto.setTipoDoc("Balance");
-//		}
-//		else {
-//			tipoDcto.setTipoDoc(valor);
-//		}
+		// if (valor.toUpperCase().contains(csBalance)) {
+		// tipoDcto.setTipoDoc("Balance");
+		// } else if (valor.toUpperCase().contains(csEstado)) {
+		// tipoDcto.setTipoDoc("Estado Resultados");
+		// } else if (valor.toUpperCase().contains(csNota)) {
+		// tipoDcto.setTipoDoc("Notas");
+		// } else if("".equals(valor) || valor == null) {
+		// tipoDcto.setTipoDoc("Balance");
+		// }
+		// else {
+		// tipoDcto.setTipoDoc(valor);
+		// }
 
 		// se agrega la empresa
 		String empresa = Util.leerEtiquetaJSON(json, "empresa");

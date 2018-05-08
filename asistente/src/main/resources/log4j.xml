@@ -5,8 +5,8 @@
 
 	<!-- Appenders -->
 	<appender name="console" class="org.apache.log4j.RollingFileAppender">
-		 <param name="File" value="D:/logs/SpringMVC2.log" />
-		<!-- <param name="File" value="/temporal/log/SpringMVC2.log" />-->
+		<param name="File" value="D:/logs/SpringMVC2.log" />
+		<!--  <param name="File" value="/temporal/log/SpringMVC2.log" />-->
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
 		</layout>

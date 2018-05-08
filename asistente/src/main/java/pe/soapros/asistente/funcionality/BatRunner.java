@@ -116,7 +116,7 @@ public class BatRunner {
 		pr.setWindows("1");
 		
 		
-		List<Path> archivos = Util.listarFicheros("D:\\archivos1\\Fase5\\Destino\\Balances", "png");
+		List<Path> archivos = Util.listarFicheros("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas", "jpg");
 		
 		 for (Path p : archivos) {
 			 BatRunner bat = new BatRunner();

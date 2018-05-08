@@ -230,7 +230,7 @@ public class Desempaquetar {
 
 	public static void main(String[] args) throws IOException, CommandLineException {
 		Desempaquetar desemp = new Desempaquetar();
-		desemp.conversionMasiva(args[0]);
+		desemp.conversionMasiva("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas");
 
 	}
 

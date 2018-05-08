@@ -96,10 +96,10 @@
 						</thead>
 						<tbody>
 
-							<c:forEach items="${tipos}" var="file">
+							<c:forEach items="${objetos.tipos}" var="file">
 								<tr>
-									<td><c:out value="${file.empresa}" /></td>
-									<td><c:out value="${file.idEmpresa}" /></td>
+									<td><c:out value="${objetos.empresa.nombre}" /></td>
+									<td><c:out value="${objetos.empresa.idDoc}" /></td>
 									<td><c:out value="${file.tipoDoc}" /></td>
 									<td><c:out value="${file.fechacreacion}" /></td>
 									<td><c:out value="${file.unidad}" /></td>

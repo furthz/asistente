@@ -11,6 +11,8 @@
 <link rel="stylesheet" type="text/css"
 	href="https://fonts.googleapis.com/css?family=Anton" />
 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
 <link href="<c:url value="/resources/css/bootstrap.min.css"/>"
 	rel="stylesheet">
 <link rel="stylesheet" type="text/css"
@@ -119,8 +121,8 @@
 								<th scope="col">Archivo</th>
 								<th scope="col">Fecha</th>
 								<th scope="col">Detalle</th>
-								<th scope="col">IA</th>
-								<th scope="col">IA + RegEx</th>
+								<th scope="col">Analizar</th>
+								<th scope="col">An. Notas</th> 
 							</tr>
 						</thead>
 						<tbody>
@@ -137,14 +139,18 @@
 									</td>
 									<td>
 										<button type="button" class="btn btn-outline-warning"
-											onclick="window.location.href='<c:url value="resultados.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
-
-									</td>
-									<td>
-										<button type="button" class="btn btn-outline-warning"
 											onclick="window.location.href='<c:url value="resultadosRegex.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
 
 									</td>
+									
+									 
+									<td>
+										<button type="button" class="btn btn-outline-warning"
+											onclick="window.location.href='<c:url value="resultadosNotas.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
+
+									</td>
+									 
+									
 								</tr>
 
 							</c:forEach>
@@ -203,6 +209,7 @@
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>
+					
 					<c:choose>
 						<c:when test="${pageListHolder.lastPage}">
 							<li class="page-item disabled"><a class="page-link" href="#"

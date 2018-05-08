@@ -19,10 +19,15 @@
 <script src="<c:url value="/resources/js/jquery-3.3.1.min.js"/> "></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 
+<script type="text/javascript">
+	function mensaje(valor){
+		alert(valor);
+	}
+</script>
 </head>
 
 <body
-	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;">
+	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;" >
 
 	<div class="pos-f-t">
 		<div class="collapse" id="navbarToggleExternalContent">
