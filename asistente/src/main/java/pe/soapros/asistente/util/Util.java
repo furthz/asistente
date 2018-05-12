@@ -37,7 +37,7 @@ public class Util {
 	public static void leerPlanCuentasRegex(String json, PlanCuenta plan, String archivo) {
 		// List<List<String>> a = new ArrayList<List<String>>();
 
-		List<Double> lstEfectivo = new ArrayList<Double>();
+		
 		
 		List<Double> lstCapital = new ArrayList<Double>();
 		List<Double> lstPrima = new ArrayList<Double>();
@@ -45,6 +45,16 @@ public class Util {
 		List<Double> lstReserva = new ArrayList<Double>();
 		List<Double> lstResultado = new ArrayList<Double>();
 		List<Double> lstTotalUtilidades = new ArrayList<Double>();
+		
+		//activo circulante
+		List<Double> lstEfectivo = new ArrayList<Double>();
+		List<Double> lstInversionTemporal = new ArrayList<Double>();
+		List<Double> lstCtasCobrarClientes = new ArrayList<Double>();
+		List<Double> lstProvisionCartera = new ArrayList<Double>();
+		List<Double> lstInventario = new ArrayList<Double>();
+		List<Double> lstAnticipoAvances = new ArrayList<Double>();
+		List<Double> lstActivosBiologicos = new ArrayList<Double>();
+		List<Double> lstAnticipoImpuestos = new ArrayList<Double>();
 		
 		//activo fijo
 		List<Double> lstTerrenos = new ArrayList<Double>();
@@ -88,12 +98,13 @@ public class Util {
 			//
 			String all = "";
 			//Pattern pat = Pattern.compile("\\d+(?:[.,]\\d+)?|Free"); //OJO CORREGIR EL PATRON ADECUADO DEL NUMERO PARA OBTENER SOLO UNA COLUMNA
-			Pattern pat = Pattern.compile("(\\d{1,3}(\\s{0,1}[,|.]\\d{3})+)(\\s{0,1}[,|.]\\d{2})?");
+			Pattern pat = Pattern.compile("(-?\\d{1,3}(\\s{0,1}[,|.]\\d{3})+)(\\s{0,1}[,|.]\\d{2})?");
 			
 			//Valor: 33.156.863          34.613.408      33.760.000
 			Matcher m = pat.matcher(valor);
 
-			while (m.find()) {
+			if(m.find()) {
+			//while (m.find()) {
 				all += m.group();
 			}
 			logger.debug("Numero: " + all);
@@ -105,10 +116,15 @@ public class Util {
 				valor += ss;
 			}
 
+			try {
 			if (swNum) {
 				valor = valor.substring(0, valor.length() - 2) + "."
 						+ valor.substring(valor.length() - 2, valor.length());
 				logger.debug("valor: " + valor);
+			}
+			}
+			catch(Exception e) {
+				logger.error(e);
 			}
 
 			Double lvalor = 0.0;
@@ -120,24 +136,29 @@ public class Util {
 				// lvalor = (long)-1.00;
 			}
 
-			//buscar etiquetas regex
+			//buscar etiquetas regex			
+
 			
 			if(etiqueta.equals("Efectivo")){
 				lstEfectivo.add(lvalor);
 				
-			}else if(etiqueta.equals("Capital")){
-				lstCapital.add(lvalor);				
-			}else if(etiqueta.equals("Prima_Colocacion_Acciones")) {
-				lstPrima.add(lvalor);
-			}else if(etiqueta.equals("Otros_Superavit_Capital")) {
-				lstSuperavit.add(lvalor);
-			}else if(etiqueta.equals("Reserva_Legal")) {
-				lstReserva.add(lvalor);
-			}else if(etiqueta.equals("Resultado_Ejercicio")) {
-				lstResultado.add(lvalor);
-			}else if(etiqueta.equals("Total_Utilidades")) {
-				lstTotalUtilidades.add(lvalor);
-			}else if(etiqueta.equals("Terrenos")) {
+			}else if(etiqueta.equals("Inversiones_Temporales")) {
+				lstInversionTemporal.add(lvalor);
+			} else if(etiqueta.equals("Ctas_Cobrar_Comerciales")) {
+				lstCtasCobrarClientes.add(lvalor);
+			} else if(etiqueta.equals("Provision_Cartera")) {
+				lstProvisionCartera.add(lvalor);
+			} else if(etiqueta.equals("Inventarios")) {
+				lstInventario.add(lvalor);
+			} else if(etiqueta.equals("Anticipo_Avances")) {
+				lstAnticipoAvances.add(lvalor);
+			} else if(etiqueta.equals("Activos_Biologicos")) {
+				lstActivosBiologicos.add(lvalor);
+			} else if(etiqueta.equals("Anticipo_Impuesto")) {
+				lstAnticipoImpuestos.add(lvalor);
+			}
+			
+			else if(etiqueta.equals("Terrenos")) {
 				lstTerrenos.add(lvalor);
 			}else if(etiqueta.equals("Construccion_Proceso")) {
 				lstContProceso.add(lvalor);			
@@ -151,6 +172,21 @@ public class Util {
 			}else if(etiqueta.equals("Equipo_Transporte")) {
 				lstTransporte.add(lvalor);
 			}
+			
+			else if(etiqueta.equals("Capital")){
+				lstCapital.add(lvalor);				
+			}else if(etiqueta.equals("Prima_Colocacion_Acciones")) {
+				lstPrima.add(lvalor);
+			}else if(etiqueta.equals("Otros_Superavit_Capital")) {
+				lstSuperavit.add(lvalor);
+			}else if(etiqueta.equals("Reserva_Legal")) {
+				lstReserva.add(lvalor);
+			}else if(etiqueta.equals("Resultado_Ejercicio")) {
+				lstResultado.add(lvalor);
+			}else if(etiqueta.equals("Total_Utilidades")) {
+				lstTotalUtilidades.add(lvalor);
+			}
+			
 			
 			else {
 				plan.addCuenta(etiqueta, lvalor);
@@ -166,8 +202,53 @@ public class Util {
 
 		RegexPlan regex = new RegexPlan(archivo);
 
+		//ACTIVO CIRCULANTE
 		Set<Double> lstEfectivosRegex = regex.getEfectivo();		
 		limpiarValores(lstEfectivosRegex, lstEfectivo, "Efectivo", plan);
+		
+
+		Set<Double> lstInversionTemporalRegex = regex.getInversionTemporal();
+		limpiarValores(lstInversionTemporalRegex, lstInversionTemporal, "Inversiones_Temporales", plan);
+		
+		Set<Double> lstCtasCobrarClientesRegex = regex.getCtasCobrarClientes();
+		limpiarValores(lstCtasCobrarClientesRegex, lstCtasCobrarClientes, "Ctas_Cobrar_Comerciales", plan);
+		
+		Set<Double> lstProvisionCarteraRegex = regex.getProvisionCartera();
+		limpiarValores(lstProvisionCarteraRegex, lstProvisionCartera, "Provision_Cartera", plan);
+		
+		Set<Double> lstInventarioRegex = regex.getInventario();
+		limpiarValores(lstInventarioRegex, lstInventario, "Inventarios", plan);
+		
+		Set<Double> lstAnticipoAvancesRegex = regex.getAnticipoAvances();
+		limpiarValores(lstAnticipoAvancesRegex, lstAnticipoAvances, "Anticipo_Avances", plan);
+		
+		Set<Double> lstActivosBiologicosRegx = regex.getActivosBiologicos();
+		limpiarValores(lstActivosBiologicosRegx, lstActivosBiologicos, "Activos_Biologicos", plan);
+
+		
+		Set<Double> lstAnticipoImpuestosRegex = regex.getAnticipoImpuestos();
+		limpiarValores(lstAnticipoImpuestosRegex, lstAnticipoImpuestos, "Anticipo_Impuesto", plan);
+		
+		
+		
+		//ACTIVO FIJO
+		Set<Double> lstTerrenosRegex = regex.getActivoFijoTerreno();
+		limpiarValores(lstTerrenosRegex, lstTerrenos, "Terrenos", plan);
+		
+		Set<Double> lstContProcesoRegex = regex.getActivoFijoConstruccionProceso();
+		limpiarValores(lstContProcesoRegex, lstContProceso, "Construccion_Proceso", plan);
+		
+		Set<Double> lstEdificiosRegex = regex.getActivoFijoPropiedadPlanta();
+		limpiarValores(lstEdificiosRegex, lstEdificios, "Edificios_Mejoras", plan);
+		
+		Set<Double> lstMaquinariaRegex = regex.getActivoFijoMaquinaria();
+		limpiarValores(lstMaquinariaRegex, lstMaquinaria, "Maquinaria_Equipo", plan);
+		
+		Set<Double> lstMueblesRegex = regex.getActivoFijoMuebles();
+		limpiarValores(lstMueblesRegex, lstMuebles, "Muebles_Enseres", plan);
+		
+//		Set<Double> lstTransporteRegex = regex.equ();
+//		limpiarValores(lstTransporteRegex, lstTransporte, "Equipo_Transporte", plan);
 		
 		//PATRIMONIO
 		
@@ -189,24 +270,7 @@ public class Util {
 		Set<Double> lstTotalRegex = regex.getPatrimonioResultadoAnteriores();
 		limpiarValores(lstTotalRegex, lstTotalUtilidades, "Total_Utilidades", plan);
 		
-		//ACTIVO FIJO
-		Set<Double> lstTerrenosRegex = regex.getActivoFijoTerreno();
-		limpiarValores(lstTerrenosRegex, lstTerrenos, "Terrenos", plan);
 		
-		Set<Double> lstContProcesoRegex = regex.getActivoFijoConstruccionProceso();
-		limpiarValores(lstContProcesoRegex, lstContProceso, "Construccion_Proceso", plan);
-		
-		Set<Double> lstEdificiosRegex = regex.getActivoFijoConstruccionProceso();
-		limpiarValores(lstEdificiosRegex, lstEdificios, "Edificios_Mejoras", plan);
-		
-		Set<Double> lstMaquinariaRegex = regex.getActivoFijoConstruccionProceso();
-		limpiarValores(lstMaquinariaRegex, lstMaquinaria, "Maquinaria_Equipo", plan);
-		
-		Set<Double> lstMueblesRegex = regex.getActivoFijoConstruccionProceso();
-		limpiarValores(lstMueblesRegex, lstMuebles, "Muebles_Enseres", plan);
-		
-		Set<Double> lstTransporteRegex = regex.getActivoFijoConstruccionProceso();
-		limpiarValores(lstTransporteRegex, lstTransporte, "Equipo_Transporte", plan);
 		
 		
 

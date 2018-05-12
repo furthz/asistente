@@ -91,8 +91,10 @@
 		<div class="container">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<h3>Ejecuciones</h3>
-
+					<div class="row">
+					<div class="col-4">
+						<h3>Ejecuciones</h3>
+					</div>
 					<div class="col-5">
 						<!-- FORMULARIO PARA BUSQUEDAS -->
 						<form class="form-inline my-2 my-lg-0" method="post" action="findEmpresa.htm">
@@ -109,10 +111,17 @@
               				<i class="fas fa-file-excel fa-lg"></i> 
               				Descargar Excel
               			</a>
+              			<br>
+              			<a class="btn btn-success clearfix" href="<c:url value="downloadExcelAllWithNotas.htm"/>">
+              				<i class="fas fa-file-excel fa-lg"></i> 
+              				Descargar Con Notas
+              			</a>
             		</div>
 					<h4>
 						
 					</h4>
+					</div>
+					<br>
 					<table class="table table-striped">
 						<thead>
 							<tr>

@@ -21,199 +21,257 @@ public class RegexPlan {
 		this.contenido = contenido.toUpperCase();
 	}
 
-	private Set<Double> procesarPatrones(List<String> patrones) {
+	/***************************************************
+	 * ACTIVO CIRCULANTE
+	 * 
+	 ****************************************************/
 
-		List<Double> lst = new ArrayList<Double>();
+	// EFECTIVO
+	public Set<Double> getEfectivo() {
 
-		try {
-			String[] lineas = this.contenido.split("\\r?\\n");
-			Pattern pat = null;
-			Matcher mat = null;
+		// List<Double> lst = new ArrayList<Double>();
 
-			for (String linea : lineas) {
-				for (String patron : patrones) {
-					pat = Pattern.compile(patron);
-					mat = pat.matcher(linea.toUpperCase());
+		// patrones de cuenta efectivo
+		List<String> lstPatrones = new ArrayList<String>();
+		//lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		 //lstPatrones.add("BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("FONDO DE
+		// CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
-					boolean find = mat.find();
-					boolean swDecimal = false;
-					// System.out.println(find);
+		Set<Double> efectivo = this.procesarPatrones(lstPatrones);
 
-					if (find) {
-						String valor = mat.group(1);
-						Character ptoDec = valor.charAt(valor.length() - 3);
+		return efectivo;
 
-						if (ptoDec.toString().equals(",") || ptoDec.toString().equals(".")) {
-							swDecimal = true;
-						}
+	}
 
-						String[] valEtiqueta = valor.split("\\W+");
+	// INVERSIONES TEMPORALES
+	public Set<Double> getInversionTemporal() {
 
-						valor = "";
-						for (String ss : valEtiqueta) {
-							valor += ss;
-						}
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("BONOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CERTIFICADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("DERECHOS FIDUCIARIOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
-						if (swDecimal) {
-							valor = valor.substring(0, valor.length() - 2) + "."
-									+ valor.substring(valor.length() - 2, valor.length());
-							logger.debug("valor: " + valor);
-						}
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
-						Double lvalor = 0.0;
-						try {
-							lvalor = Double.parseDouble(valor);
-							logger.debug("valor convertido: " + lvalor);
-						} catch (Exception e) {
-							logger.error(e);
-						}
+		return cuenta;
 
-						lst.add(lvalor);
+	}
 
-					}
+	// CTAS POR COBRAR CLIENTES
+	public Set<Double> getCtasCobrarClientes() {
 
-				}
-			}
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones
+				.add("CLIENTES NACIONALES Y DEL EXTERIOR[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CUENTAS POR COBRAR CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		Set<Double> sethash = new HashSet<Double>();
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
-		sethash.addAll(lst);
+		return cuenta;
 
-		return sethash;
+	}
+
+	// PROVISION CARTERA
+	public Set<Double> getProvisionCartera() {
+
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("PROVISIONES CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+
+		return cuenta;
+
+	}
+
+	// INVENTARIOS
+	public Set<Double> getInventario() {
+
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("MATERIAS PRIMAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PRODUCTOS EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PRODUCTOS TERMINADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("BIENES PARA LA VENTA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MATERIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//##OJO## AGREGAR EL PATRONO INVENTARIOS
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+
+		return cuenta;
+
+	}
+	
+	//ANTICIPO Y AVANCES
+	public Set<Double> getAnticipoAvances() {
+
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("ANTICIPOS RECIBIDOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+
+		return cuenta;
+
+	}
+
+
+	//ACTIVOS BIOLOGICOS
+	public Set<Double> getActivosBiologicos() {
+
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("ACTIVOS BIOLOGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ACTIVOS BIOLÓGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+
+		return cuenta;
+
+	}
+	
+	//ANTICIPO DE IMPUESTOS
+	public Set<Double> getAnticipoImpuestos() {
+
+		List<String> lstPatrones = new ArrayList<String>();
+		lstPatrones.add("INDUSTRIA Y COMERCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RETENCION EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RETENCIÓN EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
+		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
+
+		return cuenta;
 
 	}
 	
 	
-	//ACTIVO FIJO
-	public Set<Double> getActivoFijoTerreno(){
-		
+	/**********************************************************************************
+	 * ACTIVO NO CIRCULANTE
+	 * 
+	 ******************************************************************************/
+	
+	// ACTIVO FIJO
+	public Set<Double> getActivoFijoTerreno() {
+
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("TERRENO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("RURAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("NO DEPRECIABLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getActivoFijoConstruccionProceso(){
-		
+
+	public Set<Double> getActivoFijoConstruccionProceso() {
+
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("EDIFICIO EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PROPIEDADES EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PROPIEDADES EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PROPIEDAD EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PROPIEDAD EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getActivoFijoPropiedadPlanta(){
+
+	public Set<Double> getActivoFijoPropiedadPlanta() {
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("PROPIEDADES PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PROPIEDAD, PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
-		
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getActivoFijoMaquinaria(){
-		
+
+	public Set<Double> getActivoFijoMaquinaria() {
+
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("MAQUINARIA Y EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("ACUEDUCTO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("INSTALACI[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		//lstPatrones.add("EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
+		// lstPatrones.add("EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	
-	public Set<Double> getActivoFijoMuebles(){
-		
+
+	public Set<Double> getActivoFijoMuebles() {
+
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("EQUIPO DE OFICINA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("MUEBLES Y ENSERES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("EQUIPO DE COMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("EQUIPO DE CÓMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	
-	//PATRIMONIO
-	//LISTA DE CUENTAS
-	
-	
-	public Set<Double> getPatrimonioCapital(){
 
-		//List<Double> lst = new ArrayList<Double>();
+	// PATRIMONIO
+	// LISTA DE CUENTAS
+
+	public Set<Double> getPatrimonioCapital() {
+
+		// List<Double> lst = new ArrayList<Double>();
 
 		// patrones de cuenta efectivo
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("CAPITAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("^PATRIMONIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		//lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("CUOTA DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("APORTES SOCIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("APORTE[\\s]*](\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("APORTES DE SOCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("FONDO SOCIAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PARTES DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		//lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		//lstPatrones.add("^APORTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		// lstPatrones.add("^APORTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> capital = this.procesarPatrones(lstPatrones);
-		
+
 		return capital;
-		
+
 	}
 
-	public Set<Double> getPatrimonioPrima(){
+	public Set<Double> getPatrimonioPrima() {
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("PRIMA EN COLOC[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-	
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 
-		
 	}
-	
-	public Set<Double> getPatrimonioSuperavit(){
+
+	public Set<Double> getPatrimonioSuperavit() {
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("OTROS SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("OTROS SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-	
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getPatrimonioReserva(){
+
+	public Set<Double> getPatrimonioReserva() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("RESERVA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-	
+		//lstPatrones.add("RESERVA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getPatrimonioResultadoEjercicio(){
+
+	public Set<Double> getPatrimonioResultadoEjercicio() {
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("UTILIDADES ESTATUTARIAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("RESULTADO DEL EJERCICIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
@@ -221,108 +279,24 @@ public class RegexPlan {
 		lstPatrones.add("PERDIDAS[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("UTILIDAD DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("RESULTADO DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-	
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
 	}
-	
-	public Set<Double> getPatrimonioResultadoAnteriores(){
+
+	public Set<Double> getPatrimonioResultadoAnteriores() {
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones.add("UTILIDADES ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RESULTADOS EJERCICIOS ANTERIORES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones
+				.add("RESULTADOS EJERCICIOS ANTERIORES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("GANANCIAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PÉRDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones.add("PERDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		
-	
+
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
-		
+
 		return cuenta;
-	}
-	
-	
-	//EFECTIVO
-	public Set<Double> getEfectivo() {
-
-		List<Double> lst = new ArrayList<Double>();
-
-		// patrones de cuenta efectivo
-		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("FONDO DE CARTERA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-
-		Set<Double> efectivo = this.procesarPatrones(lstPatrones);
-		
-		return efectivo;
-		
-//		try {
-//
-//			String[] lineas = this.contenido.split("\\r?\\n");
-//			// String linea;
-//			Pattern pat = null;
-//			Matcher mat = null;
-//			for (String linea : lineas) {
-//
-//				for (String patron : lstPatrones) {
-//					pat = Pattern.compile(patron);
-//					mat = pat.matcher(linea.toUpperCase());
-//
-//					boolean find = mat.find();
-//					boolean swDecimal = false;
-//					// System.out.println(find);
-//
-//					if (find) {
-//						String valor = mat.group(1);
-//						Character ptoDec = valor.charAt(valor.length() - 3);
-//
-//						if (ptoDec.toString().equals(",") || ptoDec.toString().equals(".")) {
-//							swDecimal = true;
-//						}
-//
-//						String[] valEtiqueta = valor.split("\\W+");
-//
-//						valor = "";
-//						for (String ss : valEtiqueta) {
-//							valor += ss;
-//						}
-//
-//						if (swDecimal) {
-//							valor = valor.substring(0, valor.length() - 2) + "."
-//									+ valor.substring(valor.length() - 2, valor.length());
-//							logger.debug("valor: " + valor);
-//						}
-//
-//						Double lvalor = 0.0;
-//						try {
-//							lvalor = Double.parseDouble(valor);
-//							logger.debug("valor convertido: " + lvalor);
-//						} catch (Exception e) {
-//							logger.error(e);
-//						}
-//
-//						lst.add(lvalor);
-//
-//					}
-//
-//				}
-//			}
-//
-//		} catch (Exception e) {
-//			logger.error(e);
-//		}
-//
-//		Set<Double> sethash = new HashSet<Double>();
-//
-//		sethash.addAll(lst);
-//
-//		return sethash;
-
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -391,6 +365,71 @@ public class RegexPlan {
 		// } catch (Exception e) {
 		// e.printStackTrace();
 		// }
+
+	}
+
+	private Set<Double> procesarPatrones(List<String> patrones) {
+
+		List<Double> lst = new ArrayList<Double>();
+
+		try {
+			String[] lineas = this.contenido.split("\\r?\\n");
+			Pattern pat = null;
+			Matcher mat = null;
+
+			for (String linea : lineas) {
+				for (String patron : patrones) {
+					pat = Pattern.compile(patron);
+					mat = pat.matcher(linea.toUpperCase());
+
+					boolean find = mat.find();
+					boolean swDecimal = false;
+					// System.out.println(find);
+
+					if (find) {
+						String valor = mat.group(1);
+						Character ptoDec = valor.charAt(valor.length() - 3);
+
+						if (ptoDec.toString().equals(",") || ptoDec.toString().equals(".")) {
+							swDecimal = true;
+						}
+
+						String[] valEtiqueta = valor.split("\\W+");
+
+						valor = "";
+						for (String ss : valEtiqueta) {
+							valor += ss;
+						}
+
+						if (swDecimal) {
+							valor = valor.substring(0, valor.length() - 2) + "."
+									+ valor.substring(valor.length() - 2, valor.length());
+							logger.debug("valor: " + valor);
+						}
+
+						Double lvalor = 0.0;
+						try {
+							lvalor = Double.parseDouble(valor);
+							logger.debug("valor convertido: " + lvalor);
+						} catch (Exception e) {
+							logger.error(e);
+						}
+
+						lst.add(lvalor);
+
+					}
+
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		Set<Double> sethash = new HashSet<Double>();
+
+		sethash.addAll(lst);
+
+		return sethash;
 
 	}
 

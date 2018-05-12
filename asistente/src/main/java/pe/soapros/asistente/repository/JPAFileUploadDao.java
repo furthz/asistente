@@ -40,7 +40,7 @@ public class JPAFileUploadDao implements FileUploadDao {
 	@SuppressWarnings("unchecked")
 	public List<UploadFile> getFileWithSoons() {
 
-		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.empresa.nombre").getResultList();
+		return em.createQuery("select p from UploadFile p join fetch p.empresa order by p.id desc").getResultList();
 	}
 
 	@Override

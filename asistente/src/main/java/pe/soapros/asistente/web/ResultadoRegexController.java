@@ -59,6 +59,8 @@ public class ResultadoRegexController {
 
 		List<TipoDocumento> lstFiles = null;
 
+		List<String> imagenes = new ArrayList<String>();
+		
 		lstFiles = this.tipoDocumentoManager.getTiposDocumentosById(id);
 		ejes.add(lstFiles);
 
@@ -85,23 +87,26 @@ public class ResultadoRegexController {
 				logger.debug("ruta imagen: " + rutaImagen);
 
 				contenido += Util.leerArchivoTXT(ruta);
+				
+				File file = new File(rutaImagen);
+				FileInputStream fis = new FileInputStream(file);
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				int b;
+				byte[] buffer = new byte[1024];
+				while ((b = fis.read(buffer)) != -1) {
+					bos.write(buffer, 0, b);
+				}
+				byte[] fileBytes = bos.toByteArray();
+				fis.close();
+				bos.close();
+
+				byte[] encoded = Base64.encodeBase64(fileBytes);
+				String encodedString = new String(encoded);
+				
+				imagenes.add(encodedString);
+
 			}
 		}
-
-		File file = new File(rutaImagen);
-		FileInputStream fis = new FileInputStream(file);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		int b;
-		byte[] buffer = new byte[1024];
-		while ((b = fis.read(buffer)) != -1) {
-			bos.write(buffer, 0, b);
-		}
-		byte[] fileBytes = bos.toByteArray();
-		fis.close();
-		bos.close();
-
-		byte[] encoded = Base64.encodeBase64(fileBytes);
-		String encodedString = new String(encoded);
 
 		//
 		PlanCuentaNLU plan = new PlanCuentaNLU();
@@ -119,7 +124,7 @@ public class ResultadoRegexController {
 
 		HashMap<String, Object> objetos = new HashMap<String, Object>();
 		objetos.put("plan", cuentas);
-		objetos.put("imagen", encodedString);
+		objetos.put("imagen", imagenes);
 		objetos.put("json", cuentas.get(0).getJSON());
 
 		return new ModelAndView("resultados", "objetos", objetos);

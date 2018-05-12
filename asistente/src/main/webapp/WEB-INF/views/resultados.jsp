@@ -107,7 +107,7 @@ function sendJson(datos) {
 		<div class="row">
 			<div class="col-8">
 				<img class="rounded" style="width: 100% !important"
-					src="data:image/jpg;base64,<c:out value="${objetos.imagen}"/>" />
+					src="data:image/jpg;base64,<c:out value="${objetos.imagen.get(0)}"/>" />
 			</div>
 			<div id="accordion">
 				<div class="card">

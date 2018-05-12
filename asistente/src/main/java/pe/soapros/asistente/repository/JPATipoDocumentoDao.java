@@ -41,7 +41,7 @@ public class JPATipoDocumentoDao implements TipoDocumentoDao {
 
 		System.out.println("JPA Empresa: " + id);
 
-		TypedQuery<TipoDocumento> query = em.createQuery("select em from TipoDocumento em join fetch em.archivo where em.archivo.id = :id", TipoDocumento.class);
+		TypedQuery<TipoDocumento> query = em.createQuery("select em from TipoDocumento em join fetch em.archivo where em.archivo.id = :id order by em.id", TipoDocumento.class);
 
 		return query.setParameter("id", id).getResultList();
 

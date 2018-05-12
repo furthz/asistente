@@ -92,12 +92,19 @@ public class BatRunner {
 			//Process procBuildScript = new ProcessBuilder(directory + File.separator + batfile, source + " " + dest).start();
 			logger.debug("Proceso Batch Llamado: " + directory + File.separator + batfile + " Parametros: " + source + " " + dest);
 			
-			ProcessBuilder pb = new ProcessBuilder(directory + File.separator + batfile, source, dest);
+			ProcessBuilder pb = new ProcessBuilder(directory + File.separator + batfile,  source, dest);
+			logger.debug("se inicio el proceso");
+			
 			Process p = pb.start();
+			logger.debug("se lanzó el proceso");
+			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			logger.debug("se lee el mensaje");
+			
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
+				logger.debug("resultado proceso: " + line);
+				//System.out.println(line);
 			}
 		}
 	}
