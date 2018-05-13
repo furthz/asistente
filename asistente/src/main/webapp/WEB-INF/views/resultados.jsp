@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -40,6 +40,39 @@ function sendJson(datos) {
     });
 }
 
+
+function MostrarImgNext(index) {
+	try{
+	  var j = Number($("#size").val());	 
+      var i = Number(index) +1;
+      if(j == i){
+    	
+	  	$("#Imagen" + index).show();	  	
+      }else{
+    	$("#Imagen" + index).hide();
+  	  	$("#Imagen" + i).show();
+      }
+	}catch(err){
+		 alert(err);
+	 }
+	}
+	
+function MostrarImgPrev(index) {
+	try{
+	  var j = 0;
+	  var i = Number(index)-1;
+	  
+	  if( j == index){	  
+	  	$("#Imagen" + index).show();
+	  }else{
+		  $("#Imagen" + index).hide();
+		  	$("#Imagen" + i).show();
+	  }
+	}catch(err){
+		alert(err);
+	}
+	}
+	
 </script>
 
 <span class="skype-button bubble "
@@ -105,10 +138,52 @@ function sendJson(datos) {
 	<div class="btn_cont">
 
 		<div class="row">
-			<div class="col-8">
-				<img class="rounded" style="width: 100% !important"
-					src="data:image/jpg;base64,<c:out value="${objetos.imagen.get(0)}"/>" />
-			</div>
+
+			<c:set var="count" value="0" scope="page" />
+
+			<c:forEach items="${objetos.imagen}" var="image">
+				<c:choose>
+					<c:when test="${count=='0'}">
+						<div class="col-8" id="Imagen<c:out value="${count }"/>">
+							<a href="javascript:void(0);"
+								onclick="MostrarImgPrev('<c:out value="${count }"/>');">Antes
+							</a><a href="javascript:void(0);"
+								onclick="MostrarImgNext('<c:out value="${count }"/>')">Despues</a>
+							<img class="rounded" style="width: 100% !important"
+								src="data:image/jpg;base64,<c:out value="${image}"/>" />
+						</div>
+					</c:when>
+					<c:otherwise>						
+						<div class="col-8" id="Imagen<c:out value="${count }"/>"
+							style="display: none;">
+							<a href="javascript:void(0);"
+							onclick="MostrarImgPrev('<c:out value="${count }"/>');">Antes 
+						</a>
+						<a href="javascript:void(0);"
+							onclick="MostrarImgNext('<c:out value="${count }"/>')">Despues</a>
+							<img class="rounded" style="width: 100% !important"
+								src="data:image/jpg;base64,<c:out value="${image}"/>" />
+						</div>
+					</c:otherwise>
+				</c:choose>
+
+
+
+				<!-- 
+				<c:if test="count > 0">
+					<div class="col-8" id="Imagen<c:out value="${count }"/>" style="display: none;">					
+						<img class="rounded" style="width: 100% !important"
+						src="data:image/jpg;base64,<c:out value="${image}"/>" />
+						
+						</div>
+				</c:if>
+				 -->
+				<c:set var="count" value="${count + 1}" scope="page" />
+			</c:forEach>
+
+			<input id="size" type="hidden" name="size"
+				value="<c:out value="${count }"/>">
+
 			<div id="accordion">
 				<div class="card">
 					<!-- 
