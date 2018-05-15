@@ -224,3 +224,15 @@ a.btn_saip { font-size:14px; line-height:90%;}
         height: 50px;
         transform: rotate( 50deg ); }
 }
+
+div#accordion {
+    width: 30%;
+}
+
+span.carousel-control-next-icon {
+    background-color: black!important;
+}
+
+span.carousel-control-prev-icon {
+    background-color: black!important;
+}

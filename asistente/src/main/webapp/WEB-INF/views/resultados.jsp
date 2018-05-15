@@ -8,19 +8,23 @@
 <title>SOA Professionals</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script src="<c:url value="/resources/js/jquery-3.3.1.min.js"/> "></script>
+<link href="<c:url value="/resources/css/bootstrap.min.css"/>"
+	rel="stylesheet">
+<script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+
 <link rel="stylesheet" type="text/css"
 	href="https://fonts.googleapis.com/css?family=Josefin+Sans" />
 <link rel="stylesheet" type="text/css"
 	href="https://fonts.googleapis.com/css?family=Anton" />
 
-<link href="<c:url value="/resources/css/bootstrap.min.css"/>"
-	rel="stylesheet">
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/reclamacion.css"/>">
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/style.css"/>">
-<script src="<c:url value="/resources/js/jquery-3.3.1.min.js"/> "></script>
-<script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+
+
 
 <script>
 
@@ -75,11 +79,32 @@ function MostrarImgPrev(index) {
 	
 </script>
 
+<script type="text/javascript">
+  	$(document).ready(function(){
+      $('.carousel').carousel({
+        interval: 0000,
+        pause: "false"
+      })
+    });
+  </script>
+
 <span class="skype-button bubble "
 	data-bot-id="e2dc44f0-27e8-47eb-8c94-44c8cf125573"></span>
 <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
+
+
 </head>
 
+
+<style>
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+}
+</style>
 
 <body
 	style="background:url('<c:url value="/resources/img/FDO2.png"/>') right bottom no-repeat;"
@@ -122,7 +147,7 @@ function MostrarImgPrev(index) {
 	</div>
 
 	<div class="cabecera"
-		style="background: url('img/fdo1.png') no-repeat left top;">
+		style="background: url('<c:url value="/resources/img/fdo1.png"/>')  no-repeat left top;">
 		<div class="cont2">
 			<a href="index.html"><img class="logo_m"
 				src="<c:url value="/resources/images/logo-soa.png"/> "></a>
@@ -138,52 +163,42 @@ function MostrarImgPrev(index) {
 	<div class="btn_cont">
 
 		<div class="row">
-
-			<c:set var="count" value="0" scope="page" />
-
-			<c:forEach items="${objetos.imagen}" var="image">
-				<c:choose>
-					<c:when test="${count=='0'}">
-						<div class="col-8" id="Imagen<c:out value="${count }"/>">
-							<a href="javascript:void(0);"
-								onclick="MostrarImgPrev('<c:out value="${count }"/>');">Antes
-							</a><a href="javascript:void(0);"
-								onclick="MostrarImgNext('<c:out value="${count }"/>')">Despues</a>
-							<img class="rounded" style="width: 100% !important"
-								src="data:image/jpg;base64,<c:out value="${image}"/>" />
-						</div>
-					</c:when>
-					<c:otherwise>						
-						<div class="col-8" id="Imagen<c:out value="${count }"/>"
-							style="display: none;">
-							<a href="javascript:void(0);"
-							onclick="MostrarImgPrev('<c:out value="${count }"/>');">Antes 
-						</a>
-						<a href="javascript:void(0);"
-							onclick="MostrarImgNext('<c:out value="${count }"/>')">Despues</a>
-							<img class="rounded" style="width: 100% !important"
-								src="data:image/jpg;base64,<c:out value="${image}"/>" />
-						</div>
-					</c:otherwise>
-				</c:choose>
-
-
-
-				<!-- 
-				<c:if test="count > 0">
-					<div class="col-8" id="Imagen<c:out value="${count }"/>" style="display: none;">					
-						<img class="rounded" style="width: 100% !important"
-						src="data:image/jpg;base64,<c:out value="${image}"/>" />
-						
-						</div>
-				</c:if>
-				 -->
-				<c:set var="count" value="${count + 1}" scope="page" />
-			</c:forEach>
-
+			<div class="col-8">
+			<!-- IMAGENES -->
+			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+				<div class="carousel-inner">					
+					<c:set var="count" value="0" scope="page" />
+					<c:forEach items="${objetos.imagen}" var="image">
+						<c:choose>
+							<c:when test="${count=='0'}">
+								<div class="carousel-item active">
+							      <img class="d-block w-100" src="data:image/jpg;base64,<c:out value="${image}"/>" alt="slide <c:out value="${count}"/>"    >
+							    </div>						
+							</c:when>
+							<c:otherwise>
+								<div class="carousel-item">
+								      <img class="d-block w-100" src="data:image/jpg;base64,<c:out value="${image}"/>" alt="slide <c:out value="${count}"/>">
+								 </div>
+							</c:otherwise>
+						</c:choose>
+						<c:set var="count" value="${count + 1}" scope="page" />
+					</c:forEach>						
+				</div>
+				<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+				    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				</a>
+				<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+				    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				</a>
+			</div>
+			<!-- FIN IMAGENES -->
+			
+			
 			<input id="size" type="hidden" name="size"
-				value="<c:out value="${count }"/>">
-
+						value="<c:out value="${count }"/>">
+			</div>
 			<div id="accordion">
 				<div class="card">
 					<!-- 

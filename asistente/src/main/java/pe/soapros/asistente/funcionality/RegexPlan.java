@@ -34,8 +34,8 @@ public class RegexPlan {
 		// patrones de cuenta efectivo
 		List<String> lstPatrones = new ArrayList<String>();
 		//lstPatrones.add("DISPONIBLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("CAJA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EFECTIVO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		 //lstPatrones.add("BANCO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("AHORRO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("DEPOSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
@@ -52,9 +52,9 @@ public class RegexPlan {
 	public Set<Double> getInversionTemporal() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("BONOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CERTIFICADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("DERECHOS FIDUCIARIOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("BONOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CERTIFICADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("DERECHOS FIDUCIARIOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -67,8 +67,8 @@ public class RegexPlan {
 
 		List<String> lstPatrones = new ArrayList<String>();
 		lstPatrones
-				.add("CLIENTES NACIONALES Y DEL EXTERIOR[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CUENTAS POR COBRAR CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+				.add("CLIENTES NACIONALES Y DEL EXTERIOR[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CUENTAS POR COBRAR CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -80,7 +80,7 @@ public class RegexPlan {
 	public Set<Double> getProvisionCartera() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("PROVISIONES CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROVISIONES CLIENTES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -92,11 +92,11 @@ public class RegexPlan {
 	public Set<Double> getInventario() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("MATERIAS PRIMAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PRODUCTOS EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PRODUCTOS TERMINADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("BIENES PARA LA VENTA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("MATERIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MATERIAS PRIMAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PRODUCTOS EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PRODUCTOS TERMINADOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("BIENES PARA LA VENTA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MATERIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		//##OJO## AGREGAR EL PATRONO INVENTARIOS
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -108,7 +108,7 @@ public class RegexPlan {
 	public Set<Double> getAnticipoAvances() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("ANTICIPOS RECIBIDOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ANTICIPOS RECIBIDOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -121,8 +121,8 @@ public class RegexPlan {
 	public Set<Double> getActivosBiologicos() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("ACTIVOS BIOLOGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("ACTIVOS BIOLÓGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ACTIVOS BIOLOGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ACTIVOS BIOLÓGICOS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -134,9 +134,9 @@ public class RegexPlan {
 	public Set<Double> getAnticipoImpuestos() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("INDUSTRIA Y COMERCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RETENCION EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RETENCIÓN EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("INDUSTRIA Y COMERCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RETENCION EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RETENCIÓN EN LA FUENTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -154,9 +154,9 @@ public class RegexPlan {
 	public Set<Double> getActivoFijoTerreno() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("TERRENO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RURAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("NO DEPRECIABLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("TERRENO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RURAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("NO DEPRECIABLE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -166,11 +166,11 @@ public class RegexPlan {
 	public Set<Double> getActivoFijoConstruccionProceso() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("EDIFICIO EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PROPIEDADES EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PROPIEDADES EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PROPIEDAD EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PROPIEDAD EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EDIFICIO EN PROCESO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDADES EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDADES EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD EN TRANSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD EN TRÁNSITO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -179,8 +179,8 @@ public class RegexPlan {
 
 	public Set<Double> getActivoFijoPropiedadPlanta() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("PROPIEDADES PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PROPIEDAD, PLANTA[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDADES PLANTA[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PROPIEDAD, PLANTA[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -190,9 +190,9 @@ public class RegexPlan {
 	public Set<Double> getActivoFijoMaquinaria() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("MAQUINARIA Y EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("ACUEDUCTO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("INSTALACI[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MAQUINARIA Y EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("ACUEDUCTO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("INSTALACI[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("EQUIPO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
@@ -203,10 +203,10 @@ public class RegexPlan {
 	public Set<Double> getActivoFijoMuebles() {
 
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("EQUIPO DE OFICINA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("MUEBLES Y ENSERES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("EQUIPO DE COMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("EQUIPO DE CÓMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EQUIPO DE OFICINA[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("MUEBLES Y ENSERES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EQUIPO DE COMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("EQUIPO DE CÓMPUT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -222,15 +222,15 @@ public class RegexPlan {
 
 		// patrones de cuenta efectivo
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("CAPITAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("^PATRIMONIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		//lstPatrones.add("^CAPITAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("^PATRIMONIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("CUOTA DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("APORTES SOCIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("APORTE[\\s]*](\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("APORTES DE SOCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("FONDO SOCIAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PARTES DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("CUOTA DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTES SOCIALES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTE[\\s]*](-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("APORTES DE SOCIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("FONDO SOCIAL[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PARTES DE INTER[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("ACCION[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		// lstPatrones.add("^APORTE[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
@@ -242,7 +242,7 @@ public class RegexPlan {
 
 	public Set<Double> getPatrimonioPrima() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("PRIMA EN COLOC[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PRIMA EN COLOC[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -252,10 +252,10 @@ public class RegexPlan {
 
 	public Set<Double> getPatrimonioSuperavit() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("OTROS SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("OTROS SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("OTROS SUPERÁVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("OTROS SUPERAVIT[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -273,12 +273,12 @@ public class RegexPlan {
 
 	public Set<Double> getPatrimonioResultadoEjercicio() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("UTILIDADES ESTATUTARIAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RESULTADO DEL EJERCICIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("GANANCIAS[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PERDIDAS[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("UTILIDAD DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("RESULTADO DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("UTILIDADES ESTATUTARIAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RESULTADO DEL EJERCICIO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("GANANCIAS[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PERDIDAS[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("UTILIDAD DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("RESULTADO DEL PERIODO[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -287,12 +287,12 @@ public class RegexPlan {
 
 	public Set<Double> getPatrimonioResultadoAnteriores() {
 		List<String> lstPatrones = new ArrayList<String>();
-		lstPatrones.add("UTILIDADES ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("UTILIDADES ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 		lstPatrones
-				.add("RESULTADOS EJERCICIOS ANTERIORES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("GANANCIAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PÉRDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
-		lstPatrones.add("PERDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+				.add("RESULTADOS EJERCICIOS ANTERIORES[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("GANANCIAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PÉRDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
+		lstPatrones.add("PERDIDAS ACUMULADAS[A-Z]*[\\s]+[[A-Z]*[\\s]*]*(-?\\d+[\\s]*[,|.][\\d+[,|.]*\\d*]+)");
 
 		Set<Double> cuenta = this.procesarPatrones(lstPatrones);
 
@@ -305,7 +305,7 @@ public class RegexPlan {
 		// FileReader fr = null;
 		// BufferedReader br = null;
 
-		String patron = "(\\d{1,3}(\\s*[,|.]\\d{3})*|(\\d+))([,|.]\\d{2})?";
+		String patron = "(-?\\d{1,3}(\\s*[,|.]\\d{3})*|(\\d+))([,|.]\\d{2})?";
 		Pattern pat = Pattern.compile(patron);
 
 		String contenido = "2.142,569,3342.725,000,000";// Util.leerArchivoTXT("D:\\Downloads\\convert-contr63676725.0.txt");
