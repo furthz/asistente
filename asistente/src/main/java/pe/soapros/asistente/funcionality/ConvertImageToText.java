@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import com.google.protobuf.ByteString;
 import pe.soapros.asistente.domain.Documento;
 import pe.soapros.asistente.domain.Palabra;
 import pe.soapros.asistente.domain.Propiedades;
+import pe.soapros.asistente.domain.Punto;
 import pe.soapros.asistente.domain.TipoDocumento;
 import pe.soapros.asistente.util.Desempaquetar;
 import pe.soapros.asistente.util.Util;
@@ -42,7 +44,7 @@ import pe.soapros.asistente.util.Util;
  * Clase que encapsula las funcionalidades para convertir una imagen en texto
  * 
  * @author Raúl Talledo
- * @version 1.0
+ * @version 2.0
  *
  */
 public class ConvertImageToText {
@@ -50,16 +52,27 @@ public class ConvertImageToText {
 	protected final Log logger = LogFactory.getLog(getClass());
 	
 	private Propiedades propiedades;
+	
+	private List<Punto> bloques1;
+	
+	private List<Punto> bloques2;
+	
+	public ConvertImageToText() {
+		bloques1 = new ArrayList<Punto>();
+		bloques2 = new ArrayList<Punto>();
+	}
 
 	public static void main(String[] args) throws IOException, Exception {
+		
+		ConvertImageToText itext = new ConvertImageToText();
 
 		//System.out.println(args[0]);
-		detectDocumentText("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas");	
+		itext.detectDocumentText("C:\\Users\\User\\Desktop\\Nueva carpeta");	
 		
 		
 	}
 
-	public static void detectDocumentText(String pathFile) throws Exception, IOException {
+	public void detectDocumentText(String pathFile) throws Exception, IOException {
 
 		List<Path> archivos = Util.listarFicheros(pathFile, "jpg");
 
@@ -83,6 +96,7 @@ public class ConvertImageToText {
 			Documento dcto = new Documento();
 
 //			List<Palabra> bloques = new ArrayList<Palabra>();
+			logger.debug("Inicio del llamado a Google Vision");
 			try {
 				ImageAnnotatorClient client = ImageAnnotatorClient.create();
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
@@ -96,12 +110,31 @@ public class ConvertImageToText {
 
 					// For full list of available annotations, see http://g.co/cloud/vision/docs
 					TextAnnotation annotation = res.getFullTextAnnotation();
+					logger.debug("se recupera todas las paginas");
+					
 					for (Page page : annotation.getPagesList()) {
+						logger.debug("#PAG: " + page.getBlocksList());
+						
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
-
+							//agrgar los puntos superiores de los bloques
+							Punto pt1 = new Punto();
+							pt1.setX(block.getBoundingBox().getVertices(0).getX());
+							pt1.setY(block.getBoundingBox().getVertices(0).getY());
+							bloques1.add(pt1);
+							
+							Punto pt2 = new Punto();
+							pt2.setX(block.getBoundingBox().getVertices(1).getX());
+							pt2.setY(block.getBoundingBox().getVertices(1).getY());
+							bloques2.add(pt2);
+							
+							
+							logger.debug("#BLOCK: " + block.getBoundingBox());
+							
 							String blockText = "";
 							for (Paragraph para : block.getParagraphsList()) {
+								logger.debug("#PARAG: " + para.getBoundingBox());
+								
 								String paraText = "";
 
 								Palabra palabra;
@@ -140,6 +173,10 @@ public class ConvertImageToText {
 	
 
 				//dcto.setBloques(bloques);
+				
+				int bloques = this.nroBloques();
+				
+				dcto.setBloques(bloques);
 
 				File f = new File(filePathMod);
 				String nombre = f.getName();
@@ -389,5 +426,52 @@ public class ConvertImageToText {
 
 	public void setPropiedades(Propiedades propiedades) {
 		this.propiedades = propiedades;
+	}
+	
+	private int nroBloques() {
+		logger.debug("nroBloques");		
+		int nroBloques = 0;
+		
+		List<Integer> conteoBloques = new ArrayList<Integer>();
+		
+		int ejeY = 0;
+		int cont = 1;
+		
+		logger.debug("Recorrer todos los puntos de los bloques");
+		for(int i = 0; i < this.bloques1.size(); i++) {
+			
+			logger.debug("#Bloque " + i );
+			
+			Punto pt1 = this.bloques1.get(i);
+			logger.debug("Punto1: " + pt1);
+			
+			Punto pt2 = this.bloques2.get(i);
+			logger.debug("Punto2: " + pt2);
+			
+			//verificar si los puntos son muy cercanos en el eje Y (+/- 5)
+			if (pt1.equalsY(pt2)) {
+				logger.debug("Los puntos estan a la misma altura");
+				
+				int diff = ejeY - pt1.getY(); 
+				logger.debug("Diff: " + diff);
+				
+				if(( diff >= 0 && diff <= 5) || (diff < 0 && diff  >= -5)){
+					logger.debug("La diferencia es +/- 5pts");
+					cont++;
+				}else {
+					logger.debug("La diferencia es más de +/-5pts");
+					ejeY = pt1.getY();
+					conteoBloques.add(cont);
+					cont = 1;
+				}
+				
+			}
+		}
+		
+		//calcular el maximo en la coleccion
+		nroBloques = Collections.max(conteoBloques);
+		logger.debug("Nro bloques: " + nroBloques);
+		
+		return nroBloques;
 	}
 }

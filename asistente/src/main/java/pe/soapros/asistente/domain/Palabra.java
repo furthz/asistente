@@ -153,5 +153,7 @@ public class Palabra implements Comparable<Palabra> {
 			return valx1 - valx2;
 		}
 	};
+	
+	
 
 }

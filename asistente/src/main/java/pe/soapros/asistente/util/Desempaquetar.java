@@ -1,20 +1,39 @@
 package pe.soapros.asistente.util;
 
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+//import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 import org.codehaus.plexus.util.cli.CommandLineException;
+
 
 import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
@@ -35,10 +54,8 @@ public class Desempaquetar {
 	/***
 	 * Método para desempaquetar un TIF
 	 * 
-	 * @param path
-	 *            Ruta donde se encuentra el archivo a desempaquetar
-	 * @param filename
-	 *            Nombre del archivo
+	 * @param path     Ruta donde se encuentra el archivo a desempaquetar
+	 * @param filename Nombre del archivo
 	 * @return Lista con la ruta de cada archivo convertido
 	 * @throws IOException
 	 */
@@ -70,6 +87,57 @@ public class Desempaquetar {
 
 		}
 
+		return lstArchivos;
+	}
+
+	public List<String> doit(String path, String filename, String dest, boolean isPDF) throws IOException {
+		
+	
+		List<String> lstArchivos = new ArrayList<String>();
+
+		String sourceDir = path + File.separator + filename;
+
+		if (isPDF) {
+			
+			File oldFile = new File(sourceDir);
+
+			if (oldFile.exists()) {
+				
+				try {
+				
+				PDDocument document = PDDocument.load(oldFile);
+
+				PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+				String fileName = oldFile.getName().replace(".pdf", "_cover");
+
+				int totalImages = 0;
+
+				//for (PDPage page : list) {
+				for (PDPage page : document.getPages()) {
+					
+					BufferedImage bim = pdfRenderer.renderImageWithDPI(totalImages, 600, ImageType.GRAY);
+
+				    // suffix in filename will be used as the file format
+				    ImageIOUtil.writeImage(bim, dest + File.separator + fileName + "_" + totalImages + ".jpg", 600);
+				    
+				    totalImages++;
+
+					
+					
+				}// for
+				
+				document.close();
+				
+			} catch(Exception e) {
+				System.out.println(e);
+			}
+			
+
+			}
+			
+		}
+		
 		return lstArchivos;
 	}
 
@@ -171,8 +239,22 @@ public class Desempaquetar {
 		final List<Path> archivos = new ArrayList<Path>();
 		Files.walk(Paths.get(path)).forEach(new Consumer<Path>() {
 			public void accept(Path ruta) {
-				if (Files.isRegularFile(ruta)
-						&& Desempaquetar.this.getFileExtension(new File(ruta.toString())).equals("tif")) {
+				if (Files.isRegularFile(ruta) && getFileExtension(new File(ruta.toString())).equals("pdf")) {
+					// System.out.println(ruta);
+					archivos.add(ruta);
+				}
+			}
+		});
+
+		return archivos;
+	}
+
+	private List<Path> listarFicheros(String path, String extension) throws IOException {
+		System.out.println(path);
+		final List<Path> archivos = new ArrayList<Path>();
+		Files.walk(Paths.get(path)).forEach(new Consumer<Path>() {
+			public void accept(Path ruta) {
+				if (Files.isRegularFile(ruta)) {
 					// System.out.println(ruta);
 					archivos.add(ruta);
 				}
@@ -200,25 +282,35 @@ public class Desempaquetar {
 		String nombreArchivo = "";
 		for (Path p : archivos) {
 			nombreArchivo = p.getFileName().toString();
-			carpetaDest = nombreArchivo.substring(0, nombreArchivo.length() - 4);
+			carpetaDest = String.valueOf(System.currentTimeMillis()); // nombreArchivo.substring(0,
+																		// nombreArchivo.length() - 4);
 
+			// Path pp = Paths.get(p.getParent() + File.separator + carpetaDest);
 			Path pp = Paths.get(p.getParent() + File.separator + carpetaDest);
 
 			Files.createDirectory(pp);
 
-			List<String> lstArchivos = this.doit(p.getParent().toString(), nombreArchivo,
-					p.getParent() + File.separator + carpetaDest);
+			List<String> lstArchivos1 = this.doit(p.getParent().toString(), nombreArchivo,
+					p.getParent() + File.separator + carpetaDest, true);
+
+			String ext = "";
+
+			if (lstArchivos1.size() > 1)
+				ext = lstArchivos1.get(0).substring(lstArchivos1.get(0).length() - 3, lstArchivos1.get(0).length());
+
+			List<Path> lstArchivos = this.listarFicheros(pp.toString(), "pdf");
 
 			String filePathMod = "";
 
-			for (String filePath : lstArchivos) {
+			for (Path filePath : lstArchivos) {
 
-				filePathMod = filePath.substring(0, filePath.length() - 3) + "jpg";
+				// filePathMod = filePath.substring(0, filePath.toString().length() - 3) +
+				// "jpg";
 
-				batRunner.runProcess(filePath, filePathMod);
+				batRunner.runProcess(filePath.toString(), filePath.toString());
 
-				File ff = new File(filePath);
-				ff.delete();
+				// File ff = new File(filePath);
+				// ff.delete();
 
 			}
 
@@ -228,9 +320,14 @@ public class Desempaquetar {
 
 	}
 
-	public static void main(String[] args) throws IOException, CommandLineException {
+	public static void main(String[] args)
+			throws IOException, CommandLineException, NoSuchAlgorithmException, InvalidKeySpecException {
 		Desempaquetar desemp = new Desempaquetar();
-		desemp.conversionMasiva("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas");
+		desemp.conversionMasiva("C:\\Users\\User\\Desktop\\POC EEFF\\");
+
+		// String passwordToHash = "soapros";
+
+		//desemp.doit("C:\\Users\\User\\Desktop\\POC EEFF\\", "5105451-2017-9 (1).pdf", "D:\\Imagenes\\Prueba",true);
 
 	}
 

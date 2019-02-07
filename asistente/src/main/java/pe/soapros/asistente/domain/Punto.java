@@ -28,5 +28,20 @@ public class Punto {
 		return "Punto [x=" + x + ", y=" + y + "]";
 	}
 	
+	public boolean equalsY(Punto obj) {
+		boolean rpta = false;
+		
+		int dif = this.getY() - obj.getY();
+		
+		if( dif == 0) {
+			rpta = true;
+		} else if(dif > 0 && dif <= 5) {
+			rpta = true;
+		} else if(dif < 0 && dif >= -5) {
+			rpta = true;
+		}
+		return rpta;
+	}
+	
 	
 }

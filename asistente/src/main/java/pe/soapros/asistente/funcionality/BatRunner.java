@@ -32,7 +32,7 @@ public class BatRunner {
 		
 		Propiedades pr = new Propiedades();
 		pr.setBatchName("clean.bat");
-		pr.setBatchPath("C:\\Users\\Furth\\git\\asistente\\asistente");
+		pr.setBatchPath("G:\\Mi unidad\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
 		pr.setWindows("1");
 		
 		this.propiedades = pr;
@@ -54,8 +54,12 @@ public class BatRunner {
 		String batfile = this.propiedades.getBatchName();// "clean.bat";		
 		String directory = this.propiedades.getBatchPath(); // "C:\\Users\\Furth\\git\\asistente\\asistente";
 		
-
-		this.runProcess(batfile, directory, source, dest);
+		try {
+			this.runProcess(batfile, directory, source, dest);
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 
 	}
 
@@ -119,11 +123,11 @@ public class BatRunner {
 		
 		Propiedades pr = new Propiedades();
 		pr.setBatchName("clean.bat");
-		pr.setBatchPath("C:\\Users\\Furth\\git\\asistente\\asistente");
+		pr.setBatchPath("G:\\Mi unidad\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
 		pr.setWindows("1");
 		
 		
-		List<Path> archivos = Util.listarFicheros("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\SOA\\Notas\\BalanceNotas", "jpg");
+		List<Path> archivos = Util.listarFicheros("C:\\Users\\User\\Desktop\\POC EEFF", "jpg");
 		
 		 for (Path p : archivos) {
 			 BatRunner bat = new BatRunner();

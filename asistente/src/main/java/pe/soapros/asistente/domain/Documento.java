@@ -34,6 +34,8 @@ public class Documento {
 	private Propiedades propiedades;
 	
 	private boolean swHorizontal;
+	
+	private int bloques;
 
 	// logger
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -76,6 +78,15 @@ public class Documento {
 		this.swHorizontal = swHorizontal;
 	}
 
+	
+	public int getBloques() {
+		return bloques;
+	}
+
+	public void setBloques(int bloques) {
+		this.bloques = bloques;
+	}
+
 	/**
 	 * Método que permite ordenar el archivo resultando, acercandolo al formato
 	 * definido en la imagen
@@ -88,64 +99,92 @@ public class Documento {
 	 */
 	public void formarResultante(String pathFile, String fileName) throws IOException {
 
-		logger.debug("resultante");
+		logger.debug("formarResultante");
+		logger.debug("Parametros:");
+		logger.debug("patFile: " + pathFile);
+		logger.debug("filename: " + fileName);
 
 		double anchoCol = 0;
+		/*
 		if(this.swHorizontal) {
 			anchoCol = 6;
 			this.anchoRenglon = 10;
 		}else {
 			anchoCol = 10; // this.anchoCol;
 			this.anchoRenglon = 13;
-		}
+		}*/		
+		logger.debug("Bloques: " + this.bloques);
 		
+		if(this.bloques > 3) {
+			anchoCol = 7;
+			this.anchoRenglon = 10;
+		}else {
+			anchoCol = 10; // this.anchoCol;
+			this.anchoRenglon = 13;
+		}
 		
 		// ordenar por la coordenada Y todas las palabras detectadas
 		Collections.sort(palabras, Palabra.PalabraComparatorY);
+		logger.debug("se ordena por la coordenada Y");
 
 		// arreglo de renglones
 		List<List<Palabra>> lstRenglones = new ArrayList<List<Palabra>>();
 
 		// tamaño del renglon
 		double inc = this.anchoRenglon;
-
+		logger.debug("Ancho del renglon: " + this.anchoRenglon);
+		
 		// valor inicial de la posición del renglon más el valor increental
 		double minY = 0; //palabras.get(0).getPuntos().get(0).getY();
+		logger.debug("posición del renglon superior" + minY);
 
 		// lista de palabras dentro de cada renglong
 		List<Palabra> palabrasInRenglon = new ArrayList<Palabra>();
-
+		logger.debug("Recorrer todas las palabras" );
+		
 		// recorrer todas las palabras detectadas
 		for (Palabra pal : palabras) {
-
+			logger.debug("Palabra: " + pal);
+			
+			logger.debug("Posición Y0 = " + pal.getPuntos().get(0).getY());
+			logger.debug("MinY = " + minY);
+			logger.debug("Entra en el renglon: " + (pal.getPuntos().get(0).getY() > minY));
+			
 			// si la posisción Y es superior al renglon, se añade el renglon identificado
 			if (pal.getPuntos().get(0).getY() > minY) {
 
 				// ordenar dentro de cada renglon por la coordenada X
 				Collections.sort(palabrasInRenglon, Palabra.PalabraComparatorX);
+				logger.debug("Se ordena respecto a X");
 
 				// se agregó el renglon identificado
 				lstRenglones.add(palabrasInRenglon);
+				logger.debug("Se agrega la palabra al renglon: " + pal);
 
 				// se reinicia las palabras dentro de cada renglon
 				palabrasInRenglon = new ArrayList<Palabra>();
+				logger.debug("Se reinicia las palabras");
 
 				// se incrementa el liminte del sgte renglon
 				minY = pal.getPuntos().get(0).getY() + inc;
+				logger.debug("Se incrementa el minY = " + minY);
 
 			}
 
 			// se añade las palabras dentro de cada renglon
 			palabrasInRenglon.add(pal);
+			logger.debug("Se agregó la palabra: " + pal);
 
 		}
 
 		// agregar el ultimo renglon
 		// ordenar dentro de cada renglon por la coordenada X
 		Collections.sort(palabrasInRenglon, Palabra.PalabraComparatorX);
-
+		logger.debug("ultimo renglon ordenado por X");
+		
 		// se agregó el renglon identificado
 		lstRenglones.add(palabrasInRenglon);
+		logger.debug("Se agregó el último renglon");
 
 		// String pathfile = "c:/Temp/";
 
@@ -154,19 +193,22 @@ public class Documento {
 
 		logger.debug("Formar el TXT");
 		boolean swNum = false;
+		
 		// recorrer los renglones
+		logger.debug("Recorrer todos los renglones identificados");
 		for (List<Palabra> pals : lstRenglones) {
+			
 			logger.debug("Renglones: " + pals);
 			swNum = false;
 
 			cadena = new StringBuilder();
-			// String cadena = new String();
-
-			
+			// String cadena = new String();			
 
 			int colActual = 0;
 
+			logger.debug("Recorrer cada una de las palabras dentro del renglon");
 			for (Palabra pp : pals) {
+				
 				logger.debug("Palabra: " + pp);
 
 				// obtener la columna de la izquierda de cada palabra, y determinar en qué
@@ -251,9 +293,9 @@ public class Documento {
 				Matcher mat = pat.matcher(cadena.toString());				
 				while (mat.find()) {
 					numero = mat.group(); 
-					System.out.println(numero);
+					//System.out.println(numero);
 					numeroMod = numero.replaceAll("\\s", "");
-					System.out.println(numeroMod);
+					//System.out.println(numeroMod);
 					cadenaMod = cadenaMod.toString().replaceAll(numero, numeroMod + " ");
 				}
 			}
