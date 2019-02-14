@@ -44,13 +44,15 @@ public class PlanCuentaNLU {
 
 	public PlanCuenta consultarCuentas(String archivo, boolean swRegex) throws IOException {
 		
-		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
-		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
+//		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
+//		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
 		
 		service = new NaturalLanguageUnderstanding(
 				  "2018-03-16",
-				  propiedades.getPlanCuentasUserNLU(),//"d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
-				  propiedades.getPlanCuentasPassNLU()//"OEwEY17bgaaT"//"Wtq0dtw3cXLG"
+				  //propiedades.getPlanCuentasUserNLU(),//"d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
+				  //propiedades.getPlanCuentasPassNLU()//"OEwEY17bgaaT"//"Wtq0dtw3cXLG"
+				  "d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
+				  "OEwEY17bgaaT"
 				);
 		
 		PlanCuenta plancuenta =  new PlanCuenta();
@@ -58,7 +60,8 @@ public class PlanCuentaNLU {
 		//String texto = Util.leerArchivoTXT(archivo);
 		
 		EntitiesOptions entities= new EntitiesOptions.Builder()
-				  .model(this.propiedades.getPlanCuentasModeloNLU()) //"10:8870c7a0-0c79-4923-9d83-61eead0c949f")				  
+				  //.model(this.propiedades.getPlanCuentasModeloNLU()) //"10:8870c7a0-0c79-4923-9d83-61eead0c949f")
+				  .model("bbbda768-5964-4018-bc0d-a519306dbdac")
 				  .build();
 
 		Features features = new Features.Builder()
@@ -85,11 +88,11 @@ public class PlanCuentaNLU {
 	
 	
 	public static void main(String[] args) throws IOException {
-//		PlanCuentaNLU planNLU = new PlanCuentaNLU();
-//		PlanCuenta valor = planNLU.consultarCuentas("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Node\\convert-contr63062692.0.txt");
+		PlanCuentaNLU planNLU = new PlanCuentaNLU();
+		PlanCuenta valor = planNLU.consultarCuentas("C:\\Users\\User\\Desktop\\EE.FF SELECCION\\5105451-2017-9 (1)_cover_1.txt", false);
 //		
 //		
-//		System.out.println(valor.toString());
+		System.out.println(valor.toString());
 		
 //		String cadena = Util.leerArchivoTXT("C:\\Users\\Furth\\Desktop\\listado.txt");
 //		String[] arch = cadena.split(".txt");

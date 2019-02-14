@@ -67,7 +67,7 @@ public class ConvertImageToText {
 		ConvertImageToText itext = new ConvertImageToText();
 
 		//System.out.println(args[0]);
-		itext.detectDocumentText("C:\\Users\\User\\Desktop\\Nueva carpeta");	
+		itext.detectDocumentText("C:\\Users\\User\\Desktop\\EE.FF SELECCION");	
 		
 		
 	}
