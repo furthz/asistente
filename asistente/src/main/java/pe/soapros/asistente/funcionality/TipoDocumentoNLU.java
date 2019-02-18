@@ -77,7 +77,7 @@ public class TipoDocumentoNLU {
 	
 	public static void main(String[] args) throws IOException {
 		TipoDocumentoNLU dctoNLU = new TipoDocumentoNLU();
-		TipoDocumento valor = dctoNLU.consultarTipoDcto("D:\\Documents\\Proyectos\\Bancolombia\\Asistente Financiero\\EEFF\\Node\\convert-contr63062692.0.txt");
+		TipoDocumento valor = dctoNLU.consultarTipoDcto("C:\\Users\\User\\Desktop\\EE.FF SELECCION\\5105451-2017-9 (1)_cover_1.txt");
 		System.out.println(valor.toString());
 //		String cadena = "DICIEMBRE        31   DE   2014";
 //		String[] valores = cadena.split("\\W+");

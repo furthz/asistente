@@ -67,7 +67,7 @@ public class ConvertImageToText {
 		ConvertImageToText itext = new ConvertImageToText();
 
 		//System.out.println(args[0]);
-		itext.detectDocumentText("C:\\Users\\User\\Desktop\\EE.FF SELECCION");	
+		itext.detectDocumentText("C:\\Users\\User\\Desktop\\Fase2");	
 		
 		
 	}
@@ -218,7 +218,8 @@ public class ConvertImageToText {
 			logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
 					+ file.getOriginalFilename());
 			
-			List<String> lstArchs = desem.doit(pathFile, file.getOriginalFilename());
+			
+			List<String> lstArchs = desem.doit(pathFile, file.getOriginalFilename(), pathFile, true);
 			logger.debug("Archivos desempaquetados");
 			logger.debug("Cant archivos: " + lstArchivos.size());
 			lstArchivos.addAll(lstArchs);
@@ -295,6 +296,21 @@ public class ConvertImageToText {
 					for (Page page : annotation.getPagesList()) {
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
+							
+							//agrgar los puntos superiores de los bloques
+							Punto pt1 = new Punto();
+							pt1.setX(block.getBoundingBox().getVertices(0).getX());
+							pt1.setY(block.getBoundingBox().getVertices(0).getY());
+							bloques1.add(pt1);
+							
+							Punto pt2 = new Punto();
+							pt2.setX(block.getBoundingBox().getVertices(1).getX());
+							pt2.setY(block.getBoundingBox().getVertices(1).getY());
+							bloques2.add(pt2);
+							
+							
+							logger.debug("#BLOCK: " + block.getBoundingBox());
+							
 							String blockText = "";
 
 							for (Paragraph para : block.getParagraphsList()) {
@@ -342,11 +358,16 @@ public class ConvertImageToText {
 
 			BufferedImage image = ImageIO.read(f);
 
+			/*
 			if (image.getHeight() > 1000) {
 				dcto.setSwHorizontal(false);
 			} else {
 				dcto.setSwHorizontal(true);
-			}
+			}*/
+			
+			int bloques = this.nroBloques();
+			
+			dcto.setBloques(bloques);
 			
 			dcto.formarResultante(pathFile, nombre + "txt");
 			logger.debug("Se formo el archivo txt: " + pathFile + nombre + "txt");

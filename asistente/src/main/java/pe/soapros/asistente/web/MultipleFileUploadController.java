@@ -74,12 +74,13 @@ public class MultipleFileUploadController {
 //			for (int i = 0; i < files.size(); i++) {
 
 				// verificar que el archivo no se haya subido anteriormente
-				UploadFile file;
+				UploadFile file = null;
+				/*
 				try {
 					file = this.fileUploadManager.findByName(files.get(0).getOriginalFilename());
 				} catch (javax.persistence.NoResultException e1) {
 					file = null;
-				}
+				}*/
 
 				//en el caso de que sea procesado por primera vez
 				if (file == null) {

@@ -90,7 +90,7 @@ public class Desempaquetar {
 		return lstArchivos;
 	}
 
-	public List<String> doit(String path, String filename, String dest, boolean isPDF) throws IOException {
+	public List<String> doit(String path, String filename, String dest, boolean isPDF) throws IOException{
 		
 	
 		List<String> lstArchivos = new ArrayList<String>();
@@ -113,6 +113,7 @@ public class Desempaquetar {
 
 				int totalImages = 0;
 
+				String archivo = "";
 				//for (PDPage page : list) {
 				for (PDPage page : document.getPages()) {
 					
@@ -120,6 +121,10 @@ public class Desempaquetar {
 
 				    // suffix in filename will be used as the file format
 				    ImageIOUtil.writeImage(bim, dest + File.separator + fileName + "_" + totalImages + ".jpg", 600);
+				    
+				    archivo = dest + File.separator + fileName + "_" + totalImages + ".jpg";
+				    
+				    lstArchivos.add(archivo);
 				    
 				    totalImages++;
 

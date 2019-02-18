@@ -124,7 +124,41 @@ public class PlanCuenta {
 
 	private void iniciarActivo() {
 
+		
 		//ACTIVOS
+		this.activo.put("CAJA_BANCOS", 0.0);
+		this.activo.put("INVERSIONES_VALORES",0.0);
+		this.activo.put("CUENTAS_COBRAR_COMERCIALES_TERCEROS",0.0);
+		this.activo.put("INVENTARIOS",0.0);
+		this.activo.put("OTROS_ACTIVOS_CORRIENTES",0.0);
+		this.activo.put("OTROS_ACTIVOS_NO_CORRIENTES",0.0);
+		this.activo.put("GASTOS_PAGADOS_ANTICIPADOS",0.0);
+		this.activo.put("CUENTAS_COBRAR_COMERCIALES_FILIALES_AFILIADAS",0.0);
+		this.activo.put("VALORES_NEGOCIABLES",0.0);
+		this.activo.put("INMUEBLE_MAQUINARIA_EQUIPO",0.0);
+		this.activo.put("DEPRECIACION_ACUMULADA",0.0);
+		this.activo.put("INTANGIBLES",0.0);
+		this.activo.put("CTAS_COBRAR_LP_FIL_AFIL",0.0);
+		this.activo.put("OTRAS_CUENTAS_COBRAR",0.0);
+		this.activo.put("PRESTAMOS_ACCIONISTAS",0.0);
+		
+		this.indActivo.add("CAJA_BANCOS");
+		this.indActivo.add("INVERSIONES_VALORES");
+		this.indActivo.add("CUENTAS_COBRAR_COMERCIALES_TERCEROS");
+		this.indActivo.add("INVENTARIOS");
+		this.indActivo.add("OTROS_ACTIVOS_CORRIENTES");
+		this.indActivo.add("OTROS_ACTIVOS_NO_CORRIENTES");
+		this.indActivo.add("GASTOS_PAGADOS_ANTICIPADOS");
+		this.indActivo.add("CUENTAS_COBRAR_COMERCIALES_FILIALES_AFILIADAS");
+		this.indActivo.add("VALORES_NEGOCIABLES");
+		this.indActivo.add("INMUEBLE_MAQUINARIA_EQUIPO");
+		this.indActivo.add("DEPRECIACION_ACUMULADA");
+		this.indActivo.add("INTANGIBLES");
+		this.indActivo.add("CTAS_COBRAR_LP_FIL_AFIL");
+		this.indActivo.add("OTRAS_CUENTAS_COBRAR");
+		this.indActivo.add("PRESTAMOS_ACCIONISTAS");
+		
+		/*
 		this.activo.put("Efectivo", 0.0);
 		this.activo.put("Inversiones_Temporales", 0.0);
 		this.activo.put("Ctas_Cobrar_Comerciales", 0.0);
@@ -198,7 +232,7 @@ public class PlanCuenta {
 		this.indActivo.add("Otros_Activos_LP");
 		this.indActivo.add("Valorizacion_Inversiones");
 		this.indActivo.add("Valorizacion_Activos_Fijos");	
-		
+		*/
 		
 		//PASIVOS
 		this.pasivo.put("Sobregiros", 0.0);

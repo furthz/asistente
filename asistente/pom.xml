@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>com.ibm.watson.developer_cloud</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>4.0.0</version>
+			<version>6.11.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.media</groupId>
@@ -182,6 +182,14 @@
 		    <artifactId>pdfbox-tools</artifactId>
 		    <version>2.0.10</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jbig2-imageio -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>jbig2-imageio</artifactId>
+		    <version>3.0.2</version>
+		</dependency>
+		
 		
 	</dependencies>
 

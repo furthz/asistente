@@ -18,7 +18,7 @@ public class Clasificador {
 	
 	public Clasificador() {
 		
-		service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
+		service = new VisualRecognition(null); //VisualRecognition.VERSION_DATE_2016_05_20);
 
 		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
 
@@ -58,6 +58,7 @@ public class Clasificador {
 	@SuppressWarnings("unused")
 	private static void clasificarEEFF() throws FileNotFoundException {
 
+		/*
 		VisualRecognition service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
 
 		service.setApiKey("f8519a2f81736b12456b9f0d1f221e7dff4f8a11");
@@ -68,7 +69,7 @@ public class Clasificador {
 				.parameters("{\"classifier_ids\": [\"eeff_1483460197\"] ,\"threshold\": 0.5}").build();
 
 		ClassifiedImages result = service.classify(classifyOptions).execute();
-		System.out.println(result);
+		System.out.println(result);*/
 
 	}
 

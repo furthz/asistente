@@ -32,7 +32,7 @@ public class BatRunner {
 		
 		Propiedades pr = new Propiedades();
 		pr.setBatchName("clean.bat");
-		pr.setBatchPath("G:\\Mi unidad\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
+		pr.setBatchPath("D:\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
 		pr.setWindows("1");
 		
 		this.propiedades = pr;

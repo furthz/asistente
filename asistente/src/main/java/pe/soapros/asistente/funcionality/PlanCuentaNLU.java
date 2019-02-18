@@ -11,6 +11,7 @@ import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.An
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalyzeOptions;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.EntitiesOptions;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.Features;
+import com.ibm.watson.developer_cloud.service.security.IamOptions;
 
 import pe.soapros.asistente.domain.PlanCuenta;
 import pe.soapros.asistente.domain.Propiedades;
@@ -47,13 +48,20 @@ public class PlanCuentaNLU {
 //		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
 //		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
 		
-		service = new NaturalLanguageUnderstanding(
+		IamOptions options = new IamOptions.Builder()
+			    .apiKey("DacsRs2F_OZycdP3amtIog0AWmfJN4w0ciotSOskNbCg")
+			    .build();
+		
+		/*service = new NaturalLanguageUnderstanding(
 				  "2018-03-16",
 				  //propiedades.getPlanCuentasUserNLU(),//"d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
 				  //propiedades.getPlanCuentasPassNLU()//"OEwEY17bgaaT"//"Wtq0dtw3cXLG"
 				  "d8e61c23-01bc-4ed7-b13e-855431a4ceaa",
 				  "OEwEY17bgaaT"
-				);
+				);*/
+		
+		service = new NaturalLanguageUnderstanding("2018-11-16", options);
+		service.setEndPoint("https://gateway-fra.watsonplatform.net/natural-language-understanding/api");
 		
 		PlanCuenta plancuenta =  new PlanCuenta();
 		
@@ -61,7 +69,7 @@ public class PlanCuentaNLU {
 		
 		EntitiesOptions entities= new EntitiesOptions.Builder()
 				  //.model(this.propiedades.getPlanCuentasModeloNLU()) //"10:8870c7a0-0c79-4923-9d83-61eead0c949f")
-				  .model("bbbda768-5964-4018-bc0d-a519306dbdac")
+				  .model("9b7d1aec-6113-4aba-b4ba-10a81425e52a")
 				  .build();
 
 		Features features = new Features.Builder()
