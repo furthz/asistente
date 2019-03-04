@@ -131,13 +131,14 @@
 								<th scope="col">Fecha</th>
 								<th scope="col">Detalle</th>
 								<th scope="col">Analizar</th>
-								<th scope="col">An. Notas</th> 
+								<th scope="col">Update</th> 
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach items="${pageListHolder.pageList}" var="file">
 								<tr>
-									<td><c:out value="${file.empresa.nombre}" /></td>
+									<form method="post" action="updateEmpresaMA.htm" id="<c:out value="${file.empresa.id}"/>">
+									<td><input name="nombre" value="<c:out value="${file.empresa.nombre}" />"></td>
 									<td><c:out value="${file.empresa.idDoc}" /></td>
 									<td><c:out value="${file.fileName}" /></td>
 									<td><c:out value="${file.fecha}" /></td>
@@ -152,16 +153,23 @@
 
 									</td>
 									
-									 
+									 <!-- 
 									<td>
 										<button type="button" class="btn btn-outline-warning"
 											onclick="window.location.href='<c:url value="resultadosNotas.htm?id="/> <c:out value="${file.id}"/> '">Procesar</button>
 
 									</td>
-									 
-									
+									  -->
+									  <td>
+									  	
+									  		<input hidden="true" name="id" value="<c:out value="${file.empresa.id}"/>">
+									  		<button type="submit" class="btn btn-outline-warning">Update</button>
+									  	
+									  
+									  </td>
+								</form>	
 								</tr>
-
+								
 							</c:forEach>
 						</tbody>
 					</table>

@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import pe.soapros.asistente.domain.Empresa;
 import pe.soapros.asistente.domain.TipoDocumento;
 
 @Repository(value = "tipoDocumentoDao")
@@ -46,6 +47,14 @@ public class JPATipoDocumentoDao implements TipoDocumentoDao {
 		return query.setParameter("id", id).getResultList();
 
 		
+	}
+	
+	public TipoDocumento getId(Long id) {
+		
+		TypedQuery<TipoDocumento> query = em.createQuery("select td from TipoDocumento td where td.id = :id", TipoDocumento.class);
+
+		return query.setParameter("id", id).getSingleResult();
+
 	}
 
 }

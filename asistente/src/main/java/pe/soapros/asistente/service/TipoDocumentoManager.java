@@ -14,4 +14,6 @@ public interface TipoDocumentoManager extends Serializable{
 	
 	public List<TipoDocumento> getTiposDocumentosById(Long id);
 	
+	public TipoDocumento getId(Long id);
+	
 }

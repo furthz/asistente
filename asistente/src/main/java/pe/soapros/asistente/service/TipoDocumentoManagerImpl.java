@@ -31,4 +31,10 @@ public class TipoDocumentoManagerImpl implements TipoDocumentoManager{
 		return this.tipoDocumentoDao.getTiposDocumentosById(id);
 	}
 
+	@Override
+	public TipoDocumento getId(Long id) {
+		// TODO Auto-generated method stub
+		return this.tipoDocumentoDao.getId(id);
+	}
+
 }

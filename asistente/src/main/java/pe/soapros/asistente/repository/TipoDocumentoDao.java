@@ -12,4 +12,6 @@ public interface TipoDocumentoDao {
 	
 	public void saveTipoDocumento(TipoDocumento tipo);
 	
+	public TipoDocumento getId(Long id);
+	
 }
