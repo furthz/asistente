@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Clase para gestionar cada una de las palabras extraídas del OCR
+ * Clase para gestionar cada una de las palabras del OCR
  * 
- * @author Raúl Talledo
+ * @author RaÃºl Talledo
  * @version 1.0
  *
  */
@@ -74,7 +74,7 @@ public class Palabra implements Comparable<Palabra> {
 		return "Palabra [valor=" + valor + ", puntos=" + puntos + "]";
 	}
 
-	public double calcularTamañoLetra() {
+	public double calcularTamaÃ±oLetra() {
 		double rpta = 0.0;
 
 		int taman = valor.length();

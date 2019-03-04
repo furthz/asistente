@@ -71,7 +71,7 @@
 		</div>
 		<div class="cont6 tit1">Asistente Financiero</div>
 		<div class="cont2">
-			<img class="logo_m" src="<c:url value="/resources/images/banco.jpg"/> ">
+			<img class="logo_m" src="<c:url value="/resources/images/banco.png"/> ">
 		</div>
 	</div>
 	

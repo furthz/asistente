@@ -45,8 +45,8 @@ public class PlanCuentaNLU {
 
 	public PlanCuenta consultarCuentas(String archivo, boolean swRegex) throws IOException {
 		
-//		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
-//		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
+		logger.debug("Servicio NLU: " + propiedades.getPlanCuentasPassNLU() + " - " + propiedades.getPlanCuentasPassNLU());
+		logger.debug("ModeloID: " + propiedades.getPlanCuentasModeloNLU());
 		
 		IamOptions options = new IamOptions.Builder()
 			    .apiKey("DacsRs2F_OZycdP3amtIog0AWmfJN4w0ciotSOskNbCg")
@@ -69,7 +69,7 @@ public class PlanCuentaNLU {
 		
 		EntitiesOptions entities= new EntitiesOptions.Builder()
 				  //.model(this.propiedades.getPlanCuentasModeloNLU()) //"10:8870c7a0-0c79-4923-9d83-61eead0c949f")
-				  .model("9b7d1aec-6113-4aba-b4ba-10a81425e52a")
+				  .model("2df1b0f9-0b80-445b-abe6-48b5414e55b4")
 				  .build();
 
 		Features features = new Features.Builder()

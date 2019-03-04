@@ -52,7 +52,7 @@ import pe.soapros.asistente.funcionality.BatRunner;
 public class Desempaquetar {
 
 	/***
-	 * Método para desempaquetar un TIF
+	 * Metodo para desempaquetar un TIF
 	 * 
 	 * @param path     Ruta donde se encuentra el archivo a desempaquetar
 	 * @param filename Nombre del archivo
@@ -328,7 +328,7 @@ public class Desempaquetar {
 	public static void main(String[] args)
 			throws IOException, CommandLineException, NoSuchAlgorithmException, InvalidKeySpecException {
 		Desempaquetar desemp = new Desempaquetar();
-		desemp.conversionMasiva("C:\\Users\\User\\Desktop\\POC EEFF\\");
+		desemp.conversionMasiva("C:\\Users\\User\\Desktop\\EF SEL\\");
 
 		// String passwordToHash = "soapros";
 

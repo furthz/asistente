@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 /**
  * Clase para gestionar los datos asociados a la Entidad Empresa
  * 
- * @author Raúl Talledo
+ * @author RaÃºl Talledo
  * @version 1.0
  */
 @Entity

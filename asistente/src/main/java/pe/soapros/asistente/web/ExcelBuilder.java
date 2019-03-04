@@ -66,7 +66,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Provisi髇 cartera (-)");
+		header.createCell(i).setCellValue("Provisi贸n cartera (-)");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -78,7 +78,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Activos biol骻icos");
+		header.createCell(i).setCellValue("Activos biol贸gicos");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -90,7 +90,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Ctas x cobrar vinc econ髆icos");
+		header.createCell(i).setCellValue("Ctas x cobrar vinc econ贸micos");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -114,7 +114,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Construcci髇 en proceso");
+		header.createCell(i).setCellValue("Construcci贸n en proceso");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -142,15 +142,15 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Propiedades de Inversi髇");
+		header.createCell(i).setCellValue("Propiedades de Inversi贸n");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Depreciaci髇 acumulada");
+		header.createCell(i).setCellValue("Depreciaci贸n acumulada");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Activos biol骻icos LP");
+		header.createCell(i).setCellValue("Activos biol贸gicos LP");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -166,7 +166,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Ctas x cobrar vinc econ髆icos LP");
+		header.createCell(i).setCellValue("Ctas x cobrar vinc econ锟絤icos LP");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -190,11 +190,11 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Valorizaci髇 de inversiones");
+		header.createCell(i).setCellValue("Valorizaci贸n de inversiones");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Valorizaci髇 de activos fijos");
+		header.createCell(i).setCellValue("Valorizaci贸n de activos fijos");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -227,7 +227,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Ctas x pagar vinc econ髆icos");
+		header.createCell(i).setCellValue("Ctas x pagar vinc econ贸micos");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -283,7 +283,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Ctas x pagar vinc econ髆icos LP");
+		header.createCell(i).setCellValue("Ctas x pagar vinc econ贸micos LP");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -312,11 +312,11 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Prima en colocaci髇 de acciones");
+		header.createCell(i).setCellValue("Prima en colocaci贸n de acciones");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Otros super醰it de capital");
+		header.createCell(i).setCellValue("Otros super谩vit de capital");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -340,11 +340,11 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Valorizaci髇 de activos fijos");
+		header.createCell(i).setCellValue("Valorizaci贸n de activos fijos");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Valorizaci髇 de inversiones");
+		header.createCell(i).setCellValue("Valorizaci贸n de inversiones");
 		header.getCell(i).setCellStyle(style);
 		i++;
 
@@ -352,7 +352,7 @@ public class ExcelBuilder extends AbstractExcelView {
 		header.getCell(i).setCellStyle(style);
 		i++;
 
-		header.createCell(i).setCellValue("Revalorizaci髇 del patrimonio");
+		header.createCell(i).setCellValue("Revalorizaci贸n del patrimonio");
 		header.getCell(i).setCellStyle(style);
 		i++;
 

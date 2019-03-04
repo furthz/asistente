@@ -43,7 +43,7 @@ import pe.soapros.asistente.util.Util;
 /***
  * Clase que encapsula las funcionalidades para convertir una imagen en texto
  * 
- * @author Raúl Talledo
+ * @author RaÃºl Talledo
  * @version 2.0
  *
  */
@@ -67,7 +67,7 @@ public class ConvertImageToText {
 		ConvertImageToText itext = new ConvertImageToText();
 
 		//System.out.println(args[0]);
-		itext.detectDocumentText("C:\\Users\\User\\Desktop\\Fase2");	
+		itext.detectDocumentText("C:\\Users\\User\\Desktop\\Fase4");	
 		
 		
 	}
@@ -117,6 +117,7 @@ public class ConvertImageToText {
 						
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
+							
 							//agrgar los puntos superiores de los bloques
 							Punto pt1 = new Punto();
 							pt1.setX(block.getBoundingBox().getVertices(0).getX());
@@ -194,10 +195,10 @@ public class ConvertImageToText {
 	}
 
 	/**
-	 * Método que convierte una imagen subida a un archivo de texto
+	 * MÃ©todo que convierte una imagen subida a un archivo de texto
 	 * 
 	 * @param file
-	 *            Archivo subido por la página
+	 *            Archivo subido por la pÃ¡gina
 	 * @param pathFile
 	 *            Ruta destino donde se guardan los archivos y los textos
 	 *            convertidos
@@ -213,13 +214,14 @@ public class ConvertImageToText {
 		List<String> lstArchivos = new ArrayList<String>();
 		
 		for(MultipartFile file: files) {			
+			
 			// enviar los archivos a una ruta temporal
-			file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename()));
-			logger.debug("Se envió los archivos a la carpeta temporal: " + pathFile + File.separator
+			file.transferTo(new File(pathFile + File.separator + file.getOriginalFilename().toString().replaceAll(" ", "")));
+			logger.debug("Se enviÃ³ los archivos a la carpeta temporal: " + pathFile + File.separator
 					+ file.getOriginalFilename());
 			
 			
-			List<String> lstArchs = desem.doit(pathFile, file.getOriginalFilename(), pathFile, true);
+			List<String> lstArchs = desem.doit(pathFile, file.getOriginalFilename().toString().replaceAll(" ", ""), pathFile, true);
 			logger.debug("Archivos desempaquetados");
 			logger.debug("Cant archivos: " + lstArchivos.size());
 			lstArchivos.addAll(lstArchs);
@@ -249,54 +251,44 @@ public class ConvertImageToText {
 			
 			batRunner.runProcess(filePathMod, filePathMod);
 			
-			batRunner.runProcess(filePathMod, filePathMod);
+			//batRunner.runProcess(filePathMod, filePathMod);
 
 			List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-			logger.debug("se carga AnnotateImageRequest");
-			
+
 			ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePathMod));
-			logger.debug("Bytes");
 
 			Image img = Image.newBuilder().setContent(imgBytes).build();
-			logger.debug("Img");
-			
 			Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-			logger.debug("Feature");
-			
 			AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-			logger.debug("Request");
-			
 			requests.add(request);
-			logger.debug("Se llamó l servicio de google vision");
+
+			// String contenido = new String();
+			
 
 			Documento dcto = new Documento();
 			dcto.setPropiedades(this.propiedades);
-			logger.debug("Se asignó las propiedades");
+			logger.debug("Se asignÃ³ las propiedades");
 
 			try {
 				ImageAnnotatorClient client = ImageAnnotatorClient.create();
-				logger.debug("Se creo el client");
-				
 				BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-				logger.debug("Se creo el response");
-				
 				List<AnnotateImageResponse> responses = response.getResponsesList();
-				logger.debug("se creo las respuestas");
-				
 				client.close();
-				logger.debug("Se cerró el client");
-				
+
 				for (AnnotateImageResponse res : responses) {
-					
 					if (res.hasError()) {
 						throw new Exception("Error");
 					}
 
+					// For full list of available annotations, see http://g.co/cloud/vision/docs
 					TextAnnotation annotation = res.getFullTextAnnotation();
+					logger.debug("se recupera todas las paginas");
+					
 					for (Page page : annotation.getPagesList()) {
+						logger.debug("#PAG: " + page.getBlocksList());
+						
 						String pageText = "";
 						for (Block block : page.getBlocksList()) {
-							
 							//agrgar los puntos superiores de los bloques
 							Punto pt1 = new Punto();
 							pt1.setX(block.getBoundingBox().getVertices(0).getX());
@@ -312,8 +304,9 @@ public class ConvertImageToText {
 							logger.debug("#BLOCK: " + block.getBoundingBox());
 							
 							String blockText = "";
-
 							for (Paragraph para : block.getParagraphsList()) {
+								logger.debug("#PARAG: " + para.getBoundingBox());
+								
 								String paraText = "";
 
 								Palabra palabra;
@@ -346,17 +339,18 @@ public class ConvertImageToText {
 					}
 
 				}
+				// }
 			}catch (Exception e) {
 			    logger.error(e);
 			}
 
-			logger.debug("Se obtuvo la información liquida");
+			logger.debug("Se obtuvo la informaciÃ³sn liquida");
 
 			File f = new File(filePathMod);
 			String nombre = f.getName();
 			nombre = nombre.substring(0, nombre.length() - 3);
 
-			BufferedImage image = ImageIO.read(f);
+			//BufferedImage image = ImageIO.read(f);
 
 			/*
 			if (image.getHeight() > 1000) {
@@ -383,7 +377,7 @@ public class ConvertImageToText {
 		
 		TipoDocumentoNLU tipoNLU = new TipoDocumentoNLU();
 		tipoNLU.setPropiedades(this.propiedades);
-		logger.debug("Se creó TipoNLU: " + tipoNLU.toString());
+		logger.debug("Se creÃ³ TipoNLU: " + tipoNLU.toString());
 		
 		ServiceECM serviceECM = new ServiceECM();
 		serviceECM.setPropiedades(this.propiedades);
@@ -406,7 +400,7 @@ public class ConvertImageToText {
 			if (tipodoc.getEmpresa() != null && !tipodoc.getEmpresa().equals("")) {
 				empresa = tipodoc.getEmpresa();
 			}
-			logger.debug("Datos Extraídos: " + tipodoc.toString());
+			logger.debug("Datos ExtraÃ­dos: " + tipodoc.toString());
 
 
 		}
@@ -425,12 +419,12 @@ public class ConvertImageToText {
 			metadata.put("estado_financiero:unidad", tipodoc.getUnidad());
 
 			String objectID = serviceECM.uploadDocument(pathFile + File.separator + tipodoc.getFilename(), metadata);
-			logger.debug("Se subió el archivo: " + pathFile + tipodoc.getFilename());
+			logger.debug("Se subiÃ³ el archivo: " + pathFile + tipodoc.getFilename());
 			logger.debug("Archivo ID: " + objectID);
 			tipodoc.setObjectId(objectID);
 
 			String objectIDTxt = serviceECM.uploadDocument(pathFile + File.separator + tipodoc.getFilenameTxt(), metadata);
-			logger.debug("Se subió el archivo: " + pathFile + tipodoc.getFilenameTxt());
+			logger.debug("Se subiÃ³ el archivo: " + pathFile + tipodoc.getFilenameTxt());
 			logger.debug("Archivo ID: " + objectIDTxt);
 			tipodoc.setObjectIdTxt(objectIDTxt);
 
@@ -480,7 +474,7 @@ public class ConvertImageToText {
 					logger.debug("La diferencia es +/- 5pts");
 					cont++;
 				}else {
-					logger.debug("La diferencia es más de +/-5pts");
+					logger.debug("La diferencia es mÃ¡s de +/-5pts");
 					ejeY = pt1.getY();
 					conteoBloques.add(cont);
 					cont = 1;

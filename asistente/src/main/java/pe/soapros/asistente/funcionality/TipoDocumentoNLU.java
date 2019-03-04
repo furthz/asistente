@@ -36,8 +36,8 @@ public class TipoDocumentoNLU {
 
 
 	/**
-	 * Método que permite identificar los tipos de documento
-	 * @param archivo ruta del archivo TXT extraído
+	 * MÃ©todo que permite identificar los tipos de documento
+	 * @param archivo ruta del archivo TXT extraÃ­do
 	 * @return TipoDocumento
 	 * @throws IOException
 	 */

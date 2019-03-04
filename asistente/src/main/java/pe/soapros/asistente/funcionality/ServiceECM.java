@@ -33,7 +33,7 @@ import pe.soapros.asistente.domain.Propiedades;
 
 /**
  * 
- * @author Raúl Talledo
+ * @author RaÃºl Talledo
  * @version 1.0
  *
  */
@@ -91,7 +91,7 @@ public class ServiceECM {
 			fos.close();
 			in.close();
 			
-			logger.debug("Se finalizó la escritura del archivo destino");
+			logger.debug("Se finalizÃ³ la escritura del archivo destino");
 
 		} catch (IOException e) {
 			throw new RuntimeException(e.getLocalizedMessage());
@@ -117,9 +117,9 @@ public class ServiceECM {
 		logger.debug("inicio subir archivos al ECM");
 		
 
-		// obtener la session de conexión
+		// obtener la session de conexiï¿½n
 		Session lSession = this.getCmisSession();
-		logger.debug("Se inició la session");
+		logger.debug("Se iniciÃ³ la session");
 
 		// obtener el sitio
 		Folder folderSitio = this.getDocLibFolder(lSession, "finanzas");
@@ -130,7 +130,7 @@ public class ServiceECM {
 		String razonSocial = (String) metadata.get("estado_financiero:empresa");
 		logger.debug("nombre de la empresa: " + razonSocial);
 
-		//si no se logró obtener la empresa en los archivos a analizar
+		//si no se logrÃ³ obtener la empresa en los archivos a analizar
 		if(razonSocial == null || razonSocial.equals("") ) {
 			razonSocial = "Otros";
 		}
@@ -164,7 +164,7 @@ public class ServiceECM {
 		logger.debug("metadata: " + metadata.toString());
         
 		Document newContent1 = newFolder.createDocument(metadata, contentStream, null);
-		logger.debug("Se creoó e documento dentro del ecm");
+		logger.debug("Se creo e documento dentro del ecm");
 		
 		logger.debug("Id del dcto: " + newContent1.getId());
 		

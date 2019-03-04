@@ -28,14 +28,16 @@ public class BatRunner {
 
 	public BatRunner() {
 
+		/*
 		logger.debug("Inicio BatRunner");
 		
 		Propiedades pr = new Propiedades();
 		pr.setBatchName("clean.bat");
-		pr.setBatchPath("D:\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
+		pr.setBatchPath("G:\\Mi unidad\\Fuentes\\Java\\AsistenteFinanciero\\asistente\\asistente");
 		pr.setWindows("1");
 		
 		this.propiedades = pr;
+		*/
 	}
 
 	public Propiedades getPropiedades() {
@@ -88,26 +90,27 @@ public class BatRunner {
 			logger.debug("Resultado Ejecutar Batch: " + returnCode);
 
 			if (returnCode != 0) {
-				System.out.println("Ocurrió un error");
+				System.out.println("Ocurrio un error");
 			}
 		} else {
 			logger.debug("SO Linux");
 			
 			//Process procBuildScript = new ProcessBuilder(directory + File.separator + batfile, source + " " + dest).start();
 			logger.debug("Proceso Batch Llamado: " + directory + File.separator + batfile + " Parametros: " + source + " " + dest);
+			logger.info("Proceso Batch Llamado: " + directory + File.separator + batfile + " Parametros: " + source + " " + dest);
 			
 			ProcessBuilder pb = new ProcessBuilder(directory + File.separator + batfile,  source, dest);
 			logger.debug("se inicio el proceso");
 			
 			Process p = pb.start();
-			logger.debug("se lanzó el proceso");
+			logger.debug("se lanzo el proceso");
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			logger.debug("se lee el mensaje");
 			
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				logger.debug("resultado proceso: " + line);
+				logger.info("resultado proceso: " + line);
 				//System.out.println(line);
 			}
 		}

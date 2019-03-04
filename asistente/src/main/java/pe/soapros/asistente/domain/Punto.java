@@ -2,7 +2,7 @@ package pe.soapros.asistente.domain;
 
 /**
  * Clase para gestionar los puntos X,Y de cada palabra obtenida en el OCR
- * @author Raúl Talledo
+ * @author RaÃºl Talledo
  * @version 1.0
  *
  */

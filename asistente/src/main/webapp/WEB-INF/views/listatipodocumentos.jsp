@@ -70,7 +70,7 @@
 		<div class="cont6 tit1">Asistente Financiero</div>
 		<div class="cont2">
 			<img class="logo_m"
-				src="<c:url value="/resources/images/banco.jpg"/>">
+				src="<c:url value="/resources/images/banco.png"/>">
 		</div>
 	</div>
 
@@ -92,26 +92,40 @@
 								<th scope="col">Unidad</th>
 								<th scope="col">ID Imagen</th>
 								<th scope="col">ID Texto</th>
+								<th scope="col">Accion</th>
 							</tr>
 						</thead>
 						<tbody>
 
 							<c:forEach items="${objetos.tipos}" var="file">
 								<tr>
+									<form method="post" action="updateTipoDocumentoMA.htm" id="<c:out value="${file.id}"/>">
 									<td><c:out value="${objetos.empresa.nombre}" /></td>
 									<td><c:out value="${objetos.empresa.idDoc}" /></td>
-									<td><c:out value="${file.tipoDoc}" /></td>
+									
+									<td>
+										<input type="text" name="tipoDoc" value="<c:out value="${file.tipoDoc}" />"> 
+										<input hidden name="id" value="<c:out value="${file.id}" />" >
+									</td>
+									
 									<td><c:out value="${file.fechacreacion}" /></td>
 									<td><c:out value="${file.unidad}" /></td>
 									<td>
 									<a  class="btn btn-outline-primary"
-										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectId}"/>"
+										href="http://181.65.158.27:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectId}"/>"
 										target="_blank"> Imagen </a></td>
 									<td><a
 										class="btn btn-outline-primary"
-										href="http://148.102.51.17:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectIdTxt}"/>"
+										href="http://181.65.158.27:8080/share/page/site/finanzas/document-details?nodeRef=workspace://SpacesStore/<c:out value="${file.objectIdTxt}"/>"
 										target="_blank"> Texto </a></td>
+									<td>
+										
+											
+											<button type="submit" class="btn btn-outline-primary">Update</button>
 
+										
+									</td>
+									</form>
 								</tr>
 
 							</c:forEach>

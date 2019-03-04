@@ -27,6 +27,7 @@ public class SimpleEmpresaManager implements EmpresaManager{
 
 	public void crearEmpresa(Empresa emp) {
 		this.empresaDao.saveEmpresa(emp);
+		
 	}
 
 	public Empresa buscarById(long id) {		
