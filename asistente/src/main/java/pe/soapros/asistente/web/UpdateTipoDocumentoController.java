@@ -30,7 +30,7 @@ public class UpdateTipoDocumentoController {
 		
 		 RedirectView rv = new RedirectView();
 		 rv.setContextRelative(true);
-		 rv.setUrl("listatipodocumentos.htm?id=" + tipo.getId());
+		 rv.setUrl("listatipodocumentos.htm?id=" + tipo.getArchivo().getId());
 		
 		//return modelAndView;
 		    
