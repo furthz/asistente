@@ -8,9 +8,18 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Asistente Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+	<developers>
+		<developer>
+			<email>raul.talledo@soapros.pe</email>
+			<name>Raúl Talledo</name>
+			<organization>SOA Professionals</organization>
+		</developer>
+	</developers>
+	<organization>
+		<name>SOA Professionals</name>
+		<url>soapros.pe</url>
+	</organization>
 	<dependencies>
-
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -188,7 +197,7 @@
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>jbig2-imageio</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
@@ -197,20 +206,14 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.4</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
-
-
 	</dependencies>
-
-
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -222,18 +225,14 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
 		<finalName>asistente</finalName>
 	</build>
-
-
 	<properties>
 		<org.springframework.version>4.2.5.RELEASE</org.springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-
 	<repositories>
 		<repository>
 			<id>maven-restlet</id>
@@ -241,5 +240,4 @@
 			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 		</repository>
 	</repositories>
-
 </project>
